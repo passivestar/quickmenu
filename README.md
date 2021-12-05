@@ -1,3 +1,5 @@
+![Quick Menu](https://github.com/passivestar/quickmenu/blob/main/pics/qm.jpg?raw=true)
+
 Quick Menu is a Blender addon that I made to optimize my workflow.
 
 Install it through `Edit -> Preferences -> Addons -> Install... -> And select quick_menu.py`.
