@@ -20,7 +20,7 @@ This addon is the result of over a year of brainstorming on the effectiveness of
 
 # Some tools
 
-Here are some examples of tools that Quick Menu has:
+Here are some examples of tools that Quick Menu has. Keep in mind that this is not a complete list of operators, but rather a small showcase of what kind of things the addon is capable of. Only some modeling tools are listed, but the addon also has some operators for UVs, textures, export, etc
 
 ## Convert To Curve (d41)
 
