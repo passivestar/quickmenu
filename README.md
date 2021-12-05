@@ -2,7 +2,9 @@
 
 Quick Menu is a Blender addon that I made to optimize my workflow.
 
-Install it through `Edit -> Preferences -> Addons -> Install... -> And select quick_menu.py`.
+Compatible with Blender 3.x.x
+
+Install through `Edit -> Preferences -> Addons -> Install... -> Select quick_menu.py`.
 
 Press `D` to open the menu.
 
