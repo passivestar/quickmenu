@@ -1992,6 +1992,7 @@ painter_default_path = 'C:\Program Files\Allegorithmic\Adobe Substance 3D Painte
 class QuickMenuPreferences(bpy.types.AddonPreferences):
   bl_idname = __name__
 
+  hotkey: StringProperty(name='Hotkey (Restart required)', default='D')
   painter_path: StringProperty(name='Substance Painter Executable Path', default=painter_default_path, subtype='FILE_PATH')
   texture_output_folder_name: StringProperty(name='Textures Folder Name', default='substance_painter_textures')
   # Material names cant have underscores
@@ -1999,6 +2000,8 @@ class QuickMenuPreferences(bpy.types.AddonPreferences):
 
   def draw(self, context):
     layout = self.layout
+    layout.prop(self, 'hotkey')
+    layout.separator()
     layout.prop(self, 'painter_path')
     layout.prop(self, 'texture_output_folder_name')
     layout.prop(self, 'texture_set_name_regex')
@@ -2042,9 +2045,10 @@ def register():
   bpy.types.Scene.quick_menu = PointerProperty(type=QuickMenuProperties)
   wm = bpy.context.window_manager
   kc = wm.keyconfigs.addon
+  hotkey = bpy.context.preferences.addons[__name__].preferences.hotkey
   if kc:
     km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
-    kmi = km.keymap_items.new(QuickMenuOperator.bl_idname, type='D', value='PRESS')
+    kmi = km.keymap_items.new(QuickMenuOperator.bl_idname, type=hotkey, value='PRESS')
     keymaps.append((km, kmi))
 
 def unregister():
