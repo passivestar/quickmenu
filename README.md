@@ -18,7 +18,11 @@ The addon was initially made only with personal use in mind and therefore is not
 
 3. Blender's defaults don't always make sense for my workflow, and a lot of the operators could be context-dependent. A lot of operators address this by calling existing Blender operators with proper settings. For example, I believe that "Shade Smooth", "Origin To (whatever)", operators that add modifiers and booleans should work regardless of what mode you're in. I believe that Separate/Join should be one button. The same is true for Region To Loop/Loop To Region, Add Mirror/Apply Mirror, etc. I believe that some operators (like mirror) should take into consideration your camera orientation when initially setting the axis. The list goes on. The addon is very opinionated.
 
-This addon is the result of over a year of brainstorming on the effectiveness of modeling/texturing workflow and testing tools on small projects. I'm trying to keep it lightweight. If something seems missing from it, there's a high chance that the reason for it is that Blender already has built-in tools that allow to do it easily, or the use-case for it is very rare
+This addon is the result of over a year of brainstorming on the effectiveness of modeling/texturing workflow and testing tools on small projects. I'm trying to keep it lightweight. If something seems missing from it, there's a high chance that the reason for it is that Blender already has built-in tools that allow to do it easily, or the use-case for it is very rare.
+
+This addon is designed to be as unintrusive and minimalistic as possible. All of the operators are in just one menu. There's no UI other than that, which makes it easy to use. It also only takes one hotkey. It can be changed in the addon's preferences, but I recommend `D`.
+
+This addon is a single-file addon for now, and it will probably stay that way because it simplifies development (reloading addons consisting of multiple files is not as straightforward as just pressing `Alt+R, Alt+P` in Blender's text editor).
 
 # Some tools
 
