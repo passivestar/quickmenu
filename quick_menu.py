@@ -598,6 +598,7 @@ class ConnectOperator(bpy.types.Operator):
     bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='VERT')
     bpy.ops.mesh.merge(type='COLLAPSE')
     bpy.ops.mesh.edge_face_add()
+    bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='EDGE')
     return {'FINISHED'}
 
 class AddGeometryOperator(bpy.types.Operator):
