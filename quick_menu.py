@@ -2048,7 +2048,7 @@ def register():
   hotkey = bpy.context.preferences.addons[__name__].preferences.hotkey
   if kc:
     km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
-    kmi = km.keymap_items.new(QuickMenuOperator.bl_idname, type=hotkey, value='PRESS')
+    kmi = km.keymap_items.new(QuickMenuOperator.bl_idname, type=hotkey.upper(), value='PRESS')
     keymaps.append((km, kmi))
 
 def unregister():
