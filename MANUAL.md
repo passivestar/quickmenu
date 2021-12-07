@@ -28,7 +28,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d1f` ***Make Links.*** Faster than `Ctrl+L`.
 
-`d1g` **Apply to Multiuser.** Use this operator if you copied a bunch of objects with `Alt+A` and can't apply transforms to them anymore.
+`d1g` **Apply to Multiuser.** Use this operator if you copied a bunch of objects with `Alt+D` and can't apply transforms to them anymore.
 
 `d1z` ***Make Parent.*** Faster than `Ctrl+P`.
 
