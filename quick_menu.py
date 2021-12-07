@@ -504,7 +504,7 @@ class SelectViewGeometryOperator(bpy.types.Operator):
         if edge_vector.length != 0:
           parallel = abs(edge_vector.angle(vector) - (math.pi / 2)) > self.threshold
         else:
-          parellel = False
+          parallel = False
         if self.negative: parallel = not parallel
         e.select = parallel
     elif self.mode == 'FACES':
