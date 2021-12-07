@@ -90,6 +90,6 @@ https://user-images.githubusercontent.com/60579014/144968311-8e21f0ed-fe8a-4bb3-
 
 ## Knife Intersect (dee)
 
-Similar to Blender's **Intersect (Knife)** (Ctrl+F+k), but removes the original geometry. Usage: `d+e+e`
+Similar to Blender's **Intersect (Knife)** (Ctrl+F+K), but removes the original geometry. Usage: `d+e+e`
 
 https://user-images.githubusercontent.com/60579014/144968335-d090d305-2f23-4fdb-993b-f8591e1ed470.mp4
