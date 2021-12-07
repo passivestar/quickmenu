@@ -116,9 +116,9 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `dq5` ***Delete Loose.***
 
-`dqq` **Delete Back Facing Faces.** View-depedent (90 deg snapped by default), deletes faces facing away from the camera. Works on selected geometry. Use redo panel to change threshold or make it use non-snapped camera angle
+`dqq` **Delete Back Facing Faces.** View-depedent (90 deg snapped by default), deletes faces facing away from the camera. Works on selected geometry. Use redo panel to change threshold or make it use non-snapped camera angle.
 
-`dqw` **Delete Back/Front Facing Faces.** View-depedent (90 deg snapped by default), deletes faces facing away from the camera and towards the camera. Works on selected geometry. Use redo panel to change threshold or make it use non-snapped camera angle
+`dqw` **Delete Back/Front Facing Faces.** View-depedent (90 deg snapped by default), deletes faces facing away from the camera and towards the camera. Works on selected geometry. Use redo panel to change threshold or make it use non-snapped camera angle.
 
 `dqe` ***Edge Split.***
 
@@ -156,7 +156,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `de3` **Intersect.** Same as `de1` but for intersect operation.
 
-`deq` **Plane Intersect Island.** A view-dependent operator that cuts an island with a plane that goes through the center of the active element (optionally can be changed to the center of selected geometry) and oriented towards the viewport camera (Snapped to 90 degrees by default). Convenient for cutting through complex meshes with ngons. Optionally clears inner/outer side of the intersection plane. Optionally can be change to cut through the whole mesh instead of island
+`deq` **Plane Intersect Island.** A view-dependent operator that cuts an island with a plane that goes through the center of the active element (optionally can be changed to the center of selected geometry) and oriented towards the viewport camera (Snapped to 90 degrees by default). Convenient for cutting through complex meshes with ngons. Optionally clears inner/outer side of the intersection plane. Optionally can be change to cut through the whole mesh instead of island.
 
 `dew` **Plane Intersect Selection.** Same as `deq` but only cuts through selection
 
