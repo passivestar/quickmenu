@@ -8,6 +8,8 @@ Install through `Edit -> Preferences -> Addons -> Install... -> Select quick_men
 
 Press `D` to open the menu.
 
+Every operator is described in the [manual](https://github.com/passivestar/quickmenu/blob/main/MANUAL.md).
+
 The addon was initially made only with personal use in mind and therefore is not customizable. However it adds some new operators that some people may find useful. It also simplifies access to some operators and settings. Blender is already very hotkey-friendly, but:
 
 1. Some useful operators are hard to reach, some take several mouse clicks. Some things you can't even fix with editing the keymap (snapping options for example). Quick Menu is optimized for accelerator keys, meaning all of the operators are accessible with just your left hand. All of them follow the pattern `d + {key near d} + {key near d} `. I took into consideration how easy it is to press them as well, combinations that are used frequently have some rolling finger motion in them.
@@ -20,7 +22,7 @@ This addon is the result of over a year of brainstorming on the effectiveness of
 
 # Some tools
 
-Here are some examples of tools that Quick Menu has. Keep in mind that this is not a complete list of operators, but rather a small showcase of what kind of things the addon is capable of. Only some modeling tools are listed, but the addon also has some operators for UVs, textures, export, etc
+Here are some examples of tools that Quick Menu has. Keep in mind that this is not a complete list of operators, but rather a small showcase of what kind of things the addon is capable of. Only some modeling tools are listed, but the addon also has some operators for UVs, textures, export, etc. Check out the [manual](https://github.com/passivestar/quickmenu/blob/main/MANUAL.md) for the complete list.
 
 ## Convert To Curve (d41)
 
