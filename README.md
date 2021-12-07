@@ -10,13 +10,13 @@ Press `D` to open the menu.
 
 Every operator is described in the [manual](https://github.com/passivestar/quickmenu/blob/main/MANUAL.md).
 
-The addon was initially made only with personal use in mind and therefore is not customizable. However it adds some new operators that some people may find useful. It also simplifies access to some operators and settings. Blender is already very hotkey-friendly, but:
+The addon was initially made only with personal use in mind and therefore is not customizable. However, it adds some new operators that some people may find useful. It also simplifies access to some operators and settings. Blender is already very hotkey-friendly, but:
 
 1. Some useful operators are hard to reach, some take several mouse clicks. Some things you can't even fix with editing the keymap (snapping options for example). Quick Menu is optimized for accelerator keys, meaning all of the operators are accessible with just your left hand. All of them follow the pattern `d + {key near d} + {key near d} `. I took into consideration how easy it is to press them as well, combinations that are used frequently have some rolling finger motion in them.
 
 2. Blender doesn't really offer anything that would automate repeating tasks, like macros or whatever. Some of the operators do multiple things at once if it makes sense. Which effectively adds new functionality to Blender.
 
-3. Blender's defaults don't always make sense for my workflow, and a lot of the operators could be context-dependent. A lot of operators address this by calling existing Blender operators with proper settings. For example I believe that "Shade Smooth", "Origin To (whatever)", operators that add modifiers and booleans should work regardless of what mode you're in. I believe that Separate/Join should be one button. Same is true for Region To Loop/Loop To Region, Add Mirror/Apply Mirror, etc. I believe that some operators (like mirror) should take into consideration your camera orientation when initially setting the axis. The list goes on. The addon is very opinionated.
+3. Blender's defaults don't always make sense for my workflow, and a lot of the operators could be context-dependent. A lot of operators address this by calling existing Blender operators with proper settings. For example, I believe that "Shade Smooth", "Origin To (whatever)", operators that add modifiers and booleans should work regardless of what mode you're in. I believe that Separate/Join should be one button. The same is true for Region To Loop/Loop To Region, Add Mirror/Apply Mirror, etc. I believe that some operators (like mirror) should take into consideration your camera orientation when initially setting the axis. The list goes on. The addon is very opinionated.
 
 This addon is the result of over a year of brainstorming on the effectiveness of modeling/texturing workflow and testing tools on small projects. I'm trying to keep it lightweight. If something seems missing from it, there's a high chance that the reason for it is that Blender already has built-in tools that allow to do it easily, or the use-case for it is very rare
 
@@ -44,7 +44,7 @@ https://user-images.githubusercontent.com/60579014/144968197-413347df-e7f2-4c0e-
 
 ## Bbox around selection `d33`
 
-Creates a bounding box around selected elements in edit mode. Can also create bounding plane/line, depending on the selection. Usage: `d+3+3`
+Creates a bounding box around selected elements in edit mode. Can also create a bounding plane/line, depending on the selection. Usage: `d+3+3`
 
 https://user-images.githubusercontent.com/60579014/144968212-b2226456-0337-4e50-98d8-2629905ae7a5.mp4
 
@@ -56,7 +56,7 @@ https://user-images.githubusercontent.com/60579014/144968226-bad9d7c1-a3fb-4ef8-
 
 ## Connect `d3c`
 
-Connects selected isolated islands with an edge. Will make a face if more than 2 islands selected. Usage: `d+3+c`
+Connects selected isolated islands with an edge. Will make a face if more than 2 islands are selected. Usage: `d+3+c`
 
 https://user-images.githubusercontent.com/60579014/144968238-653f0050-bb70-4c8b-9ca5-66406e2b04a7.mp4
 
@@ -80,7 +80,7 @@ https://user-images.githubusercontent.com/60579014/144968287-13dc5dd6-ed32-4eed-
 
 ## Plane Intersect Island `deq`
 
-A view-dependent operator that cuts an island with a plane that goes through the center of the active element and oriented towards the viewport camera (Snapped to 90 degrees by default). Convenient for cutting through complex meshes with ngons. Usage: `d+e+q`
+A view-dependent operator that cuts an island with a plane that goes through the center of the active element and is oriented towards the viewport camera (Snapped to 90 degrees by default). Convenient for cutting through complex meshes with ngons. Usage: `d+e+q`
 
 https://user-images.githubusercontent.com/60579014/144968296-faa874e2-1943-4afd-b829-67d7ad8d4637.mp4
 
