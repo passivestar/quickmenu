@@ -50,7 +50,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d2e` **Select Sharp Edges.** Optionally select sharp edges only in selected geometry.
 
-`d2a` **Invert Selection Connected.** Works like `Ctrl+I` but keep selection limited to connected geometry only.
+`d2a` **Invert Selection Connected.** Works like `Ctrl+I` but keeps selection limited to connected geometry only.
 
 `d2x` ***Random.***
 
