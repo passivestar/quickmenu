@@ -100,9 +100,9 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d4a` **Array.** Adds an array modifier. View-dependent, uses camera angle to determine offset vector.
 
-`d4f` **Twist.** Adds a twist modifier
+`d4f` **Twist.** Adds a twist modifier.
 
-`d4z` **Clear Modifiers.** Removes all of the modifiers from an object
+`d4z` **Clear Modifiers.** Removes all of the modifiers from an object.
 
 ## Delete/Split
 
