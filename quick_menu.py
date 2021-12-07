@@ -1040,6 +1040,10 @@ class SeparateByLoosePartsOperator(bpy.types.Operator):
   bl_idname, bl_label, bl_options = 'qm.separate_by_loose_parts', 'Separate By Loose Parts', {'REGISTER', 'UNDO'}
   calculate_rotation: BoolProperty(name='Calculate Rotation', default=False)
 
+  @classmethod
+  def poll(cls, context):
+    return is_in_editmode()
+
   def execute(self, context):
     bpy.ops.mesh.separate()
     bpy.ops.object.editmode_toggle()
