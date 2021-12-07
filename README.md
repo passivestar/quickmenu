@@ -10,6 +10,8 @@ Press `D` to open the menu.
 
 Every operator is described in the [manual](https://github.com/passivestar/quickmenu/blob/main/MANUAL.md).
 
+Join our [DISCORD for discussion](https://discord.gg/pPHQ5HQ).
+
 The addon was initially made only with personal use in mind and therefore is not customizable. However, it adds some new operators that some people may find useful. It also simplifies access to some operators and settings. Blender is already very hotkey-friendly, but:
 
 1. Some useful operators are hard to reach, some take several mouse clicks. Some things you can't even fix with editing the keymap (snapping options for example). Quick Menu is optimized for accelerator keys, meaning all of the operators are accessible with just your left hand. All of them follow the pattern `d + {key near d} + {key near d} `. I took into consideration how easy it is to press them as well, combinations that are used frequently have some rolling finger motion in them.
