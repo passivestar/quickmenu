@@ -1,10 +1,10 @@
 # Quick Menu Operators
 
-This list contains descriptions for each quick menu operator. Some of the operators are default blender operators and are included in quick menu because the default hotkey for it is not left hand friendly. The default blender operators are in ***cursive***.
+This list contains descriptions for each quick menu operator. Some of the operators are default blender operators and are included in the quick menu because the default hotkey for it is not left-hand friendly. The default blender operators are in ***cursive***.
 
 ## General
 
-`d11` **Separate/Join.** Join objects into one if in object mode. Separate selection if in edit mode. Optionally set origin to the separated geometry.
+`d11` **Separate/Join.** Join objects into one if in object mode. Separate selection if in edit mode. Optionally set the origin to the separated geometry.
 
 `d12` **Set shade smooth.** Enable smooth shading. Optionally enable autosmooth. Use redo panel to tweak the angle. Works in any mode.
 
@@ -14,13 +14,13 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d15` **Origin To Bottom.** Set origin to the bottom of the object. Works with multiple objects. Works in any mode.
 
-`d16` **Origin To Cursor.** Set origin to cursor.
+`d16` **Origin To Cursor.** Set origin to the cursor.
 
 `d1q` **Toggle Proportional Editing.** Works in any mode. Use redo panel for settings
 
-`d1w` **Toggle Wireframe.** Wireframe can be toggled in blender's viewport overlays panel. Included in quick menu as it's convenient for inspecting multiple objects at once.
+`d1w` **Toggle Wireframe.** Wireframe can be toggled in the blender's viewport overlays panel. Included in the quick menu as it's convenient for inspecting multiple objects at once.
 
-`d1e` **Rotate 90.** View-dependent rotate, uses 90-degree snapped camera angle as an axis for rotation. Rotates clockwise. Look from the other side to rotate in other direction. Faster than `r+{axis}+90+enter`.
+`d1e` **Rotate 90.** View-dependent rotate, uses 90-degree snapped camera angle as an axis for rotation. Rotates clockwise. Look from the other side to rotate in the other direction. Faster than `r+{axis}+90+enter`.
 
 `d1a` ***Mirror.*** Interactive mirror, use middle mouse button to choose mirror axis.
 
@@ -38,7 +38,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d22` **Select More.** Faster than numpad (`Ctrl+Numpad+`). If you need to select more multiple times it's faster to switch to `Shift+R` after your first `d22`. Hold shift (`d+2+shift+2`) to select less.
 
-`d23` **Region To Loop.** Region to Loop if in face mode. Loop to Region if in edge mode. Use the redo panel to invert selection.
+`d23` **Region To Loop.** Region to Loop if in face mode. Loop to Region if in edge mode. Use the redo panel to invert the selection.
 
 `d24` **View Parallel Edges** View-dependent selection, check the redo panel for options.
 
@@ -58,7 +58,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 ## Modeling
 
-`d31` **Add Single Vertex.** Adds a vertex at cursor. Works in any mode.
+`d31` **Add Single Vertex.** Adds a vertex at the cursor. Works in any mode.
 
 `d32` **Spin.** Presets for the default Spin operator (`Alt+E+S`).
 
@@ -72,31 +72,31 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d3r` **Randomize Transform.** Similar to `Object->Transform->Randomize Transform`, but also works in edit mode. Useful when you want to quickly add disorder to your object without having to separate it into pieces.
 
-`d3f` **Flatten.** View-dependent operator, scales to 0 on axis parallel to the viewport camera view, snapped to 90 degrees. Optionally removes doubles from the resulting geometry. Faster than `s+{axis}+0+enter`.
+`d3f` **Flatten.** View-dependent operator, scales to 0 on an axis parallel to the viewport camera view, snapped to 90 degrees. Optionally removes doubles from the resulting geometry. Faster than `s+{axis}+0+enter`.
 
 `d3x` ***Convex Hull.***
 
-`d3c` **Connect Selected.** Connects selected isolated geometry islands with an edge. Will make a face if more than 2 islands selected.
+`d3c` **Connect Selected.** Connects selected isolated geometry islands with an edge. Will make a face if more than 2 islands are selected.
 
 `d3v` ***Vertices Smooth.*** Sometimes this is enough and you don't need subsurf.
 
 ## Convert/Modify
 
-`d41` **Curve.** Adds curves to selected edges. Optionally can set resolution automatically. Optionally can make a separate object. Optionally can make a curve with square profile. Optionally can delete the initial selection.
+`d41` **Curve.** Adds curves to selected edges. Optionally can set resolution automatically. Optionally can make a separate object. Optionally can make a curve with a square profile. Optionally can delete the initial selection.
 
 `d42` **Skin.** Adds a skin modifier to selected edges, works in object or edit mode.
 
 `d43` **Mesh.** Convert object(s) to mesh. Can be used to quickly apply modifiers. Check the redo panel for additional settings for conversion of gpencil objects.
 
-`d44` **Mirror.** Adds a mirror modifier to the bottom of modifier stack. Bisects the mesh. View-dependent. Uses camera angle to determine mirror axis. Mirrors left to right (so if you need to mirror on Z axis you'll need to set it manually in the redo panel). If active object already has mirror, applies existing mirror instead of adding a new one. So `d44` can be used to quickly toggle mirror modifier.
+`d44` **Mirror.** Adds a mirror modifier to the bottom of the modifier stack. Bisects the mesh. View-dependent. Uses camera angle to determine mirror axis. Mirrors left to right (so if you need to mirror on the Z axis you'll need to set it manually in the redo panel). If the active object already has a mirror, applies the existing mirror instead of adding a new one. So `d44` can be used to quickly toggle mirror modifier.
 
-`d45` **Subsurf.** Adds a multires modifier to the bottom of modifier stack if in sculpt mode. Adds subsurf otherwise. If the modifier already exists, changes its settings. Check redo panel for settings.
+`d45` **Subsurf.** Adds a multires modifier to the bottom of the modifier stack if in sculpt mode. Adds subsurf otherwise. If the modifier already exists, changes its settings. Check the redo panel for settings.
 
-`d4q` **Bevel.** Adds a bevel modifier to the bottom of modifier stack. If the modifier already exists, changes its settings.
+`d4q` **Bevel.** Adds a bevel modifier to the bottom of the modifier stack. If the modifier already exists, changes its settings.
 
-`d4w` **Solidify.** Adds a solidify modifier to the bottom of modifier stack. If the modifier already exists, changes its settings.
+`d4w` **Solidify.** Adds a solidify modifier to the bottom of the modifier stack. If the modifier already exists, changes its settings.
 
-`d4e` **Triangulate.** Adds a triangulate modifier to the bottom of modifier stack. If the modifier already exists, changes its settings.
+`d4e` **Triangulate.** Adds a triangulate modifier to the bottom of the modifier stack. If the modifier already exists, changes its settings.
 
 `d4a` **Array.** Adds an array modifier. View-dependent, uses camera angle to determine offset vector.
 
@@ -128,7 +128,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 ## UV/Textures
 
-`dw1` **Mark Seam.** If in edge mode, mark seam. If in face mode, mark boundary loop as seam. Optionally clear all of the seams inside of selection before marking.
+`dw1` **Mark Seam.** If in edge mode, mark seam. If in face mode, mark boundary loop as a seam. Optionally clear all of the seams inside of the selection before marking.
 
 `dw2` **Clear Seam.** Same as previous, but clears seams instead.
 
@@ -140,13 +140,13 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `dwq` **Mark Seams Sharp.** Selects sharp edges in selected geometry and marks them as seams. Optionally also marks seams from islands (see next operator). Use redo panel to tweak sharpness.
 
-`dww` **Mark Seams From Islands.** Marks seams from islands in 3D view without having to open UV editor. Useful when you already have some geometry with proper UVs but without seams. For example geometry generated with curves will already have proper UV's that can be marked.
+`dww` **Mark Seams From Islands.** Marks seams from islands in 3D view without having to open UV editor. Useful when you already have some geometry with proper UVs but without seams. For example, geometry generated with curves will already have proper UV's that can be marked.
 
-`dwd` **Set Vertex Color.** Assigns unique vertex colors to selected geometry. Works with multiple objects. Every new call to this operator will assign a new color, different enough from the previous one (tested with Substance Painter). Optionally selects linked geometry before assigning colors. Can be used to copy vertex colors. Check "Set To Active" if you want to copy vertex color from active face to selected. You can also select your own color in redo panel, make sure to uncheck "Set To Active" if you want to do so.
+`dwd` **Set Vertex Color.** Assigns unique vertex colors to selected geometry. Works with multiple objects. Every new call to this operator will assign a new color, different enough from the previous one (tested with Substance Painter). Optionally selects linked geometry before assigning colors. Can be used to copy vertex colors. Check "Set To Active" if you want to copy vertex color from active face to selected. You can also select your own color in the redo panel, make sure to uncheck "Set To Active" if you want to do so.
 
 `dwf` **Select By Vertex Color.** Selects all of the faces that have the same color as the active one.
 
-`dwg` **Bake ID Map.** Bakes an ID map from vertex colors of selected objects and saves it alongside your blend file. Blend file must be saved. Renderer must be set to Cycles. All of the selected objects must have exactly 1 material, that is the same in all of the objects. This operator is useful when working with texturing tools that don't have their own ID Map bakers (for example Quixel Mixer).
+`dwg` **Bake ID Map.** Bakes an ID map from vertex colors of selected objects and saves it alongside your blend file. Blend file must be saved. Renderer must be set to Cycles. All of the selected objects must have exactly 1 material, which is the same in all of the objects. This operator is useful when working with texturing tools that don't have their own ID Map bakers (for example Quixel Mixer).
 
 ## Boolean/Knife
 
@@ -156,7 +156,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `de3` **Intersect.** Same as `de1` but for intersect operation.
 
-`deq` **Plane Intersect Island.** A view-dependent operator that cuts an island with a plane that goes through the center of the active element (optionally can be changed to the center of selected geometry) and oriented towards the viewport camera (Snapped to 90 degrees by default). Convenient for cutting through complex meshes with ngons. Optionally clears inner/outer side of the intersection plane. Optionally can be change to cut through the whole mesh instead of island.
+`deq` **Plane Intersect Island.** A view-dependent operator that cuts an island with a plane that goes through the center of the active element (optionally can be changed to the center of selected geometry) and is oriented towards the viewport camera (Snapped to 90 degrees by default). Convenient for cutting through complex meshes with ngons. Optionally clears the inner/outer side of the intersection plane. Optionally can be changed to cut through the whole mesh instead of the island.
 
 `dew` **Plane Intersect Selection.** Same as `deq` but only cuts through selection
 
@@ -186,7 +186,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `da4` **Global Orientation.** Sets transform orientation to global.
 
-`da5` **Normal Orientation.** Sets transform orientation to normal. Sets transform pivot to active element. Using normal orientation with active element pivot makes it possible to avoid having to create a new orientation in a lot of cases.
+`da5` **Normal Orientation.** Sets transform orientation to normal. Sets transform pivot to the active element. Using normal orientation with active element pivot makes it possible to avoid having to create a new orientation in a lot of cases.
 
 `da6` **New Orientation.** Creates a new orientation. Overwrites a custom orientation if it already exists.
 
