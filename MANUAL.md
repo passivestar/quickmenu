@@ -18,25 +18,25 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d1q` **Toggle Proportional Editing.** Works in any mode. Use redo panel for settings
 
-`d1w` **Toggle Wireframe.** Wireframe can be toggled in blender's viewport overlays panel. Included in quick menu as it's convenient for inspecting multiple objects at once
+`d1w` **Toggle Wireframe.** Wireframe can be toggled in blender's viewport overlays panel. Included in quick menu as it's convenient for inspecting multiple objects at once.
 
 `d1e` **Rotate 90.** View-dependent rotate, uses 90-degree snapped camera angle as an axis for rotation. Rotates clockwise. Look from the other side to rotate in other direction. Faster than `r+{axis}+90+enter`.
 
-`d1a` ***Mirror.*** 
+`d1a` ***Mirror.*** Interactive mirror, use middle mouse button to choose mirror axis.
 
 `d1d` **Draw.** Add a new gpencil object and switch to gpencil paint mode. You can convert your gpencil to mesh with `d43`. Can be used to quickly draw ngons by hand.
 
-`d1f` ***Make Links.***
+`d1f` ***Make Links.*** Faster than `Ctrl+L`.
 
-`d1g` **Apply to Multiuser.** Use this operator if you copied a bunch of objects with alt+a and can't apply transforms to them anymore.
+`d1g` **Apply to Multiuser.** Use this operator if you copied a bunch of objects with `Alt+A` and can't apply transforms to them anymore.
 
-`d1z` ***Make Parent.***
+`d1z` ***Make Parent.*** Faster than `Ctrl+P`.
 
 ## Select
 
 `d21` **Select Ring.** Hold shift (`d+2+shift+1`) to select loop
 
-`d22` **Select More.** Faster than numpad. If you need to select more multiple times it's faster to switch to `Shift+R` after your first `d22`. Hold shift (`d+2+shift+2`) to select less.
+`d22` **Select More.** Faster than numpad (`Ctrl+Numpad+`). If you need to select more multiple times it's faster to switch to `Shift+R` after your first `d22`. Hold shift (`d+2+shift+2`) to select less.
 
 `d23` **Region To Loop.** Region to Loop if in face mode. Loop to Region if in edge mode. Use the redo panel to invert selection.
 
@@ -44,9 +44,9 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d25` **View Facing Faces.** View-dependent selection, check the redo panel for options.
 
-`d2q` ***Linked Flat.*** 
+`d2q` ***Linked Flat.*** Can be useful for manual UV unwrapping.
 
-`d2w` ***Select Loose.***
+`d2w` ***Select Loose.*** 
 
 `d2e` **Select Sharp Edges.** Optionally select sharp edges only in selected geometry.
 
@@ -58,7 +58,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 ## Modeling
 
-`d31` **Add Single Vertex.** Works in any mode.
+`d31` **Add Single Vertex.** Adds a vertex at cursor. Works in any mode.
 
 `d32` **Spin.** Presets for the default Spin operator (`Alt+E+S`).
 
@@ -70,7 +70,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d3e` **Extrude Both Ways.** Extrude along normals, but extrudes faces both ways.
 
-`d3r` **Randomize Transform.** 
+`d3r` **Randomize Transform.** Similar to `Object->Transform->Randomize Transform`, but also works in edit mode. Useful when you want to quickly add disorder to your object without having to separate it into pieces.
 
 `d3f` **Flatten.** View-dependent operator, scales to 0 on axis parallel to the viewport camera view, snapped to 90 degrees. Optionally removes doubles from the resulting geometry. Faster than `s+{axis}+0+enter`.
 
@@ -78,7 +78,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d3c` **Connect Selected.** Connects selected isolated geometry islands with an edge. Will make a face if more than 2 islands selected.
 
-`d3v` ***Vertices Smooth.***
+`d3v` ***Vertices Smooth.*** Sometimes this is enough and you don't need subsurf.
 
 ## Convert/Modify
 
@@ -88,7 +88,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d43` **Mesh.** Convert object(s) to mesh. Can be used to quickly apply modifiers. Check the redo panel for additional settings for conversion of gpencil objects.
 
-`d44` **Mirror.** Adds a mirror modifier to the bottom of modifier stack. Bisects the mesh. View-dependent. Uses camera angle to determine mirror axis. Mirrors left to right (so if you need to mirror on Z axis you'll need to set it manually in the redo panel). If active object already has mirror, applies existing mirror instead of adding a new one. So `d44` can be used to toggle mirror modifier.
+`d44` **Mirror.** Adds a mirror modifier to the bottom of modifier stack. Bisects the mesh. View-dependent. Uses camera angle to determine mirror axis. Mirrors left to right (so if you need to mirror on Z axis you'll need to set it manually in the redo panel). If active object already has mirror, applies existing mirror instead of adding a new one. So `d44` can be used to quickly toggle mirror modifier.
 
 `d45` **Subsurf.** Adds a multires modifier to the bottom of modifier stack if in sculpt mode. Adds subsurf otherwise. If the modifier already exists, changes its settings. Check redo panel for settings.
 
@@ -134,7 +134,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `dw3` ***Unwrap.***
 
-`dw4` **Straighten UVs.** 
+`dw4` **Straighten UVs.** Straightens a UV island (selection) by first straightening the active face, and then calling "Follow Active Quads".
 
 `dw5` ***View Project.***
 
@@ -202,11 +202,11 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 ## Tool
 
-`dd1` ***Add Cube***
+`dd1` ***Add Cube*** Works in both object mode and edit mode.
 
-`dd2` ***Add Cylinder***
+`dd2` ***Add Cylinder*** Works in both object mode and edit mode.
 
-`dd3` ***Add Sphere***
+`dd3` ***Add Sphere***  Works in both object mode and edit mode.
 
 `ddq` ***Shear***
 
