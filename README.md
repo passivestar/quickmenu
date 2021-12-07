@@ -1,4 +1,4 @@
-![Quick Menu](https://github.com/passivestar/quickmenu/blob/main/pics/qm.jpg?raw=true)
+<img width="756" alt="image" src="https://user-images.githubusercontent.com/60579014/144963395-4efb1d94-06be-45db-a1ba-b04e8d6647a6.png">
 
 # Quick Menu is a Blender addon that simplifies common tasks
 
