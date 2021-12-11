@@ -5,7 +5,7 @@
 ## Installation
 
 - Download zip
-- Go to `Edit -> Preferences -> Addons
+- Go to `Edit -> Preferences -> Addons`
 - Press `Install...`
 - Select the archive
 
