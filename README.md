@@ -2,15 +2,22 @@
 
 # Quick Menu is a Blender addon that simplifies common tasks
 
+## Installation
+
+- Download zip
+- Go to `Edit -> Preferences -> Addons
+- Press `Install...`
+- Select the archive
+
+Press `D` in 3D view to open the menu.
+
 Compatible with Blender 3.x.x
-
-Install through `Edit -> Preferences -> Addons -> Install... -> Select quick_menu.py`.
-
-Press `D` to open the menu.
 
 Every operator is described in the [manual](https://github.com/passivestar/quickmenu/blob/main/MANUAL.md).
 
 Join our [DISCORD for discussion](https://discord.gg/pPHQ5HQ).
+
+## Design choices
 
 The addon was initially made only with personal use in mind and therefore is not customizable. However, it adds some new operators that some people may find useful. It also simplifies access to some operators and settings. Blender is already very hotkey-friendly, but:
 
