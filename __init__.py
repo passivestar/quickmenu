@@ -12,7 +12,7 @@ bl_info = {
   'author': 'passivestar',
   'blender': (3, 0, 0),
   'location': 'Press D in 3D View',
-  'description': 'Simplifies access to useful operators and adds new functionality. Press D to open the menu',
+  'description': 'Simplifies access to useful operators and adds new functionality',
   'category': 'Interface'
 }
 
