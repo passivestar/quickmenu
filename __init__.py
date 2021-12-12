@@ -11,9 +11,8 @@ bl_info = {
   'version': (1, 0, 0),
   'author': 'passivestar',
   'blender': (3, 0, 0),
-  'location': 'qm.quick_menu',
-  'description': 'Simplifies access to useful operators. Press D to open the menu',
-  'warning': 'Not for production use',
+  'location': 'Press D in 3D View',
+  'description': 'Simplifies access to useful operators and adds new functionality. Press D to open the menu',
   'category': 'Interface'
 }
 
