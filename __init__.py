@@ -1729,10 +1729,10 @@ class QuickMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.menu(GeneralMenu.bl_idname, text='General')
-    layout.menu(SelectMenu.bl_idname, text='Select')
-    layout.menu(ModelingMenu.bl_idname, text='Modeling')
-    layout.menu(ConvertMenu.bl_idname, text='Convert/Modify')
+    layout.menu(GeneralMenu.bl_idname, text='(1) General')
+    layout.menu(SelectMenu.bl_idname, text='(2) Select')
+    layout.menu(ModelingMenu.bl_idname, text='(3) Modeling')
+    layout.menu(ConvertMenu.bl_idname, text='(4) Convert/Modify')
     layout.separator()
     layout.menu(DeleteSplitMenu.bl_idname, text='(Q) Delete/Split')
     layout.menu(UVTexturesMenu.bl_idname, text='(W) UV/Textures')
@@ -1754,13 +1754,13 @@ class GeneralMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.operator('qm.join_separate')
-    layout.operator('qm.smooth')
-    layout.operator('qm.local_view')
+    layout.operator('qm.join_separate', text='(1) Separate/Join')
+    layout.operator('qm.smooth', text='(2) Shade Smooth')
+    layout.operator('qm.local_view', text='(3) Local View')
     layout.separator()
-    layout.operator('qm.set_origin', text = 'Origin To Geometry').type = 'GEOMETRY'
-    layout.operator('qm.set_origin', text = 'Origin To Bottom').type = 'BOTTOM'
-    origin_cursor = layout.operator('object.origin_set', text = 'Origin To Cursor')
+    layout.operator('qm.set_origin', text = '(4) Origin To Geometry').type = 'GEOMETRY'
+    layout.operator('qm.set_origin', text = '(5) Origin To Bottom').type = 'BOTTOM'
+    origin_cursor = layout.operator('object.origin_set', text = '(6) Origin To Cursor')
     origin_cursor.type, origin_cursor.center = 'ORIGIN_CURSOR', 'BOUNDS'
     layout.separator()
     layout.operator('qm.proportional_editing', text = '(Q) Toggle Proportional Editing')
@@ -1783,12 +1783,12 @@ class SelectMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.operator('qm.select_ring')
-    layout.operator('qm.select_more')
-    layout.operator('qm.region_to_loop')
-    op = layout.operator('qm.select_view_geometry', text='View Parallel Edges')
+    layout.operator('qm.select_ring', text='(1) Select Ring')
+    layout.operator('qm.select_more', text='(2) Select More')
+    layout.operator('qm.region_to_loop', text='(3) Region/Loop')
+    op = layout.operator('qm.select_view_geometry', text='(4) View Parallel Edges')
     op.mode = 'EDGES'
-    op = layout.operator('qm.select_view_geometry', text='View Facing Faces')
+    op = layout.operator('qm.select_view_geometry', text='(5) View Facing Faces')
     op.mode = 'FACES'
     layout.separator()
     layout.operator('mesh.faces_select_linked_flat', text='(Q) Linked Flat')
@@ -1805,10 +1805,10 @@ class ModelingMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.operator('qm.add_single_vertex')
+    layout.operator('qm.add_single_vertex', text='(1) Add Single Vertex')
     layout.menu(SpinSubmenu.bl_idname)
-    layout.operator('qm.bbox')
-    layout.operator('qm.add_geometry')
+    layout.operator('qm.bbox', text='(3) Bbox Around Selection')
+    layout.operator('qm.add_geometry', text='(4) Add Geometry')
     layout.separator()
     layout.operator('mesh.normals_make_consistent', text='(Q) Recalculate Normals')
     layout.operator('qm.extrude_both_ways', text='(E) Extrude Both Ways').dissolve_original = True
@@ -1826,29 +1826,29 @@ class ModelingMenu(bpy.types.Menu):
     layout.operator('mesh.vertices_smooth', text='(V) Vertices Smooth').factor = 1
 
 class SpinSubmenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Spin', 'OBJECT_MT_spin_submenu'
+  bl_label, bl_idname = '(2) Spin', 'OBJECT_MT_spin_submenu'
 
   def draw(self, context):
     layout = self.layout
-    layout.operator('qm.spin', text='Spin 90').angle = 1.5708
-    layout.operator('qm.spin', text='Spin 180').angle = 3.14159265359
-    layout.operator('qm.spin', text='Spin 360').angle = 6.28318530718
+    layout.operator('qm.spin', text='(1) Spin 90').angle = 1.5708
+    layout.operator('qm.spin', text='(2) Spin 180').angle = 3.14159265359
+    layout.operator('qm.spin', text='(3) Spin 360').angle = 6.28318530718
     layout.separator()
-    layout.operator('qm.spin', text='Spin -90').angle = -1.5708
-    layout.operator('qm.spin', text='Spin -180').angle = -3.14159265359
+    layout.operator('qm.spin', text='(4) Spin -90').angle = -1.5708
+    layout.operator('qm.spin', text='(5) Spin -180').angle = -3.14159265359
 
 class ConvertMenu(bpy.types.Menu):
   bl_label, bl_idname = 'Convert/Modify', 'OBJECT_MT_convert_menu'
 
   def draw(self, context):
     layout = self.layout
-    op = layout.operator('qm.convert', text='Curve')
+    op = layout.operator('qm.convert', text='(1) Curve')
     op.type, op.edit_mode = 'CURVE', True
-    layout.operator('qm.convert', text='Skin').type = 'SKIN'
-    layout.operator('qm.convert_to_mesh', text='Mesh')
-    m = layout.operator('qm.mirror')
+    layout.operator('qm.convert', text='(2) Skin').type = 'SKIN'
+    layout.operator('qm.convert_to_mesh', text='(3) Mesh')
+    m = layout.operator('qm.mirror', text='(4) Mirror')
     m.axis = m.bisect_flip = (False, False, False)
-    layout.operator('qm.subsurf')
+    layout.operator('qm.subsurf', text='(5) Subsurf')
     layout.separator()
     layout.operator('qm.bevel', text='(Q) Bevel')
     layout.operator('qm.solidify', text='(W) Solidify')
@@ -1864,11 +1864,11 @@ class DeleteSplitMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.operator('mesh.merge').type = 'CENTER'
-    layout.operator('mesh.remove_doubles')
-    layout.operator('mesh.dissolve_limited')
-    layout.operator('mesh.decimate')
-    layout.operator('mesh.delete_loose')
+    layout.operator('mesh.merge', text='(1) Merge').type = 'CENTER'
+    layout.operator('mesh.remove_doubles', text='(2) Merge By Distance')
+    layout.operator('mesh.dissolve_limited', text='(3) Limited Dissolve')
+    layout.operator('mesh.decimate', text='(4) Decimate')
+    layout.operator('mesh.delete_loose', text='(5) Delete Loose')
     layout.separator()
     layout.operator('qm.delete_back_facing', text='(Q) Delete Back Facing Faces').both_ways = False
     layout.operator('qm.delete_back_facing', text='(W) Delete Back/Front Facing Faces').both_ways = True
@@ -1882,12 +1882,12 @@ class UVTexturesMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.operator('qm.mark_seam').clear = False
-    layout.operator('qm.mark_seam', text='Clear Seam').clear = True
+    layout.operator('qm.mark_seam', text='(1) Mark Seam').clear = False
+    layout.operator('qm.mark_seam', text='(2) Clear Seam').clear = True
     layout.separator()
-    layout.operator('uv.unwrap')
-    layout.operator('qm.straighten_uvs')
-    layout.operator('uv.project_from_view', text='View Project')
+    layout.operator('uv.unwrap', text='(3) Unwrap')
+    layout.operator('qm.straighten_uvs', text='(4) Straighten UVs')
+    layout.operator('uv.project_from_view', text='(5) View Project')
     layout.separator()
     layout.operator('qm.mark_seams_sharp', text='(Q) Mark Seams Sharp')
     layout.operator('qm.mark_seams_from_islands', text='(W) Mark Seams From Islands')
@@ -1902,9 +1902,9 @@ class BooleanMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.operator('qm.boolean', text='Union').operation = 'UNION'
-    layout.operator('qm.boolean', text='Difference').operation = 'DIFFERENCE'
-    layout.operator('qm.boolean', text='Intersect').operation = 'INTERSECT'
+    layout.operator('qm.boolean', text='(1) Union').operation = 'UNION'
+    layout.operator('qm.boolean', text='(2) Difference').operation = 'DIFFERENCE'
+    layout.operator('qm.boolean', text='(3) Intersect').operation = 'INTERSECT'
     layout.separator()
     layout.operator('qm.plane_intersect', text='(Q) Plane Intersect Island').mode = 'ISLAND'
     layout.operator('qm.plane_intersect', text='(W) Plane Intersect Selection').mode = 'SELECTION'
@@ -1918,8 +1918,8 @@ class AnimationMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.operator('qm.parent_to_new_empty')
-    layout.operator('object.constraint_add_with_targets')
+    layout.operator('qm.parent_to_new_empty', text='(1) Parent To New Empty')
+    layout.operator('object.constraint_add_with_targets', text='(2) Add Constraint')
     layout.separator()
     layout.operator('qm.clear_drivers', text='(Z) Clear Drivers')
     layout.operator('qm.set_use_self_drivers', text='(X) Drivers Set Use Self')
@@ -1929,24 +1929,24 @@ class SnappingMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.operator('qm.transform_pivot', text='Bounding Box Pivot').type = 'BOUNDING_BOX_CENTER'
-    layout.operator('qm.transform_pivot', text='Individual Pivot').type = 'INDIVIDUAL_ORIGINS'
-    layout.operator('qm.transform_pivot', text='3D Cursor Pivot').type = 'CURSOR'
+    layout.operator('qm.transform_pivot', text='(1) Bounding Box Pivot').type = 'BOUNDING_BOX_CENTER'
+    layout.operator('qm.transform_pivot', text='(2) Individual Pivot').type = 'INDIVIDUAL_ORIGINS'
+    layout.operator('qm.transform_pivot', text='(3) 3D Cursor Pivot').type = 'CURSOR'
     layout.separator()
-    layout.operator('qm.transform_orientation', text='Global Orientation').type = 'GLOBAL'
-    layout.operator('qm.transform_orientation', text='Normal Orientation').type = 'NORMAL'
-    layout.operator('qm.transform_orientation', text='New Orientation').type = 'CREATE'
+    layout.operator('qm.transform_orientation', text='(4) Global Orientation').type = 'GLOBAL'
+    layout.operator('qm.transform_orientation', text='(5) Normal Orientation').type = 'NORMAL'
+    layout.operator('qm.transform_orientation', text='(6) New Orientation').type = 'CREATE'
     layout.separator()
-    op = layout.operator('qm.set_snap', text='Vertices')
+    op = layout.operator('qm.set_snap', text='(V) Vertices')
     op.mode, op.type = 'GENERAL', 'VERTEX'
-    op = layout.operator('qm.set_snap', text='Faces')
+    op = layout.operator('qm.set_snap', text='(F) Faces')
     op.mode, op.type = 'GENERAL', 'FACE'
-    op = layout.operator('qm.set_snap', text='Grid')
+    op = layout.operator('qm.set_snap', text='(R) Grid')
     op.mode, op.type = 'GENERAL', 'INCREMENT'
     layout.separator()
-    op = layout.operator('qm.set_snap', text='Closest')
+    op = layout.operator('qm.set_snap', text='(C) Closest')
     op.mode, op.type = 'TARGET', 'CLOSEST'
-    op = layout.operator('qm.set_snap', text='Center')
+    op = layout.operator('qm.set_snap', text='(E) Center')
     op.mode, op.type = 'TARGET', 'CENTER'
 
 class ToolMenu(bpy.types.Menu):
@@ -1954,9 +1954,9 @@ class ToolMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.operator('qm.tool', text='Add Cube').tool_name = 'builtin.primitive_cube_add'
-    layout.operator('qm.tool', text='Add Cylinder').tool_name = 'builtin.primitive_cylinder_add'
-    layout.operator('qm.tool', text='Add Sphere').tool_name = 'builtin.primitive_uv_sphere_add'
+    layout.operator('qm.tool', text='(1) Add Cube').tool_name = 'builtin.primitive_cube_add'
+    layout.operator('qm.tool', text='(2) Add Cylinder').tool_name = 'builtin.primitive_cylinder_add'
+    layout.operator('qm.tool', text='(3) Add Sphere').tool_name = 'builtin.primitive_uv_sphere_add'
     layout.separator()
     layout.operator('qm.tool', text='(Q) Shear').tool_name = 'builtin.shear'
 
