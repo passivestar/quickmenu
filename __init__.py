@@ -695,6 +695,7 @@ class FlattenOperator(bpy.types.Operator):
     return is_in_editmode()
 
   def execute(self, context):
+    bpy.ops.qm.transform_orientation(type="GLOBAL")
     vsv = view_snapped_vector()
     for i in range(3): vsv[i] = 1 if vsv[i] == 0 else 1 - self.amount
     if self.to_active:
