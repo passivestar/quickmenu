@@ -1766,9 +1766,12 @@ class GeneralMenu(bpy.types.Menu):
     layout.operator('qm.proportional_editing', text = '(Q) Toggle Proportional Editing')
     layout.operator('qm.wireframe', text = '(W) Toggle Wireframe')
     layout.operator('qm.rotate', text='(E) Rotate 90').angle = 1.5708
+    layout.operator('qm.draw', text = '(R) Draw')
     layout.separator()
     layout.operator('transform.mirror', text = '(A) Mirror')
-    layout.operator('qm.draw', text = '(D) Draw')
+    make_single_user = layout.operator('object.make_single_user', text = '(D) Make Single User')
+    make_single_user.type = 'SELECTED_OBJECTS'
+    make_single_user.object = make_single_user.obdata = True
     layout.operator('object.make_links_data', text = '(F) Make Links')
     layout.operator('qm.apply_to_multiuser', text = '(G) Apply to Multiuser')
     layout.separator()
