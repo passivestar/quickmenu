@@ -14,7 +14,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d15` **Origin To Bottom.** Set origin to the bottom of the object. Works with multiple objects. Works in any mode.
 
-`d16` **Origin To Cursor.** Set origin to the cursor.
+`d16` ***Origin To Cursor.*** Set origin to the cursor.
 
 `d1q` **Toggle Proportional Editing.** Works in any mode. Use redo panel for settings
 
@@ -22,9 +22,11 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d1e` **Rotate 90.** View-dependent rotate, uses 90-degree snapped camera angle as an axis for rotation. Rotates clockwise. Look from the other side to rotate in the other direction. Faster than `r+{axis}+90+enter`.
 
+`d1r` **Draw.** Add a new gpencil object and switch to gpencil paint mode. You can convert your gpencil to mesh with `d43`. Can be used to quickly draw ngons by hand.
+
 `d1a` ***Mirror.*** Interactive mirror, use middle mouse button to choose mirror axis.
 
-`d1d` **Draw.** Add a new gpencil object and switch to gpencil paint mode. You can convert your gpencil to mesh with `d43`. Can be used to quickly draw ngons by hand.
+`d1d` **Make Single User.**
 
 `d1f` ***Make Links.*** Faster than `Ctrl+L`.
 
@@ -90,7 +92,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d44` **Mirror.** Adds a mirror modifier to the bottom of the modifier stack. Bisects the mesh. View-dependent. Uses camera angle to determine mirror axis. Mirrors left to right (so if you need to mirror on the Z axis you'll need to set it manually in the redo panel). If the active object already has a mirror, applies the existing mirror instead of adding a new one. So `d44` can be used to quickly toggle mirror modifier.
 
-`d45` **Subsurf.** Adds a multires modifier to the bottom of the modifier stack if in sculpt mode. Adds subsurf otherwise. If the modifier already exists, changes its settings. Check the redo panel for settings.
+`d45` **Subsurf.** Adds a multires modifier to the top of the modifier stack if in sculpt mode. Adds subsurf otherwise. If the modifier already exists, changes its settings. Check the redo panel for settings.
 
 `d4q` **Bevel.** Adds a bevel modifier to the bottom of the modifier stack. If the modifier already exists, changes its settings.
 
