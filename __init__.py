@@ -16,6 +16,7 @@ bl_info = {
 
 # @Globals
 
+AXES = [ 'X', 'Y', 'Z' ]
 MODAL_SENSITIVITY = 0.01
 BOOLEAN_BOUNDARY_EXTEND = 0.0001
 RADIUS_TO_VERTICES = 256
@@ -68,10 +69,9 @@ def view_snapped_vector(left_to_right = False, use_object_transform = True):
   return vec
 
 def axis_by_vector(vector):
-  axes = [ 'X', 'Y', 'Z' ]
   for i in range(3):
-    if (vector[i] == 1): return ( axes[i], False )
-    elif (vector[i] == -1): return ( axes[i], True )
+    if (vector[i] == 1): return ( AXES[i], False )
+    elif (vector[i] == -1): return ( AXES[i], True )
 
 def cursor_to_selected(to_active = False):
   ts = bpy.context.scene.tool_settings
@@ -901,12 +901,6 @@ class MirrorOperator(bpy.types.Operator):
     for i in range(3):
       m.use_axis[i] = m.use_bisect_axis[i] = self.axis[i]
       m.use_bisect_flip_axis[i] = self.bisect_flip[i]
-    def bisect():
-      bpy.ops.mesh.select_all(action='SELECT')
-      for i in range(3):
-        if self.axis[i]:
-          bpy.ops.mesh.bisect(plane_co=context.object.location, plane_no=vsv_notransform, clear_outer=False, clear_inner=True)
-    execute_in_mode('EDIT', bisect)
     return {'FINISHED'}
 
 class SubsurfOperator(bpy.types.Operator):
