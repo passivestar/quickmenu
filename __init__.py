@@ -1,10 +1,8 @@
-import bpy, bmesh, math, bl_math, subprocess, re, os
+import bpy, bmesh, math, bl_math
 from bpy.props import IntProperty, FloatProperty, StringProperty, BoolProperty, EnumProperty, FloatVectorProperty, BoolVectorProperty, PointerProperty
 from mathutils import Vector, Euler, Quaternion, Matrix, Color, noise
-from collections import defaultdict
 from random import random
 from functools import reduce
-from pathlib import Path
 
 bl_info = {
   'name': 'QuickMenu',
@@ -1576,104 +1574,6 @@ class ToolOperator(bpy.types.Operator):
     bpy.ops.wm.tool_set_by_id(name=self.tool_name)
     return {'FINISHED'}
 
-class OpenInSubstancePainterOperator(bpy.types.Operator):
-  """Open in Substance Painter"""
-  bl_idname, bl_label = 'qm.open_in_substance_painter', 'Export FBX to Substance Painter'
-
-  def execute(self, context):
-    preferences = context.preferences.addons[__name__].preferences
-    if preferences.painter_path == '':
-      self.report({'ERROR'}, 'Please specify Substance Painter exe path in addon preferences')
-      return {'FINISHED'}
-    if bpy.data.filepath == '':
-      self.report({'ERROR'}, f'File is not saved')
-      return {'FINISHED'}
-    bpy.ops.qm.export(extension='fbx', apply_modifiers=False)
-    directory, file = get_paths()
-    textures_output_path = Path(directory).joinpath(preferences.texture_output_folder_name)
-    if not textures_output_path.exists():
-      textures_output_path.mkdir(parents=True, exist_ok=True)
-      fbx_path = directory + file + '.fbx'
-      spp_path = directory + file + '.spp'
-      subprocess.Popen([preferences.painter_path, '--mesh', fbx_path, '--export-path', str(textures_output_path), spp_path])
-    return {'FINISHED'}
-
-class LoadSubstancePainterTexturesOperator(bpy.types.Operator):
-  """Load Substance Painter Textures"""
-  bl_idname, bl_label, bl_options = 'qm.load_substance_painter_textures', 'Load Substance Painter Textures', {'REGISTER', 'UNDO'}
-
-  def execute(self, context):
-    previous_context = context.area.type
-    context.area.type = 'NODE_EDITOR'
-    context.area.ui_type = 'ShaderNodeTree'
-    preferences = context.preferences.addons[__name__].preferences
-    directory, file = get_paths()
-    textures_output_path = Path(directory).joinpath(preferences.texture_output_folder_name)
-    # All of the materials in the blend file
-    material_names = [material.name for material in bpy.data.materials]
-
-    # Reload old textures first
-    bpy.ops.qm.reload_textures()
-
-    # Return if the file is not save
-    if bpy.data.filepath == '':
-      self.report({'ERROR'}, f'File is not saved')
-      context.area.type = previous_context
-      return {'FINISHED'}
-
-    # Return if the texture folder doesn't exist
-    if not textures_output_path.exists():
-      self.report({'ERROR'}, 'There is no texture folder')
-      context.area.type = previous_context
-      return {'FINISHED'}
-
-    # Return if there are no materials in the scene
-    if len(bpy.data.materials) == 0:
-      self.report({'ERROR'}, 'There are no materials in the scene')
-      context.area.type = previous_context
-      return {'FINISHED'}
-
-    # Iterate through all of the files and group them by texture set name (material)
-    texture_sets = defaultdict(list)
-    for texture_file in textures_output_path.iterdir():
-      texture_set_name = re.search(preferences.texture_set_name_regex, texture_file.name).group(1)
-      texture_sets[texture_set_name].append(texture_file.name)
-
-    # Set any mesh object as an active one so that we could use it while we're loading textures
-    # for different materials (because you need to use Shader Editor and can't assign directly)
-    for obj in bpy.data.objects:
-      if obj.type == 'MESH':
-        context.view_layer.objects.active = obj
-        break
-    if context.active_object.type != 'MESH':
-      self.report({'ERROR'}, f'There are no meshes in the scene')
-      context.area.type = previous_context
-      return {'FINISHED'}
-
-    # Material to switch back to when we're done adding textures
-    prev_material = context.object.data.materials[0]
-    # For all of the texture sets that have a material with matching name add nodes via node wrangler
-    for texture_set_name, texture_file_names in texture_sets.items():
-      if texture_set_name in material_names:
-        # Set node editor to current material
-        material = bpy.data.materials[texture_set_name]
-        context.object.data.materials[0] = material
-        context.space_data.node_tree = material.node_tree
-        # Don't add textures if there're more than 2 nodes in the tree (if textures were already added)
-        if len(context.space_data.node_tree.nodes) > 2:
-          self.report({'INFO'}, f'Material {material.name} has more than 2 nodes, skipping')
-          continue
-        # Select the Principled BSDF node
-        for node in context.space_data.node_tree.nodes:
-          if node.bl_idname == 'ShaderNodeBsdfPrincipled':
-            context.space_data.node_tree.nodes.active = node
-            break
-        # Adding textures to node tree
-        bpy.ops.node.nw_add_textures_for_principled(directory=f'{textures_output_path}{os.sep}', files=[{'name':n} for n in texture_file_names])
-    context.object.data.materials[0] = prev_material
-    context.area.type = previous_context
-    return {'FINISHED'}
-
 class ReloadTexturesOperator(bpy.types.Operator):
   """Reload Textures"""
   bl_idname, bl_label, bl_options = 'qm.reload_textures', 'Reload Textures', {'REGISTER', 'UNDO'}
@@ -1983,36 +1883,17 @@ class FilesMenu(bpy.types.Menu):
     layout.operator('qm.export', text='(Z) Export FBX').mode = 'fbx'
     layout.operator('qm.export', text='(X) Export GLB').mode = 'glb'
     layout.operator('qm.reload_textures', text='(C) Reload All Textures')
-    layout.separator()
-    layout.menu(SubstanceSubmenu.bl_idname)
-
-class SubstanceSubmenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Substance Painter', 'OBJECT_MT_substance_submenu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('qm.open_in_substance_painter', text='Export FBX to Substance Painter')
-    layout.operator('qm.load_substance_painter_textures', text='Load Substance Painter Textures')
 
 # @Preferences
-painter_default_path = 'C:\Program Files\Allegorithmic\Adobe Substance 3D Painter\Adobe Substance 3D Painter.exe'
 
 class QuickMenuPreferences(bpy.types.AddonPreferences):
   bl_idname = __name__
 
   hotkey: StringProperty(name='Hotkey (Restart required)', default='D')
-  painter_path: StringProperty(name='Substance Painter Executable Path', default=painter_default_path, subtype='FILE_PATH')
-  texture_output_folder_name: StringProperty(name='Textures Folder Name', default='substance_painter_textures')
-  # Material names cant have underscores
-  texture_set_name_regex: StringProperty(name='Texture Set Name Regex', default='(.+?)_')
 
   def draw(self, context):
     layout = self.layout
     layout.prop(self, 'hotkey')
-    layout.separator()
-    layout.prop(self, 'painter_path')
-    layout.prop(self, 'texture_output_folder_name')
-    layout.prop(self, 'texture_set_name_regex')
 
 # @Properties
 
@@ -2036,12 +1917,10 @@ classes = (
   SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMap, BooleanOperator, WeldEdgesIntoFacesOperator,
   ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator, PlaneIntersectOperator, KnifeIntersectOperator,
   IntersectOperator, TransformOrientationOperator, TransformPivotOperator, SetSnapOperator, ModeOperator, ToolOperator,
-  OpenInSubstancePainterOperator, ReloadTexturesOperator, LoadSubstancePainterTexturesOperator,
-  ExportOperator,
-  ViewOperator,
+  ReloadTexturesOperator, ExportOperator, ViewOperator,
 
   QuickMenu, GeneralMenu, SelectMenu, ModelingMenu, SpinSubmenu, ConvertMenu, DeleteSplitMenu,
-  UVTexturesMenu, AnimationMenu, BooleanMenu, SnappingMenu, ToolMenu, ModeMenu, FilesMenu, SubstanceSubmenu,
+  UVTexturesMenu, AnimationMenu, BooleanMenu, SnappingMenu, ToolMenu, ModeMenu, FilesMenu,
 
   QuickMenuPreferences, QuickMenuProperties
 )
