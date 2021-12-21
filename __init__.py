@@ -1581,6 +1581,7 @@ class ExportOperator(bpy.types.Operator):
   bl_idname, bl_label = 'qm.export', 'Export'
   mode: StringProperty(name='Mode', default='fbx')
   apply_modifiers: BoolProperty(name='Apply Modifiers', default=True)
+  batch_mode: StringProperty(name='Batch Mode', default='OFF')
 
   def execute(self, context):
     if bpy.data.filepath == '':
@@ -1599,6 +1600,7 @@ class ExportOperator(bpy.types.Operator):
         use_mesh_modifiers=self.apply_modifiers,
         add_leaf_bones=False,
         bake_anim_use_nla_strips=False,
+        batch_mode=self.batch_mode,
         filepath=directory + file + '.fbx'
       )
     else:
@@ -1874,8 +1876,11 @@ class FilesMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.operator('qm.export', text='(Z) Export FBX').mode = 'fbx'
-    layout.operator('qm.export', text='(X) Export GLB').mode = 'glb'
+    op = layout.operator('qm.export', text='(Z) Export FBX')
+    op.mode, op.batch_mode = 'fbx', 'OFF'
+    op = layout.operator('qm.export', text='(X) Export FBX Collections')
+    op.mode, op.batch_mode = 'fbx', 'COLLECTION'
+    layout.operator('qm.export', text='(A) Export GLB').mode = 'glb'
     layout.operator('qm.reload_textures', text='(C) Reload All Textures')
 
 # @Preferences
