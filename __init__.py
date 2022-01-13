@@ -1313,6 +1313,7 @@ class BooleanOperator(bpy.types.Operator):
     ('FAST', 'Fast', 'Fast'),
     ('EXACT', 'Exact', 'Exact'),
   ))
+  solidify: FloatProperty(name='Solidify', default=0)
   boundary_extend: FloatProperty(name='Boundary Extend', default=BOOLEAN_BOUNDARY_EXTEND, min=0)
   use_self: BoolProperty(name='Self', default=False)
   recalculate_normals: BoolProperty(name='Recalculate Normals', default=True)
@@ -1326,6 +1327,9 @@ class BooleanOperator(bpy.types.Operator):
       bpy.ops.transform.resize(value=(val, val, val))
       context.scene.tool_settings.transform_pivot_point = transform_pivot
     if is_in_editmode():
+      if self.solidify != 0:
+        bpy.ops.mesh.solidify(thickness=self.solidify)
+        bpy.ops.mesh.select_linked(delimit=set())
       bpy.ops.mesh.intersect_boolean(operation=self.operation, solver=self.solver, use_self=self.use_self)
     else:
       active = context.object
@@ -1339,6 +1343,11 @@ class BooleanOperator(bpy.types.Operator):
         select(obj)
         context.object.display_type = 'BOUNDS'
         context.object.hide_render = True
+        if self.solidify != 0:
+          bpy.ops.object.modifier_add(type='SOLIDIFY')
+          solidify = context.object.modifiers[-1]
+          solidify.offset = .5
+          solidify.thickness = self.solidify
       bpy.ops.object.select_all(action='DESELECT')
       for obj in objects: obj.select_set(True)
     return {'FINISHED'}

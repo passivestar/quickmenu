@@ -152,7 +152,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 ## Boolean/Knife
 
-`de1` **Union.** Works in both object and edit mode. Will change display type to "bounds" when used in object mode. Optionally pre-scales the selected geometry to avoid problems with coplanar faces.
+`de1` **Union.** Works in both object and edit mode. Will change display type to "bounds" when used in object mode. Optionally pre-scales the selected geometry to avoid problems with coplanar faces. Optionally can solidify selection before performing the operation.
 
 `de2` **Difference.** Same as `de1` but for difference operation. Cuts selected from active in object mode, or selected from unselected in edit mode.
 
