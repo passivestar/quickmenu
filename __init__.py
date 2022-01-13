@@ -1691,7 +1691,6 @@ class GeneralMenu(bpy.types.Menu):
     layout.operator('qm.apply_to_multiuser', text = '(G) Apply to Multiuser')
     layout.separator()
     layout.operator('object.parent_set', text ='(Z) Make Parent').type = 'OBJECT'
-    layout.operator('qm.align_origin_to_view', text ='(X) Align Origin To View')
 
 class SelectMenu(bpy.types.Menu):
   bl_label, bl_idname = 'Select', 'OBJECT_MT_select_menu'
