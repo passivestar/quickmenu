@@ -1,4 +1,5 @@
-<img width="756" alt="image" src="https://user-images.githubusercontent.com/60579014/144963395-4efb1d94-06be-45db-a1ba-b04e8d6647a6.png">
+<img width="707" alt="image" src="https://user-images.githubusercontent.com/60579014/149377232-6275b8df-6654-4aeb-8bda-495fa37ab4d2.png">
+
 
 # Quick Menu is a Blender addon that simplifies common tasks
 
