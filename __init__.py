@@ -1577,9 +1577,18 @@ class ToolOperator(bpy.types.Operator):
     bpy.ops.wm.tool_set_by_id(name=self.tool_name)
     return {'FINISHED'}
 
-class ReloadTexturesOperator(bpy.types.Operator):
-  """Reload Textures"""
-  bl_idname, bl_label, bl_options = 'qm.reload_textures', 'Reload Textures', {'REGISTER', 'UNDO'}
+class RepackAllData(bpy.types.Operator):
+  """Repack All Data"""
+  bl_idname, bl_label, bl_options = 'qm.repack_all_data', 'Repack All Data', {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    bpy.ops.file.pack_all()
+    bpy.ops.file.unpack_all(method='WRITE_LOCAL')
+    return {'FINISHED'}
+
+class ReimportTexturesOperator(bpy.types.Operator):
+  """Reimport Textures"""
+  bl_idname, bl_label, bl_options = 'qm.reimport_textures', 'Reimport Textures', {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     for item in bpy.data.images: item.reload()
@@ -1890,7 +1899,8 @@ class FilesMenu(bpy.types.Menu):
     op = layout.operator('qm.export', text='(X) Export FBX Collections')
     op.mode, op.batch_mode = 'fbx', 'COLLECTION'
     layout.operator('qm.export', text='(A) Export GLB').mode = 'glb'
-    layout.operator('qm.reload_textures', text='(C) Reload All Textures')
+    layout.operator('qm.reimport_textures', text='(C) Reimport All Textures')
+    layout.operator('qm.repack_all_data', text='(V) Repack All Data')
 
 # @Preferences
 
@@ -1925,7 +1935,7 @@ classes = (
   SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMap, BooleanOperator, WeldEdgesIntoFacesOperator,
   ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator, PlaneIntersectOperator, KnifeIntersectOperator,
   IntersectOperator, TransformOrientationOperator, TransformPivotOperator, SetSnapOperator, ModeOperator, ToolOperator,
-  ReloadTexturesOperator, ExportOperator, ViewOperator,
+  ReimportTexturesOperator, RepackAllData, ExportOperator, ViewOperator,
 
   QuickMenu, GeneralMenu, SelectMenu, ModelingMenu, SpinSubmenu, ConvertMenu, DeleteSplitMenu,
   UVTexturesMenu, AnimationMenu, BooleanMenu, SnappingMenu, ToolMenu, ModeMenu, FilesMenu,

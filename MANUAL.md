@@ -234,7 +234,9 @@ Faster than the default blender way of switching modes (`Ctrl+Tab+{1,2,3,...}`)
 
 `dza` **Export GLB.** Exports GLB alongside the saved blend file, using the same name as the blend file. Applies modifiers (optionally).
 
-`dzc` **Reload All Textures.** Reloads all textures, useful when working with external texturing software.
+`dzc` **Reimport All Textures.** Reloads all textures, useful when working with external texturing software.
+
+`dzv` **Repack All Data.** Pulls all of the data (textures) into the current .blend file, and then unpacks everything to local `textures` folder overwriting existing files. Useful for moving all of the new texture files into a single folder, because that's what works for importing to Unity.
 
 ## Other
 
