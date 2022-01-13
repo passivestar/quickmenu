@@ -338,7 +338,7 @@ class RotateOperator(bpy.types.Operator):
     return self.execute(context)
 
   def execute(self, context):
-    axis, negative = axis_by_vector(view_snapped_vector())
+    axis, negative = axis_by_vector(view_snapped_vector(False, False))
     value = -self.angle if negative else self.angle
     bpy.ops.transform.rotate(value=value, orient_axis=axis, orient_type='GLOBAL')
     return {'FINISHED'}
@@ -348,7 +348,7 @@ class DrawOperator(bpy.types.Operator):
   bl_idname, bl_label = 'qm.draw', 'Draw'
 
   def execute(self, context):
-    axis, negative = axis_by_vector(view_snapped_vector())
+    axis, negative = axis_by_vector(view_snapped_vector(False, False))
     if context.active_object: bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.object.gpencil_add(align='WORLD', type='EMPTY')
     bpy.ops.object.mode_set(mode='PAINT_GPENCIL')
@@ -543,7 +543,7 @@ class SpinOperator(bpy.types.Operator):
     return is_in_editmode()
 
   def execute(self, context):
-    vsv = view_snapped_vector()
+    vsv = view_snapped_vector(False, False)
     bpy.ops.mesh.spin(dupli=self.duplicates, steps=self.steps, angle=self.angle, use_normal_flip=self.flip_normals, center=context.scene.cursor.location, axis=vsv)
     return {'FINISHED'}
 
@@ -694,7 +694,7 @@ class FlattenOperator(bpy.types.Operator):
 
   def execute(self, context):
     bpy.ops.qm.transform_orientation(type="GLOBAL")
-    vsv = view_snapped_vector()
+    vsv = view_snapped_vector(False, False)
     for i in range(3): vsv[i] = 1 if vsv[i] == 0 else 1 - self.amount
     if self.to_active:
       previous_pivot = context.scene.tool_settings.transform_pivot_point
@@ -1391,7 +1391,7 @@ class PlaneIntersectOperator(bpy.types.Operator):
     return is_in_editmode()
 
   def execute(self, context):
-    vector = view_snapped_vector() if self.snap_view_axis else view_vector()
+    vector = view_snapped_vector(False, False) if self.snap_view_axis else view_vector(False, False)
     cursor_to_selected(self.active)
     if self.mode == 'ISLAND': bpy.ops.mesh.select_linked(delimit=set())
     elif self.mode == 'MESH': bpy.ops.mesh.select_all(action='SELECT')
@@ -1479,7 +1479,7 @@ class IntersectOperator(bpy.types.Operator):
     bpy.ops.qm.flatten()
     v = 1 + BOOLEAN_BOUNDARY_EXTEND
     bpy.ops.transform.resize(value=(v, v, v), orient_type='GLOBAL')
-    vector = view_snapped_vector() if self.snap_to_axis else view_vector()
+    vector = view_snapped_vector(False, False) if self.snap_to_axis else view_vector(False, False)
     l = max((context.object.dimensions * vector).length, 1)
     bpy.ops.transform.translate(value=vector*l, orient_type='GLOBAL')
     bpy.ops.object.vertex_group_add()
