@@ -230,7 +230,9 @@ Faster than the default blender way of switching modes (`Ctrl+Tab+{1,2,3,...}`)
 
 `dzz` **Export FBX.** Exports FBX alongside the saved blend file, using the same name as the blend file. Sets mesh smooth type to EDGE, applies modifiers (optionally), sets add leaf bones to False, sets bake anim use nla strips to False.
 
-`dzx` **Export GLB.** Exports GLB alongside the saved blend file, using the same name as the blend file. Applies modifiers (optionally).
+`dzx` **Export FBX Collections.** Same as previous, but enables batching by collection. Useful for exporting different objects to different files for game engines.
+
+`dza` **Export GLB.** Exports GLB alongside the saved blend file, using the same name as the blend file. Applies modifiers (optionally).
 
 `dzc` **Reload All Textures.** Reloads all textures, useful when working with external texturing software.
 
