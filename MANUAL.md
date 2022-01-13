@@ -26,7 +26,7 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d1a` ***Mirror.*** Interactive mirror, use middle mouse button to choose mirror axis.
 
-`d1d` **Make Single User.**
+`d1d` ***Make Single User.***
 
 `d1f` ***Make Links.*** Faster than `Ctrl+L`.
 
