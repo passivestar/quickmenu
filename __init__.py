@@ -371,6 +371,15 @@ class ApplyToMultiuserOperator(bpy.types.Operator):
     bpy.ops.object.make_links_data(type='OBDATA')
     return {'FINISHED'}
 
+class CorrectAttributesOperator(bpy.types.Operator):
+  """Toggle Correct Face Attributes"""
+  bl_idname, bl_label, bl_options = 'qm.correct_attributes', 'Toggle Correct Face Attributes', {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    ts = bpy.context.scene.tool_settings
+    ts.use_transform_correct_face_attributes = not ts.use_transform_correct_face_attributes
+    return {'FINISHED'}
+
 class SelectRingOperator(bpy.types.Operator):
   """Select ring. Hold shift to select loop"""
   bl_idname, bl_label, bl_options = 'qm.select_ring', 'Select Ring', {'REGISTER', 'UNDO'}
@@ -1691,6 +1700,7 @@ class GeneralMenu(bpy.types.Menu):
     layout.operator('qm.apply_to_multiuser', text = '(G) Apply to Multiuser')
     layout.separator()
     layout.operator('object.parent_set', text ='(Z) Make Parent').type = 'OBJECT'
+    layout.operator('qm.correct_attributes', text ='(X) Toggle Correct Face Attributes')
 
 class SelectMenu(bpy.types.Menu):
   bl_label, bl_idname = 'Select', 'OBJECT_MT_select_menu'
@@ -1923,7 +1933,7 @@ classes = (
   QuickMenuOperator,
 
   JoinSeparateOperator, SmoothOperator, LocalViewOperator, SetOriginOperator,
-  ProportionalEditingOperator, WireframeOperator, RotateOperator, DrawOperator, ApplyToMultiuserOperator,
+  ProportionalEditingOperator, WireframeOperator, RotateOperator, DrawOperator, ApplyToMultiuserOperator, CorrectAttributesOperator,
   SelectRingOperator, SelectMoreOperator, RegionToLoopOperator, InvertSelectionConnectedOperator,
   SelectSharpEdgesOperator, SelectViewGeometryOperator, AddSingleVertexOperator, SpinOperator,
   BboxOperator, ConnectOperator, AddGeometryOperator, ExtrudeBothWaysOperator, FlattenOperator,

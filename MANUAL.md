@@ -34,6 +34,8 @@ This list contains descriptions for each quick menu operator. Some of the operat
 
 `d1z` ***Make Parent.*** Faster than `Ctrl+P`.
 
+`d1x` ***Toggle Correct Face Attributes.***
+
 ## Select
 
 `d21` **Select Ring.** Hold shift (`d+2+shift+1`) to select loop
