@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (1, 2, 0),
+  'version': (1, 2, 1),
   'author': 'passivestar',
   'blender': (3, 0, 0),
   'location': 'Press D in 3D View',
@@ -1969,7 +1969,7 @@ def register():
     keymaps.append((km, kmi))
 
 def unregister():
-  for c in classes: bpy.util.unregister_class(c)
+  for c in classes: bpy.utils.unregister_class(c)
   del bpy.types.Scene.quick_menu
   for km, kmi in keymaps:
     km.keymap_items.remove(kmi)
