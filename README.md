@@ -1,7 +1,8 @@
-<img width="707" alt="image" src="https://user-images.githubusercontent.com/60579014/149377232-6275b8df-6654-4aeb-8bda-495fa37ab4d2.png">
+# Quick Menu is a Blender addon for better efficiency
 
+## Watch an in-depth review on YouTube:
 
-# Quick Menu is a Blender addon that simplifies common tasks
+[![quickmenuthumbyt](https://user-images.githubusercontent.com/60579014/152310865-a3f15da4-091a-4c25-8e53-74356db326c6.jpg)](https://youtu.be/SPIkZEnhtTk)
 
 ## Installation
 
@@ -20,7 +21,7 @@ Join our [DISCORD for discussion](https://discord.gg/pPHQ5HQ).
 
 ## Design choices
 
-The addon was initially made only with personal use in mind and therefore is not customizable. However, it adds some new operators that some people may find useful. It also simplifies access to some operators and settings. Blender is already very hotkey-friendly, but:
+The addon was initially made with personal use in mind. However since it only binds one key (configurable, `D` by default) it's unintrusive and it should be easy to use it alongside other addons. It simplifies access to operators and settings and adds some new operators. Blender is already hotkey-friendly, but:
 
 1. Some useful operators are hard to reach, some take several mouse clicks. Some things you can't even fix with editing the keymap (snapping options for example). Quick Menu is optimized for accelerator keys, meaning all of the operators are accessible with just your left hand. All of them follow the pattern `d + {key near d} + {key near d} `. I took into consideration how easy it is to press them as well, combinations that are used frequently have some rolling finger motion in them.
 
