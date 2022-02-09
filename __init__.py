@@ -101,6 +101,7 @@ def make_vertex_group(name):
 def calculate_number_of_vertices_by_radius(radius, subsurf=False):
   if subsurf or modifier_exists('SUBSURF') or modifier_exists('MULTIRES'):
     return 6
+  radius = max(0, radius)
   return max(6, grid_snap(2, math.log(1 + 0.03 + 0.4 * radius) * RADIUS_TO_VERTICES))
 
 def iterate_islands(operator, callback, restore_selection=False):
