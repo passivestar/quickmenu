@@ -851,6 +851,8 @@ class ConvertToMeshOperator(bpy.types.Operator):
     return context.object != None
 
   def execute(self, context):
+    if len(context.selected_objects) == 0:
+      return {'FINISHED'}
     def fn():
       if context.active_object.type == 'GPENCIL':
         original = context.active_object
