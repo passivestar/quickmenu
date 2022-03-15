@@ -6,9 +6,9 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (1, 2, 2),
+  'version': (1, 3, 0),
   'author': 'passivestar',
-  'blender': (3, 0, 0),
+  'blender': (3, 1, 0),
   'location': 'Press D in 3D View',
   'description': 'Simplifies access to useful operators and adds new functionality',
   'category': 'Interface'
@@ -807,7 +807,7 @@ class ConvertOperator(bpy.types.Operator):
       context.object.data.bevel_depth = self.depth
       if self.auto_resolution:
         subsurf = modifier_exists('SUBSURF') or modifier_exists('MULTIRES')
-        self.resolution = max(1, (calculate_number_of_vertices_by_radius(self.depth, subsurf) / 2 - 3))
+        self.resolution = int(max(1, (calculate_number_of_vertices_by_radius(self.depth, subsurf) / 2 - 3)))
       context.object.data.bevel_resolution = self.resolution
       if self.square_profile:
         context.object.data.bevel_depth = 0
