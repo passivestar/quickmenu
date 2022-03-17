@@ -13,7 +13,7 @@
 
 Press `D` in 3D view to open the menu.
 
-Compatible with Blender 3.x.x
+Compatible with Blender `3.x.x`
 
 Every operator is described in the [manual](https://github.com/passivestar/quickmenu/blob/main/MANUAL.md).
 
@@ -32,6 +32,8 @@ The addon was initially made with personal use in mind. However since it only bi
 This addon is the result of over a year of brainstorming on the effectiveness of modeling/texturing workflow and testing tools on small projects. I'm trying to keep it lightweight. If something seems missing from it, there's a high chance that the reason for it is that Blender already has built-in tools that allow to do it easily, or the use-case for it is very rare.
 
 This addon is designed to be as unintrusive and minimalistic as possible. All of the operators are in just one menu. There's no UI other than that, which makes it easy to use. It also only takes one hotkey. It can be changed in the addon's preferences, but I recommend `D`.
+
+As of version `2.0.0` this addon is completely customizable via a json config. You can remove, reorder and add operators to the menu. You can also create as many custom submenus as you like! It still ships with a default config that I found to be the most efficient for my workflow, but now you can make it work for any workflow.
 
 This addon is a single-file addon for now, and it will probably stay that way because it simplifies development (reloading addons consisting of multiple files is not as straightforward as just pressing `Alt+R, Alt+P` in Blender's text editor).
 

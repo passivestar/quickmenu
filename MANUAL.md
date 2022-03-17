@@ -1,6 +1,6 @@
 # Quick Menu Operators
 
-This list contains descriptions for each quick menu operator. Some of the operators are default blender operators and are included in the quick menu because the default hotkey for it is not left-hand friendly. The default blender operators are in ***cursive***.
+This list contains descriptions for each quick menu operator as it appears in the default config. Some of the operators are default blender operators and are included in the quick menu because the default hotkey for it is not left-hand friendly. The default blender operators are in ***cursive***.
 
 ## General
 

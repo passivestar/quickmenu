@@ -1,0 +1,745 @@
+{
+  "items": [
+    {
+      "path": "General/Separate - Join",
+      "operator": "qm.join_separate"
+    },
+    {
+      "path": "General/Shade Smooth",
+      "operator": "qm.smooth"
+    },
+    {
+      "path": "General/Local View",
+      "operator": "qm.local_view"
+    },
+    {
+      "path": "General/[Separator]"
+    },
+    {
+      "path": "General/Origin To Geometry",
+      "operator": "qm.set_origin",
+      "params": {
+        "type": "GEOMETRY"
+      }
+    },
+    {
+      "path": "General/Origin To Bottom",
+      "operator": "qm.set_origin",
+      "params": {
+        "type": "BOTTOM"
+      }
+    },
+    {
+      "path": "General/Origin To Cursor",
+      "operator": "object.origin_set",
+      "params": {
+        "type": "ORIGIN_CURSOR",
+        "center": "BOUNDS"
+      }
+    },
+    {
+      "path": "General/[Separator]"
+    },
+    {
+      "path": "General/(Q) Toggle Proportional Editing",
+      "operator": "qm.proportional_editing"
+    },
+    {
+      "path": "General/(W) Toggle Wireframe",
+      "operator": "qm.wireframe"
+    },
+    {
+      "path": "General/(E) Rotate 90",
+      "operator": "qm.rotate",
+      "params": {
+        "angle": 1.5708
+      }
+    },
+    {
+      "path": "General/(R) Draw",
+      "operator": "qm.draw"
+    },
+    {
+      "path": "General/[Separator]"
+    },
+    {
+      "path": "General/(A) Mirror",
+      "operator": "transform.mirror"
+    },
+    {
+      "path": "General/(D) Make Single User",
+      "operator": "object.make_single_user",
+      "params": {
+        "type": "SELECTED_OBJECTS",
+        "object": true,
+        "obdata": true
+      }
+    },
+    {
+      "path": "General/(F) Make Links",
+      "operator": "object.make_links_data"
+    },
+    {
+      "path": "General/(G) Apply to Multiuser",
+      "operator": "qm.apply_to_multiuser"
+    },
+    {
+      "path": "General/[Separator]"
+    },
+    {
+      "path": "General/(Z) Make Parent",
+      "operator": "object.parent_set"
+    },
+    {
+      "path": "General/(X) Toggle Correct Face Attributes",
+      "operator": "qm.correct_attributes"
+    },
+    {
+      "path": "Select/Select Ring",
+      "operator": "qm.select_ring"
+    },
+    {
+      "path": "Select/Select More",
+      "operator": "qm.select_more"
+    },
+    {
+      "path": "Select/Region-Loop",
+      "operator": "qm.region_to_loop"
+    },
+    {
+      "path": "Select/View Parallel Edges",
+      "operator": "qm.select_view_geometry",
+      "params": {
+        "mode": "EDGES"
+      }
+    },
+    {
+      "path": "Select/View Facing Faces",
+      "operator": "qm.select_view_geometry",
+      "params": {
+        "mode": "FACES"
+      }
+    },
+    {
+      "path": "Select/[Separator]"
+    },
+    {
+      "path": "Select/(Q) Linked Flat",
+      "operator": "mesh.faces_select_linked_flat"
+    },
+    {
+      "path": "Select/(W) Select Loose",
+      "operator": "mesh.select_loose"
+    },
+    {
+      "path": "Select/(E) Select Sharp Edges",
+      "operator": "qm.select_sharp_edges"
+    },
+    {
+      "path": "Select/[Separator]"
+    },
+    {
+      "path": "Select/(A) Invert Selection Connected",
+      "operator": "qm.invert_selection_connected"
+    },
+    {
+      "path": "Select/[Separator]"
+    },
+    {
+      "path": "Select/(X) Random",
+      "operator": "mesh.select_random"
+    },
+    {
+      "path": "Select/(C) Checker Deselect",
+      "operator": "mesh.select_nth"
+    },
+    {
+      "path": "Modeling/Add Single Vertex",
+      "operator": "qm.add_single_vertex"
+    },
+    {
+      "path": "Modeling/Spin/Spin 90",
+      "operator": "qm.spin",
+      "params": {
+        "angle": 1.5708
+      }
+    },
+    {
+      "path": "Modeling/Spin/Spin 180",
+      "operator": "qm.spin",
+      "params": {
+        "angle": 3.14159265359
+      }
+    },
+    {
+      "path": "Modeling/Spin/Spin 360",
+      "operator": "qm.spin",
+      "params": {
+        "angle": 6.28318530718
+      }
+    },
+    {
+      "path": "Modeling/Spin/Spin -90",
+      "operator": "qm.spin",
+      "params": {
+        "angle": -1.5708
+      }
+    },
+    {
+      "path": "Modeling/Spin/Spin -180",
+      "operator": "qm.spin",
+      "params": {
+        "angle": -3.14159265359
+      }
+    },
+    {
+      "path": "Modeling/Bbox Around Selection",
+      "operator": "qm.bbox"
+    },
+    {
+      "path": "Modeling/Add Geometry",
+      "operator": "qm.add_geometry"
+    },
+    {
+      "path": "Modeling/[Separator]"
+    },
+    {
+      "path": "Modeling/(Q) Recalculate Normals",
+      "operator": "mesh.normals_make_consistent"
+    },
+    {
+      "path": "Modeling/(E) Extrude Both Ways",
+      "operator": "qm.extrude_both_ways",
+      "params": {
+        "dissolve_original": true
+      }
+    },
+    {
+      "path": "Modeling/(R) Randomize Transform",
+      "operator": "qm.randomize",
+      "mode": "EDIT_MESH",
+      "params": {
+        "location": [
+          0,
+          0,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0,
+          0,
+          0
+        ],
+        "offset": 0
+      }
+    },
+    {
+      "path": "Modeling/(R) Randomize Transform",
+      "operator": "object.randomize_transform",
+      "mode": "OBJECT"
+    },
+    {
+      "path": "Modeling/[Separator]"
+    },
+    {
+      "path": "Modeling/(F) Flatten",
+      "operator": "qm.flatten"
+    },
+    {
+      "path": "Modeling/[Separator]"
+    },
+    {
+      "path": "Modeling/(X) Convex Hull",
+      "operator": "mesh.convex_hull"
+    },
+    {
+      "path": "Modeling/(C) Connect Selected",
+      "operator": "qm.connect"
+    },
+    {
+      "path": "Modeling/(V) Vertices Smooth",
+      "operator": "mesh.vertices_smooth",
+      "params": {
+        "factor": 1
+      }
+    },
+    {
+      "path": "Convert-Modify/Curve",
+      "operator": "qm.convert",
+      "params": {
+        "type": "CURVE",
+        "edit_mode": true
+      }
+    },
+    {
+      "path": "Convert-Modify/Skin",
+      "operator": "qm.convert",
+      "params": {
+        "type": "SKIN"
+      }
+    },
+    {
+      "path": "Convert-Modify/Mesh",
+      "operator": "qm.convert_to_mesh"
+    },
+    {
+      "path": "Convert-Modify/Mirror",
+      "operator": "qm.mirror",
+      "params": {
+        "axis": [
+          false,
+          false,
+          false
+        ],
+        "bisect_flip": [
+          false,
+          false,
+          false
+        ]
+      }
+    },
+    {
+      "path": "Convert-Modify/Subsurf",
+      "operator": "qm.subsurf"
+    },
+    {
+      "path": "Convert-Modify/[Separator]"
+    },
+    {
+      "path": "Convert-Modify/(Q) Bevel",
+      "operator": "qm.bevel"
+    },
+    {
+      "path": "Convert-Modify/(W) Solidify",
+      "operator": "qm.solidify"
+    },
+    {
+      "path": "Convert-Modify/(E) Triangulate",
+      "operator": "qm.triangulate"
+    },
+    {
+      "path": "Convert-Modify/[Separator]"
+    },
+    {
+      "path": "Convert-Modify/(A) Array",
+      "operator": "qm.array"
+    },
+    {
+      "path": "Convert-Modify/(F) Twist",
+      "operator": "qm.simple_deform",
+      "params": {
+        "method": "TWIST"
+      }
+    },
+    {
+      "path": "Convert-Modify/[Separator]"
+    },
+    {
+      "path": "Convert-Modify/(Z) Clear Modifiers",
+      "operator": "qm.clear_modifiers"
+    },
+    {
+      "path": "[Separator]"
+    },
+    {
+      "path": "(Q) Delete-Split/Merge",
+      "operator": "mesh.merge",
+      "params": {
+        "type": "CENTER"
+      }
+    },
+    {
+      "path": "(Q) Delete-Split/Merge By Distance",
+      "operator": "mesh.remove_doubles"
+    },
+    {
+      "path": "(Q) Delete-Split/Limited Dissolve",
+      "operator": "mesh.dissolve_limited"
+    },
+    {
+      "path": "(Q) Delete-Split/Decimate",
+      "operator": "mesh.decimate"
+    },
+    {
+      "path": "(Q) Delete-Split/Delete Loose",
+      "operator": "mesh.delete_loose"
+    },
+    {
+      "path": "(Q) Delete-Split/[Separator]"
+    },
+    {
+      "path": "(Q) Delete-Split/(Q) Delete Back Facing Faces",
+      "operator": "qm.delete_back_facing",
+      "params": {
+        "both_ways": false
+      }
+    },
+    {
+      "path": "(Q) Delete-Split/(W) Delete Back-Front Facing Faces",
+      "operator": "qm.delete_back_facing",
+      "params": {
+        "both_ways": true
+      }
+    },
+    {
+      "path": "(Q) Delete-Split/(E) Edge Split",
+      "operator": "mesh.edge_split",
+      "params": {
+        "type": "EDGE"
+      }
+    },
+    {
+      "path": "(Q) Delete-Split/(R) Separate By Loose Parts",
+      "operator": "qm.separate_by_loose_parts"
+    },
+    {
+      "path": "(Q) Delete-Split/[Separator]"
+    },
+    {
+      "path": "(Q) Delete-Split/(S) Split",
+      "operator": "mesh.split"
+    },
+    {
+      "path": "(W) UV-Textures/Mark Seam",
+      "operator": "qm.mark_seam",
+      "params": {
+        "clear": false
+      }
+    },
+    {
+      "path": "(W) UV-Textures/Clear Seam",
+      "operator": "qm.mark_seam",
+      "params": {
+        "clear": true
+      }
+    },
+    {
+      "path": "(W) UV-Textures/Unwrap",
+      "operator": "uv.unwrap"
+    },
+    {
+      "path": "(W) UV-Textures/Straighten UVs",
+      "operator": "qm.straighten_uvs"
+    },
+    {
+      "path": "(W) UV-Textures/View Project",
+      "operator": "uv.project_from_view"
+    },
+    {
+      "path": "(W) UV-Textures/[Separator]"
+    },
+    {
+      "path": "(W) UV-Textures/(Q) Mark Seams Sharp",
+      "operator": "qm.mark_seams_sharp"
+    },
+    {
+      "path": "(W) UV-Textures/(W) Mark Seams From Islands",
+      "operator": "qm.mark_seams_from_islands"
+    },
+    {
+      "path": "(W) UV-Textures/[Separator]"
+    },
+    {
+      "path": "(W) UV-Textures/(D) Set Vertex Color",
+      "operator": "qm.set_vertex_color"
+    },
+    {
+      "path": "(W) UV-Textures/(F) Select By Vertex Color",
+      "operator": "qm.select_by_vertex_color"
+    },
+    {
+      "path": "(W) UV-Textures/(G) Bake ID Map",
+      "operator": "qm.bake_id_map"
+    },
+    {
+      "path": "(E) Boolean-Knife/Union",
+      "operator": "qm.boolean",
+      "params": {
+        "operation": "UNION"
+      }
+    },
+    {
+      "path": "(E) Boolean-Knife/Difference",
+      "operator": "qm.boolean",
+      "params": {
+        "operation": "DIFFERENCE"
+      }
+    },
+    {
+      "path": "(E) Boolean-Knife/Intersect",
+      "operator": "qm.boolean",
+      "params": {
+        "operation": "INTERSECT"
+      }
+    },
+    {
+      "path": "(E) Boolean-Knife/[Separator]"
+    },
+    {
+      "path": "(E) Boolean-Knife/(Q) Plane Intersect Island",
+      "operator": "qm.plane_intersect",
+      "params": {
+        "mode": "ISLAND"
+      }
+    },
+    {
+      "path": "(E) Boolean-Knife/(W) Plane Intersect Selection",
+      "operator": "qm.plane_intersect",
+      "params": {
+        "mode": "SELECTION"
+      }
+    },
+    {
+      "path": "(E) Boolean-Knife/(E) Knife Intersect",
+      "operator": "qm.knife_intersect"
+    },
+    {
+      "path": "(E) Boolean-Knife/(R) Projection Intersect",
+      "operator": "qm.intersect"
+    },
+    {
+      "path": "(E) Boolean-Knife/[Separator]"
+    },
+    {
+      "path": "(E) Boolean-Knife/(A) Weld Edges Into Faces",
+      "operator": "qm.weld_edges_into_faces"
+    },
+    {
+      "path": "(R) Animation/Parent To New Empty",
+      "operator": "qm.parent_to_new_empty"
+    },
+    {
+      "path": "(R) Animation/Add Constraint",
+      "operator": "object.constraint_add_with_targets"
+    },
+    {
+      "path": "(R) Animation/[Separator]"
+    },
+    {
+      "path": "(R) Animation/(Z) Clear Drivers",
+      "operator": "qm.clear_drivers"
+    },
+    {
+      "path": "(R) Animation/(X) Drivers Set Use Self",
+      "operator": "qm.set_use_self_drivers"
+    },
+    {
+      "path": "[Separator]"
+    },
+    {
+      "path": "(A) Snapping/Bounding Box Pivot",
+      "operator": "qm.transform_pivot",
+      "params": {
+        "type": "BOUNDING_BOX_CENTER"
+      }
+    },
+    {
+      "path": "(A) Snapping/Individual Pivot",
+      "operator": "qm.transform_pivot",
+      "params": {
+        "type": "INDIVIDUAL_ORIGINS"
+      }
+    },
+    {
+      "path": "(A) Snapping/3D Cursor Pivot",
+      "operator": "qm.transform_pivot",
+      "params": {
+        "type": "CURSOR"
+      }
+    },
+    {
+      "path": "(A) Snapping/[Separator]"
+    },
+    {
+      "path": "(A) Snapping/Global Orientation",
+      "operator": "qm.transform_orientation",
+      "params": {
+        "type": "GLOBAL"
+      }
+    },
+    {
+      "path": "(A) Snapping/Normal Orientation",
+      "operator": "qm.transform_orientation",
+      "params": {
+        "type": "NORMAL"
+      }
+    },
+    {
+      "path": "(A) Snapping/New Orientation",
+      "operator": "qm.transform_orientation",
+      "params": {
+        "type": "CREATE"
+      }
+    },
+    {
+      "path": "(A) Snapping/[Separator]"
+    },
+    {
+      "path": "(A) Snapping/(V) Vertices",
+      "operator": "qm.set_snap",
+      "params": {
+        "mode": "GENERAL",
+        "type": "VERTEX"
+      }
+    },
+    {
+      "path": "(A) Snapping/(F) Faces",
+      "operator": "qm.set_snap",
+      "params": {
+        "mode": "GENERAL",
+        "type": "FACE"
+      }
+    },
+    {
+      "path": "(A) Snapping/(R) Grid",
+      "operator": "qm.set_snap",
+      "params": {
+        "mode": "GENERAL",
+        "type": "INCREMENT"
+      }
+    },
+    {
+      "path": "(A) Snapping/[Separator]"
+    },
+    {
+      "path": "(A) Snapping/(C) Closest",
+      "operator": "qm.set_snap",
+      "params": {
+        "mode": "TARGET",
+        "type": "CLOSEST"
+      }
+    },
+    {
+      "path": "(A) Snapping/(E) Center",
+      "operator": "qm.set_snap",
+      "params": {
+        "mode": "TARGET",
+        "type": "CENTER"
+      }
+    },
+    {
+      "path": "(D) Tool/Add Cube",
+      "operator": "qm.tool",
+      "params": {
+        "tool_name": "builtin.primitive_cube_add"
+      }
+    },
+    {
+      "path": "(D) Tool/Add Cylinder",
+      "operator": "qm.tool",
+      "params": {
+        "tool_name": "builtin.primitive_cylinder_add"
+      }
+    },
+    {
+      "path": "(D) Tool/Add Sphere",
+      "operator": "qm.tool",
+      "params": {
+        "tool_name": "builtin.primitive_uv_sphere_add"
+      }
+    },
+    {
+      "path": "(D) Tool/[Separator]"
+    },
+    {
+      "path": "(D) Tool/(Q) Shear",
+      "operator": "qm.tool",
+      "params": {
+        "tool_name": "builtin.shear"
+      }
+    },
+    {
+      "path": "(F) Mode/(Q) Paint",
+      "operator": "qm.mode_set",
+      "params": {
+        "mode": "TEXTURE_PAINT"
+      }
+    },
+    {
+      "path": "(F) Mode/(W) Edit",
+      "operator": "qm.mode_set",
+      "params": {
+        "mode": "EDIT"
+      }
+    },
+    {
+      "path": "(F) Mode/[Separator]"
+    },
+    {
+      "path": "(F) Mode/(A) Sculpt",
+      "operator": "qm.mode_set",
+      "params": {
+        "mode": "SCULPT"
+      }
+    },
+    {
+      "path": "(F) Mode/(S) Object",
+      "operator": "qm.mode_set",
+      "params": {
+        "mode": "OBJECT"
+      }
+    },
+    {
+      "path": "(F) Mode/[Separator]"
+    },
+    {
+      "path": "(F) Mode/(Z) Weight Paint",
+      "operator": "qm.mode_set",
+      "params": {
+        "mode": "WEIGHT_PAINT"
+      }
+    },
+    {
+      "path": "(F) Mode/(X) Pose",
+      "operator": "qm.mode_set",
+      "params": {
+        "mode": "POSE"
+      }
+    },
+    {
+      "path": "[Separator]"
+    },
+    {
+      "path": "(Z) Files/(Z) Export FBX",
+      "operator": "qm.export",
+      "params": {
+        "mode": "fbx",
+        "batch_mode": "OFF"
+      }
+    },
+    {
+      "path": "(Z) Files/(X) Export FBX Collections",
+      "operator": "qm.export",
+      "params": {
+        "mode": "fbx",
+        "batch_mode": "COLLECTION"
+      }
+    },
+    {
+      "path": "(Z) Files/(A) Export GLB",
+      "operator": "qm.export",
+      "params": {
+        "mode": "glb"
+      }
+    },
+    {
+      "path": "(Z) Files/(C) Reimport All Textures",
+      "operator": "qm.reimport_textures"
+    },
+    {
+      "path": "(Z) Files/(V) Repack All Data",
+      "operator": "qm.repack_all_data"
+    },
+    {
+      "path": "[Separator]"
+    },
+    {
+      "path": "(V) View Selected - Camera",
+      "operator": "qm.view"
+    }
+  ]
+}

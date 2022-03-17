@@ -1,4 +1,4 @@
-import bpy, bmesh, math, bl_math
+import bpy, bmesh, math, bl_math, re, json, os, platform, subprocess
 from bpy.props import IntProperty, FloatProperty, StringProperty, BoolProperty, EnumProperty, FloatVectorProperty, BoolVectorProperty, PointerProperty
 from mathutils import Vector, Euler, Quaternion, Matrix, Color, noise
 from random import random
@@ -6,15 +6,20 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (1, 3, 0),
+  'version': (2, 0, 0),
   'author': 'passivestar',
   'blender': (3, 1, 0),
-  'location': 'Press D in 3D View',
+  'location': 'Press the bound hotkey in 3D View',
   'description': 'Simplifies access to useful operators and adds new functionality',
   'category': 'Interface'
 }
 
 # @Globals
+
+app = {
+  "keymaps": [],
+  "items": []
+}
 
 AXES = [ 'X', 'Y', 'Z' ]
 MODAL_SENSITIVITY = 0.01
@@ -22,6 +27,9 @@ BOOLEAN_BOUNDARY_EXTEND = 0.0001
 RADIUS_TO_VERTICES = 256
 
 # @Util
+
+__location__ = os.path.realpath(
+  os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 def select(obj):
   bpy.ops.object.select_all(action='DESELECT')
@@ -198,7 +206,7 @@ def modal_run(operator, context, event, delete=True):
     return {'CANCELLED'}
   return {'RUNNING_MODAL'}
 
-# @MainOperator
+# @MenuOperators
 
 class QuickMenuOperator(bpy.types.Operator):
   """Quick Menu"""
@@ -206,6 +214,28 @@ class QuickMenuOperator(bpy.types.Operator):
 
   def execute(self, context):
     bpy.ops.wm.call_menu(name=QuickMenu.bl_idname)
+    return {'FINISHED'}
+
+class EditMenuItemsOperator(bpy.types.Operator):
+  """Edit Menu Items"""
+  bl_idname, bl_label = 'qm.edit_items', 'Edit Menu Items Operator'
+
+  def execute(self, context):
+    config_path = get_config_path()
+    if platform.system() == 'Darwin': # macOS
+      subprocess.call(('open', config_path))
+    elif platform.system() == 'Windows': # Windows
+      os.startfile(config_path)
+    else: # linux variants
+      subprocess.call(('xdg-open', config_path))
+    return {'FINISHED'}
+
+class ReloadMenuItemsOperator(bpy.types.Operator):
+  """Reload Menu Items"""
+  bl_idname, bl_label = 'qm.load_items', 'Reload Menu Items Operator'
+
+  def execute(self, context):
+    load_items(get_config_path())
     return {'FINISHED'}
 
 # @Operators
@@ -225,7 +255,8 @@ class JoinSeparateOperator(bpy.types.Operator):
         if self.reset_origin: bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
         if self.reset_drivers:
           bpy.ops.qm.clear_drivers()
-    else: bpy.ops.object.join()
+    elif len(bpy.context.selected_objects) > 0:
+      bpy.ops.object.join()
     return {'FINISHED'}
 
 class SmoothOperator(bpy.types.Operator):
@@ -1656,263 +1687,10 @@ class QuickMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
-    layout.menu(GeneralMenu.bl_idname, text='(1) General')
-    layout.menu(SelectMenu.bl_idname, text='(2) Select')
-    layout.menu(ModelingMenu.bl_idname, text='(3) Modeling')
-    layout.menu(ConvertMenu.bl_idname, text='(4) Convert/Modify')
+    draw_menu(self, app['items'])
     layout.separator()
-    layout.menu(DeleteSplitMenu.bl_idname, text='(Q) Delete/Split')
-    layout.menu(UVTexturesMenu.bl_idname, text='(W) UV/Textures')
-    layout.menu(BooleanMenu.bl_idname, text='(E) Boolean/Knife')
-    layout.menu(AnimationMenu.bl_idname, text='(R) Animation')
-    layout.separator()
-    layout.menu(SnappingMenu.bl_idname, text='(A) Snapping')
-    layout.menu(ToolMenu.bl_idname, text='(D) Tool')
-    layout.menu(ModeMenu.bl_idname, text='(F) Mode')
-    layout.separator()
-    layout.menu(FilesMenu.bl_idname, text='(Z) Files')
-    layout.separator()
-    layout.operator('qm.view', text='(V) View Selected/Camera')
-
-# @Menus
-
-class GeneralMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'General', 'OBJECT_MT_general_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('qm.join_separate', text='(1) Separate/Join')
-    layout.operator('qm.smooth', text='(2) Shade Smooth')
-    layout.operator('qm.local_view', text='(3) Local View')
-    layout.separator()
-    layout.operator('qm.set_origin', text = '(4) Origin To Geometry').type = 'GEOMETRY'
-    layout.operator('qm.set_origin', text = '(5) Origin To Bottom').type = 'BOTTOM'
-    origin_cursor = layout.operator('object.origin_set', text = '(6) Origin To Cursor')
-    origin_cursor.type, origin_cursor.center = 'ORIGIN_CURSOR', 'BOUNDS'
-    layout.separator()
-    layout.operator('qm.proportional_editing', text = '(Q) Toggle Proportional Editing')
-    layout.operator('qm.wireframe', text = '(W) Toggle Wireframe')
-    layout.operator('qm.rotate', text='(E) Rotate 90').angle = 1.5708
-    layout.operator('qm.draw', text = '(R) Draw')
-    layout.separator()
-    layout.operator('transform.mirror', text = '(A) Mirror')
-    make_single_user = layout.operator('object.make_single_user', text = '(D) Make Single User')
-    make_single_user.type = 'SELECTED_OBJECTS'
-    make_single_user.object = make_single_user.obdata = True
-    layout.operator('object.make_links_data', text = '(F) Make Links')
-    layout.operator('qm.apply_to_multiuser', text = '(G) Apply to Multiuser')
-    layout.separator()
-    layout.operator('object.parent_set', text ='(Z) Make Parent').type = 'OBJECT'
-    layout.operator('qm.correct_attributes', text ='(X) Toggle Correct Face Attributes')
-
-class SelectMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Select', 'OBJECT_MT_select_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('qm.select_ring', text='(1) Select Ring')
-    layout.operator('qm.select_more', text='(2) Select More')
-    layout.operator('qm.region_to_loop', text='(3) Region/Loop')
-    op = layout.operator('qm.select_view_geometry', text='(4) View Parallel Edges')
-    op.mode = 'EDGES'
-    op = layout.operator('qm.select_view_geometry', text='(5) View Facing Faces')
-    op.mode = 'FACES'
-    layout.separator()
-    layout.operator('mesh.faces_select_linked_flat', text='(Q) Linked Flat')
-    layout.operator('mesh.select_loose', text='(W) Select Loose')
-    layout.operator('qm.select_sharp_edges', text='(E) Select Sharp Edges')
-    layout.separator()
-    layout.operator('qm.invert_selection_connected', text='(A) Invert Selection Connected')
-    layout.separator()
-    layout.operator('mesh.select_random', text='(X) Random')
-    layout.operator('mesh.select_nth', text='(C) Checker Deselect')
-
-class ModelingMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Modeling', 'OBJECT_MT_modeling_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('qm.add_single_vertex', text='(1) Add Single Vertex')
-    layout.menu(SpinSubmenu.bl_idname)
-    layout.operator('qm.bbox', text='(3) Bbox Around Selection')
-    layout.operator('qm.add_geometry', text='(4) Add Geometry')
-    layout.separator()
-    layout.operator('mesh.normals_make_consistent', text='(Q) Recalculate Normals')
-    layout.operator('qm.extrude_both_ways', text='(E) Extrude Both Ways').dissolve_original = True
-    if is_in_editmode():
-      r = layout.operator('qm.randomize', text='(R) Randomize')
-      r.location = r.rotation = r.scale = (0, 0, 0)
-      r.offset = 0
-    else:
-      layout.operator('object.randomize_transform', text = '(R) Randomize Transform')
-    layout.separator()
-    layout.operator('qm.flatten', text='(F) Flatten')
-    layout.separator()
-    layout.operator('mesh.convex_hull', text='(X) Convex Hull')
-    layout.operator('qm.connect', text='(C) Connect Selected')
-    layout.operator('mesh.vertices_smooth', text='(V) Vertices Smooth').factor = 1
-
-class SpinSubmenu(bpy.types.Menu):
-  bl_label, bl_idname = '(2) Spin', 'OBJECT_MT_spin_submenu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('qm.spin', text='(1) Spin 90').angle = 1.5708
-    layout.operator('qm.spin', text='(2) Spin 180').angle = 3.14159265359
-    layout.operator('qm.spin', text='(3) Spin 360').angle = 6.28318530718
-    layout.separator()
-    layout.operator('qm.spin', text='(4) Spin -90').angle = -1.5708
-    layout.operator('qm.spin', text='(5) Spin -180').angle = -3.14159265359
-
-class ConvertMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Convert/Modify', 'OBJECT_MT_convert_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    op = layout.operator('qm.convert', text='(1) Curve')
-    op.type, op.edit_mode = 'CURVE', True
-    layout.operator('qm.convert', text='(2) Skin').type = 'SKIN'
-    layout.operator('qm.convert_to_mesh', text='(3) Mesh')
-    m = layout.operator('qm.mirror', text='(4) Mirror')
-    m.axis = m.bisect_flip = (False, False, False)
-    layout.operator('qm.subsurf', text='(5) Subsurf')
-    layout.separator()
-    layout.operator('qm.bevel', text='(Q) Bevel')
-    layout.operator('qm.solidify', text='(W) Solidify')
-    layout.operator('qm.triangulate', text='(E) Triangulate')
-    layout.separator()
-    layout.operator('qm.array', text='(A) Array')
-    layout.operator('qm.simple_deform', text='(F) Twist').method = 'TWIST'
-    layout.separator()
-    layout.operator('qm.clear_modifiers', text='(Z) Clear Modifiers')
-
-class DeleteSplitMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Delete/Split', 'OBJECT_MT_delete_split_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('mesh.merge', text='(1) Merge').type = 'CENTER'
-    layout.operator('mesh.remove_doubles', text='(2) Merge By Distance')
-    layout.operator('mesh.dissolve_limited', text='(3) Limited Dissolve')
-    layout.operator('mesh.decimate', text='(4) Decimate')
-    layout.operator('mesh.delete_loose', text='(5) Delete Loose')
-    layout.separator()
-    layout.operator('qm.delete_back_facing', text='(Q) Delete Back Facing Faces').both_ways = False
-    layout.operator('qm.delete_back_facing', text='(W) Delete Back/Front Facing Faces').both_ways = True
-    layout.operator('mesh.edge_split', text='(E) Edge Split').type = 'EDGE'
-    layout.operator('qm.separate_by_loose_parts', text='(R) Separate By Loose Parts')
-    layout.separator()
-    layout.operator('mesh.split', text='(S) Split')
-
-class UVTexturesMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'UV', 'OBJECT_MT_uvtextures_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('qm.mark_seam', text='(1) Mark Seam').clear = False
-    layout.operator('qm.mark_seam', text='(2) Clear Seam').clear = True
-    layout.separator()
-    layout.operator('uv.unwrap', text='(3) Unwrap')
-    layout.operator('qm.straighten_uvs', text='(4) Straighten UVs')
-    layout.operator('uv.project_from_view', text='(5) View Project')
-    layout.separator()
-    layout.operator('qm.mark_seams_sharp', text='(Q) Mark Seams Sharp')
-    layout.operator('qm.mark_seams_from_islands', text='(W) Mark Seams From Islands')
-    layout.separator()
-    layout.operator('qm.set_vertex_color', text='(D) Set Vertex Color')
-    layout.operator('qm.select_by_vertex_color', text='(F) Select By Vertex Color')
-    layout.separator()
-    layout.operator('qm.bake_id_map', text='(G) Bake ID Map')
-
-class BooleanMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Boolean', 'OBJECT_MT_boolean_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('qm.boolean', text='(1) Union').operation = 'UNION'
-    layout.operator('qm.boolean', text='(2) Difference').operation = 'DIFFERENCE'
-    layout.operator('qm.boolean', text='(3) Intersect').operation = 'INTERSECT'
-    layout.separator()
-    layout.operator('qm.plane_intersect', text='(Q) Plane Intersect Island').mode = 'ISLAND'
-    layout.operator('qm.plane_intersect', text='(W) Plane Intersect Selection').mode = 'SELECTION'
-    layout.operator('qm.knife_intersect', text='(E) Knife Intersect')
-    layout.operator('qm.intersect', text='(R) Projection Intersect')
-    layout.separator()
-    layout.operator('qm.weld_edges_into_faces', text='(A) Weld Edges Into Faces')
-
-class AnimationMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Animation', 'OBJECT_MT_animation_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('qm.parent_to_new_empty', text='(1) Parent To New Empty')
-    layout.operator('object.constraint_add_with_targets', text='(2) Add Constraint')
-    layout.separator()
-    layout.operator('qm.clear_drivers', text='(Z) Clear Drivers')
-    layout.operator('qm.set_use_self_drivers', text='(X) Drivers Set Use Self')
-
-class SnappingMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Snapping', 'OBJECT_MT_snapping_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('qm.transform_pivot', text='(1) Bounding Box Pivot').type = 'BOUNDING_BOX_CENTER'
-    layout.operator('qm.transform_pivot', text='(2) Individual Pivot').type = 'INDIVIDUAL_ORIGINS'
-    layout.operator('qm.transform_pivot', text='(3) 3D Cursor Pivot').type = 'CURSOR'
-    layout.separator()
-    layout.operator('qm.transform_orientation', text='(4) Global Orientation').type = 'GLOBAL'
-    layout.operator('qm.transform_orientation', text='(5) Normal Orientation').type = 'NORMAL'
-    layout.operator('qm.transform_orientation', text='(6) New Orientation').type = 'CREATE'
-    layout.separator()
-    op = layout.operator('qm.set_snap', text='(V) Vertices')
-    op.mode, op.type = 'GENERAL', 'VERTEX'
-    op = layout.operator('qm.set_snap', text='(F) Faces')
-    op.mode, op.type = 'GENERAL', 'FACE'
-    op = layout.operator('qm.set_snap', text='(R) Grid')
-    op.mode, op.type = 'GENERAL', 'INCREMENT'
-    layout.separator()
-    op = layout.operator('qm.set_snap', text='(C) Closest')
-    op.mode, op.type = 'TARGET', 'CLOSEST'
-    op = layout.operator('qm.set_snap', text='(E) Center')
-    op.mode, op.type = 'TARGET', 'CENTER'
-
-class ToolMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Tool', 'OBJECT_MT_tool_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('qm.tool', text='(1) Add Cube').tool_name = 'builtin.primitive_cube_add'
-    layout.operator('qm.tool', text='(2) Add Cylinder').tool_name = 'builtin.primitive_cylinder_add'
-    layout.operator('qm.tool', text='(3) Add Sphere').tool_name = 'builtin.primitive_uv_sphere_add'
-    layout.separator()
-    layout.operator('qm.tool', text='(Q) Shear').tool_name = 'builtin.shear'
-
-class ModeMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Mode', 'OBJECT_MT_mode_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    layout.operator('qm.mode_set', text='(Q) Paint').mode = 'TEXTURE_PAINT'
-    layout.operator('qm.mode_set', text='(W) Edit').mode = 'EDIT'
-    layout.separator()
-    layout.operator('qm.mode_set', text='(A) Sculpt').mode = 'SCULPT'
-    layout.operator('qm.mode_set', text='(S) Object').mode = 'OBJECT'
-    layout.separator()
-    layout.operator('qm.mode_set', text='(Z) Weight Paint').mode = 'WEIGHT_PAINT'
-    layout.operator('qm.mode_set', text='(X) Pose').mode = 'POSE'
-
-class FilesMenu(bpy.types.Menu):
-  bl_label, bl_idname = 'Files', 'OBJECT_MT_files_menu'
-
-  def draw(self, context):
-    layout = self.layout
-    op = layout.operator('qm.export', text='(Z) Export FBX')
-    op.mode, op.batch_mode = 'fbx', 'OFF'
-    op = layout.operator('qm.export', text='(X) Export FBX Collections')
-    op.mode, op.batch_mode = 'fbx', 'COLLECTION'
-    layout.operator('qm.export', text='(A) Export GLB').mode = 'glb'
-    layout.operator('qm.reimport_textures', text='(C) Reimport All Textures')
-    layout.operator('qm.repack_all_data', text='(V) Repack All Data')
+    layout.operator('qm.edit_items', text='Edit')
+    layout.operator('qm.load_items', text='Reload')
 
 # @Preferences
 
@@ -1934,6 +1712,8 @@ class QuickMenuProperties(bpy.types.PropertyGroup):
 
 classes = (
   QuickMenuOperator,
+  EditMenuItemsOperator,
+  ReloadMenuItemsOperator,
 
   JoinSeparateOperator, SmoothOperator, LocalViewOperator, SetOriginOperator,
   ProportionalEditingOperator, WireframeOperator, RotateOperator, DrawOperator, ApplyToMultiuserOperator, CorrectAttributesOperator,
@@ -1949,13 +1729,100 @@ classes = (
   IntersectOperator, TransformOrientationOperator, TransformPivotOperator, SetSnapOperator, ModeOperator, ToolOperator,
   ReimportTexturesOperator, RepackAllData, ExportOperator, ViewOperator,
 
-  QuickMenu, GeneralMenu, SelectMenu, ModelingMenu, SpinSubmenu, ConvertMenu, DeleteSplitMenu,
-  UVTexturesMenu, AnimationMenu, BooleanMenu, SnappingMenu, ToolMenu, ModeMenu, FilesMenu,
-
-  QuickMenuPreferences, QuickMenuProperties
+  QuickMenu, QuickMenuPreferences, QuickMenuProperties
 )
 
-keymaps = []
+def draw_menu(self, items):
+  layout = self.layout
+  i = 0
+  for item in items:
+    if 'mode' in item and item['mode'] != bpy.context.mode:
+      continue
+    title = item['title']
+    i += 1
+    if i < 10 and not title.startswith('('):
+      title = f'({i}) {title}'
+    if 'children' in item:
+      layout.menu(item['idname'], text=title)
+    elif item['title'] == '[Separator]':
+      layout.separator()
+      i -= 1
+    else:
+      if 'operator' not in item:
+        raise Exception(f'Item {title} doesn\'t have an "operator" field')
+      operator = layout.operator(item['operator'], text=title)
+      if 'params' in item:
+        for key, val in item['params'].items():
+          if isinstance(val, list): val = tuple(val)
+          operator[key] = val
+
+def register_menu_type(menu_definition):
+  title = menu_definition['title']
+  items = menu_definition['children']
+  idname = menu_definition['idname']
+
+  def draw(self, context):
+    draw_menu(self, items)
+
+  menu_type = type(idname + "Menu", (bpy.types.Menu,), {
+    'bl_idname': idname,
+    'bl_label': title,
+    'draw': draw
+  })
+
+  bpy.utils.register_class(menu_type)
+
+def get_or_create_menu_definition_at_path(path, items):
+  for item in items:
+    if item['title'] == path[0]:
+      if len(path) == 1:
+        return item
+      else:
+        return get_or_create_menu_definition_at_path(path[1:], item['children'])
+
+  menu_definition = {
+    'title': path[0],
+    'children': [],
+    'idname': 'OBJECT_MT_Menu' + re.sub('[^A-Za-z0-9]+', '', path[0])
+  }
+
+  register_menu_type(menu_definition)
+  items.append(menu_definition)
+  return menu_definition
+
+def load_items(config_path):
+  app['items'] = []
+
+  if not os.path.exists(config_path):
+    raise Exception('Config file not found')
+
+  with open(config_path, 'r') as config:
+    data = config.read()
+  
+  try:
+    obj = json.loads(data)
+  except:
+    raise Exception('Decoding JSON has failed')
+
+  if not 'items' in obj:
+    raise Exception('No items in config')
+ 
+  for item in obj['items']:
+    # Split by "/"
+    path = re.split('\s*\/\s*', item['path'])
+    item['title'] = path[-1]
+    if len(path) == 1:
+      app['items'].append(item)
+    else:
+      menu = get_or_create_menu_definition_at_path(path[:-1], app['items'])
+      menu['children'].append(item)
+
+def get_config_path():
+  if __name__ == '__main__':
+    # For testing purposes:
+    return 'G:/My Drive/Files/blender/addons/quickmenu/config.json'
+  else:
+    return os.path.join(__location__, 'config.json')
 
 def register():
   for c in classes: bpy.utils.register_class(c)
@@ -1969,12 +1836,13 @@ def register():
   if kc:
     km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
     kmi = km.keymap_items.new(QuickMenuOperator.bl_idname, type=hotkey.upper(), value='PRESS')
-    keymaps.append((km, kmi))
+    app['keymaps'].append((km, kmi))
+  load_items(get_config_path())
 
 def unregister():
   for c in classes: bpy.utils.unregister_class(c)
   del bpy.types.Scene.quick_menu
-  for km, kmi in keymaps:
+  for km, kmi in app['keymaps']:
     km.keymap_items.remove(kmi)
   keymaps.clear()
 
