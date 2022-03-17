@@ -1798,8 +1798,8 @@ def get_or_create_menu_definition_at_path(path, items):
 def load_items(config_path):
   app['items'] = []
 
-  if not os.path.exists(config_path):
-    raise Exception('Config file not found')
+  # if not os.path.exists(config_path):
+  #   raise Exception('Config file not found')
 
   with open(config_path, 'r') as config:
     data = config.read()
@@ -1827,6 +1827,7 @@ def get_config_path():
     # For testing purposes:
     return 'G:/My Drive/Files/blender/addons/quickmenu/config.json'
   else:
+    print(__location__)
     return os.path.join(__location__, 'config.json')
 
 def register():
@@ -1849,6 +1850,6 @@ def unregister():
   del bpy.types.Scene.quick_menu
   for km, kmi in app['keymaps']:
     km.keymap_items.remove(kmi)
-  keymaps.clear()
+  app['keymaps'].clear()
 
 if __name__ == '__main__': register()
