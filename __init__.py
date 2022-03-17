@@ -155,6 +155,8 @@ def modifier_exists(modifier_type):
   return len([m for m in bpy.context.object.modifiers if m.type == modifier_type]) > 0
 
 def move_modifier_on_top(obj, modifier_name):
+  if obj.modifiers.find(modifier_name) == -1:
+    return
   while obj.modifiers.find(modifier_name) != 0:
     bpy.ops.object.modifier_move_up(modifier=modifier_name)
 
@@ -1360,6 +1362,7 @@ class BooleanOperator(bpy.types.Operator):
   boundary_extend: FloatProperty(name='Boundary Extend', default=BOOLEAN_BOUNDARY_EXTEND, min=0)
   use_self: BoolProperty(name='Self', default=False)
   recalculate_normals: BoolProperty(name='Recalculate Normals', default=True)
+  move_on_top: BoolProperty(name='Move Modifier On Top', default=True)
 
   def execute(self, context):
     if self.recalculate_normals and is_in_editmode(): bpy.ops.mesh.normals_make_consistent(inside=False)
@@ -1383,6 +1386,8 @@ class BooleanOperator(bpy.types.Operator):
         boolean = context.object.modifiers[-1]
         boolean.object = obj
         boolean.object, boolean.operation, boolean.solver = obj, self.operation, self.solver
+        if self.move_on_top:
+          move_modifier_on_top(active, boolean.name)
         select(obj)
         context.object.display_type = 'BOUNDS'
         context.object.hide_render = True
