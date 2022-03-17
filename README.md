@@ -17,6 +17,8 @@ Compatible with Blender `3.x.x`
 
 Every operator is described in the [manual](https://github.com/passivestar/quickmenu/blob/main/MANUAL.md).
 
+As of version `2.0.0`, quick menu is completely customizable. Find out how to do it in the [customization guide](https://github.com/passivestar/quickmenu/blob/main/CUSTOMIZATION.md).
+
 Join our [DISCORD for discussion](https://discord.gg/pPHQ5HQ).
 
 ## Design choices
