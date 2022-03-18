@@ -616,6 +616,8 @@ class BboxOperator(bpy.types.Operator):
 
   def execute(self, context):
     original_object = context.object
+
+    # Separate the selected geometry into a temporary copy
     bpy.ops.mesh.duplicate()
     bpy.ops.mesh.separate(type='SELECTED')
     new_object = context.selected_objects[-1]
@@ -625,6 +627,8 @@ class BboxOperator(bpy.types.Operator):
     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
     cursor_to_selected()
     bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
+
+    # Add a bounding box around the new object
     bpy.ops.mesh.primitive_cube_add()
     cube = context.selected_objects[-1]
     cube.dimensions = new_object.dimensions
@@ -633,8 +637,12 @@ class BboxOperator(bpy.types.Operator):
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.remove_doubles(threshold=0.0001)
     bpy.ops.object.editmode_toggle()
+
+    # Remove the temporary copy
     select(new_object)
     bpy.ops.object.delete()
+
+    # Join the bounding box with original geometry
     select(original_object)
     cube.select_set(True)
     bpy.ops.object.join()
