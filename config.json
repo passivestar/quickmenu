@@ -19,22 +19,22 @@
       "path": "General/Origin To Geometry",
       "operator": "qm.set_origin",
       "params": {
-        "type": "GEOMETRY"
+        "type": 0
       }
     },
     {
       "path": "General/Origin To Bottom",
       "operator": "qm.set_origin",
       "params": {
-        "type": "BOTTOM"
+        "type": 1
       }
     },
     {
       "path": "General/Origin To Cursor",
       "operator": "object.origin_set",
       "params": {
-        "type": "ORIGIN_CURSOR",
-        "center": "BOUNDS"
+        "type": 2,
+        "center": 1
       }
     },
     {
@@ -70,7 +70,7 @@
       "path": "General/(D) Make Single User",
       "operator": "object.make_single_user",
       "params": {
-        "type": "SELECTED_OBJECTS",
+        "type": 0,
         "object": true,
         "obdata": true
       }
@@ -110,14 +110,14 @@
       "path": "Select/View Parallel Edges",
       "operator": "qm.select_view_geometry",
       "params": {
-        "mode": "EDGES"
+        "mode": 0
       }
     },
     {
       "path": "Select/View Facing Faces",
       "operator": "qm.select_view_geometry",
       "params": {
-        "mode": "FACES"
+        "mode": 1
       }
     },
     {
@@ -271,7 +271,7 @@
       "path": "Convert-Modify/Curve",
       "operator": "qm.convert",
       "params": {
-        "type": "CURVE",
+        "type": 0,
         "edit_mode": true
       }
     },
@@ -279,7 +279,7 @@
       "path": "Convert-Modify/Skin",
       "operator": "qm.convert",
       "params": {
-        "type": "SKIN"
+        "type": 1
       }
     },
     {
@@ -349,7 +349,7 @@
       "path": "(Q) Delete-Split/Merge",
       "operator": "mesh.merge",
       "params": {
-        "type": "CENTER"
+        "type": 0
       }
     },
     {
@@ -389,7 +389,7 @@
       "path": "(Q) Delete-Split/(E) Edge Split",
       "operator": "mesh.edge_split",
       "params": {
-        "type": "EDGE"
+        "type": 0
       }
     },
     {
@@ -459,21 +459,21 @@
       "path": "(E) Boolean-Knife/Union",
       "operator": "qm.boolean",
       "params": {
-        "operation": "UNION"
+        "operation": 1
       }
     },
     {
       "path": "(E) Boolean-Knife/Difference",
       "operator": "qm.boolean",
       "params": {
-        "operation": "DIFFERENCE"
+        "operation": 0
       }
     },
     {
       "path": "(E) Boolean-Knife/Intersect",
       "operator": "qm.boolean",
       "params": {
-        "operation": "INTERSECT"
+        "operation": 2
       }
     },
     {
@@ -483,14 +483,14 @@
       "path": "(E) Boolean-Knife/(Q) Plane Intersect Island",
       "operator": "qm.plane_intersect",
       "params": {
-        "mode": "ISLAND"
+        "mode": 1
       }
     },
     {
       "path": "(E) Boolean-Knife/(W) Plane Intersect Selection",
       "operator": "qm.plane_intersect",
       "params": {
-        "mode": "SELECTION"
+        "mode": 0
       }
     },
     {
