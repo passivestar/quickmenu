@@ -36,6 +36,11 @@ def select(obj):
   obj.select_set(True)
   bpy.context.view_layer.objects.active = obj
 
+def deselect_object_geometry(obj):
+  for v in bmesh.from_edit_mesh(obj.data).verts:
+    v.select = False
+  bmesh.update_edit_mesh(obj.data)
+
 def get_selected_non_active():
   return [o for o in bpy.context.selected_objects if o != bpy.context.object][0]
 
@@ -173,11 +178,21 @@ def add_or_get_modifier(modifier_type, move_on_top=False):
 def is_in_editmode():
   return bpy.context.mode == 'EDIT_MESH'
 
-def anything_is_selected_in_editmode():
-  return True in [v.select for v in bmesh.from_edit_mesh(bpy.context.edit_object.data).verts]
+def anything_is_selected_in_editmode(obj = None):
+  if obj != None:
+    return True in [v.select for v in bmesh.from_edit_mesh(obj.data).verts]
+  for o in bpy.context.objects_in_mode:
+    if True in [v.select for v in bmesh.from_edit_mesh(o.data).verts]:
+      return True
+  return False
 
-def anything_is_hidden_in_editmode():
-  return True in [v.hide for v in bmesh.from_edit_mesh(bpy.context.edit_object.data).verts]
+def anything_is_hidden_in_editmode(obj = None):
+  if obj != None:
+    return True in [v.hide for v in bmesh.from_edit_mesh(obj.data).verts]
+  for o in bpy.context.objects_in_mode:
+    if True in [v.hide for v in bmesh.from_edit_mesh(o.data).verts]:
+      return True
+  return False
 
 def modal_invoke(operator, context, event):
   operator.modal_first_mouse_x = event.mouse_x
@@ -529,37 +544,38 @@ class SelectViewGeometryOperator(bpy.types.Operator):
     return self.execute(context)
 
   def execute(self, context):
-    obj = context.edit_object
-    mesh = obj.data
-    bm = bmesh.from_edit_mesh(mesh)
-    bm.faces.active = None
-    vector = view_snapped_vector() if self.snap_view_axis else view_vector()
-    if self.mode == 'EDGES':
-      bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='EDGE')
-      in_selection = self.in_selection and anything_is_selected_in_editmode()
-      if in_selection: bpy.ops.mesh.hide(unselected=True)
-      bpy.ops.mesh.select_all(action='DESELECT')
-      for e in bm.edges:
-        edge_vector = e.verts[0].co - e.verts[1].co
-        if edge_vector.length != 0:
-          parallel = abs(edge_vector.angle(vector) - (math.pi / 2)) > self.threshold
-        else:
-          parallel = False
-        if self.negative: parallel = not parallel
-        e.select = parallel
-    elif self.mode == 'FACES':
-      bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE')
-      in_selection = self.in_selection and anything_is_selected_in_editmode()
-      if in_selection: bpy.ops.mesh.hide(unselected=True)
-      bpy.ops.mesh.select_all(action='DESELECT')
-      for f in bm.faces:
-        angle = (math.pi / 2) - f.normal.angle(vector)
-        if self.back_faces: angle = abs(angle)
-        facing = angle > self.threshold
-        if self.negative: facing = not facing
-        f.select = facing
-    bmesh.update_edit_mesh(mesh)
-    if in_selection: bpy.ops.mesh.reveal(select=False)
+    for obj in bpy.context.objects_in_mode:
+      mesh = obj.data
+      bm = bmesh.from_edit_mesh(mesh)
+      bm.faces.active = None
+      vector = view_snapped_vector() if self.snap_view_axis else view_vector()
+      if self.mode == 'EDGES':
+        bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='EDGE')
+        in_selection = self.in_selection and anything_is_selected_in_editmode(obj)
+        print(in_selection)
+        if in_selection: bpy.ops.mesh.hide(unselected=True)
+        deselect_object_geometry(obj)
+        for e in bm.edges:
+          edge_vector = e.verts[0].co - e.verts[1].co
+          if edge_vector.length != 0:
+            parallel = abs(edge_vector.angle(vector) - (math.pi / 2)) > self.threshold
+          else:
+            parallel = False
+          if self.negative: parallel = not parallel
+          e.select = parallel
+      elif self.mode == 'FACES':
+        bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE')
+        in_selection = self.in_selection and anything_is_selected_in_editmode(obj)
+        if in_selection: bpy.ops.mesh.hide(unselected=True)
+        deselect_object_geometry(obj)
+        for f in bm.faces:
+          angle = (math.pi / 2) - f.normal.angle(vector)
+          if self.back_faces: angle = abs(angle)
+          facing = angle > self.threshold
+          if self.negative: facing = not facing
+          f.select = facing
+      bmesh.update_edit_mesh(mesh)
+      if in_selection: bpy.ops.mesh.reveal(select=False)
     return {'FINISHED'}
 
 class AddSingleVertexOperator(bpy.types.Operator):
