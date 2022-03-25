@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 0, 0),
+  'version': (2, 0, 3),
   'author': 'passivestar',
   'blender': (3, 1, 0),
   'location': 'Press the bound hotkey in 3D View',
