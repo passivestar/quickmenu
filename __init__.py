@@ -1681,12 +1681,19 @@ class ExportOperator(bpy.types.Operator):
   mode: StringProperty(name='Mode', default='fbx')
   apply_modifiers: BoolProperty(name='Apply Modifiers', default=True)
   batch_mode: StringProperty(name='Batch Mode', default='OFF')
+  remove_suffix: BoolProperty(name='Remove Suffix', default=True)
 
   def execute(self, context):
     if bpy.data.filepath == '':
       self.report({'ERROR'}, 'File is not saved')
       return {'FINISHED'}
+
     directory, file = get_paths()
+
+    # remove _a, _b, _c, etc suffix if present
+    if self.remove_suffix:
+      file = re.sub('_[a-cA-C]$', '', file)
+
     if self.mode == 'glb':
       bpy.ops.export_scene.gltf(
         export_format='GLB',
