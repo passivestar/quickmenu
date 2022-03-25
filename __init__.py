@@ -1649,13 +1649,13 @@ class ToolOperator(bpy.types.Operator):
     bpy.ops.wm.tool_set_by_id(name=self.tool_name)
     return {'FINISHED'}
 
-class RepackAllData(bpy.types.Operator):
-  """Repack All Data"""
-  bl_idname, bl_label, bl_options = 'qm.repack_all_data', 'Repack All Data', {'REGISTER', 'UNDO'}
+class SaveAndReloadOperator(bpy.types.Operator):
+  """Save and Reload"""
+  bl_idname, bl_label, bl_options = 'qm.save_and_reload', 'Save And Reload', {'REGISTER', 'UNDO'}
 
   def execute(self, context):
-    bpy.ops.file.pack_all()
-    bpy.ops.file.unpack_all(method='WRITE_LOCAL')
+    bpy.ops.wm.save_mainfile()
+    bpy.ops.wm.revert_mainfile()
     return {'FINISHED'}
 
 class ReimportTexturesOperator(bpy.types.Operator):
@@ -1664,6 +1664,15 @@ class ReimportTexturesOperator(bpy.types.Operator):
 
   def execute(self, context):
     for item in bpy.data.images: item.reload()
+    return {'FINISHED'}
+
+class RepackAllData(bpy.types.Operator):
+  """Repack All Data"""
+  bl_idname, bl_label, bl_options = 'qm.repack_all_data', 'Repack All Data', {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    bpy.ops.file.pack_all()
+    bpy.ops.file.unpack_all(method='WRITE_LOCAL')
     return {'FINISHED'}
 
 class ExportOperator(bpy.types.Operator):
@@ -1756,7 +1765,7 @@ classes = (
   SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMap, BooleanOperator, WeldEdgesIntoFacesOperator,
   ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator, PlaneIntersectOperator, KnifeIntersectOperator,
   IntersectOperator, TransformOrientationOperator, TransformPivotOperator, SetSnapOperator, ModeOperator, ToolOperator,
-  ReimportTexturesOperator, RepackAllData, ExportOperator, ViewOperator,
+  SaveAndReloadOperator, ReimportTexturesOperator, RepackAllData, ExportOperator, ViewOperator,
 
   QuickMenu, QuickMenuPreferences, QuickMenuProperties
 )
@@ -1849,7 +1858,7 @@ def load_items(config_path):
 def get_config_path():
   if __name__ == '__main__':
     # For testing purposes:
-    return 'G:/My Drive/Files/blender/addons/quickmenu/config.json'
+    return 'C:/Files/blender/addons/quickmenu/config.json'
   else:
     print(__location__)
     return os.path.join(__location__, 'config.json')

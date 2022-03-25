@@ -701,7 +701,18 @@
       }
     },
     {
-      "path": "[Separator]"
+      "path": "(Z) Files/(A) Export GLB",
+      "operator": "qm.export",
+      "params": {
+        "mode": "glb"
+      }
+    },
+    {
+      "path": "(Z) Files/(S) Save And Reload",
+      "operator": "qm.save_and_reload"
+    },
+    {
+      "path": "(Z) Files/[Separator]"
     },
     {
       "path": "(Z) Files/(Z) Export FBX",
@@ -717,13 +728,6 @@
       "params": {
         "mode": "fbx",
         "batch_mode": "COLLECTION"
-      }
-    },
-    {
-      "path": "(Z) Files/(A) Export GLB",
-      "operator": "qm.export",
-      "params": {
-        "mode": "glb"
       }
     },
     {
