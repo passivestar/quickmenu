@@ -712,6 +712,10 @@
       "operator": "qm.save_and_reload"
     },
     {
+      "path": "(Z) Files/(D) Reload",
+      "operator": "wm.revert_mainfile"
+    },
+    {
       "path": "(Z) Files/[Separator]"
     },
     {
