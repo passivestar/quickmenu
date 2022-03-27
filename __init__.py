@@ -420,6 +420,20 @@ class ApplyToMultiuserOperator(bpy.types.Operator):
     bpy.ops.object.make_links_data(type='OBDATA')
     return {'FINISHED'}
 
+class ConvertToInstancesOperator(bpy.types.Operator):
+  """Convert Geometry Node Instances To Object Instances"""
+  bl_idname, bl_label, bl_options = 'qm.convert_to_instances', 'Convert To Instances', {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    original_object = context.object
+    # Convert to instances:
+    bpy.ops.object.duplicates_make_real(use_base_parent=True)
+    # Clear modifiers on new objects
+    for obj in context.selected_objects: obj.modifiers.clear()
+    # Hide the original:
+    original_object.modifiers["GeometryNodes"].show_viewport = False
+    return {'FINISHED'}
+
 class CorrectAttributesOperator(bpy.types.Operator):
   """Toggle Correct Face Attributes"""
   bl_idname, bl_label, bl_options = 'qm.correct_attributes', 'Toggle Correct Face Attributes', {'REGISTER', 'UNDO'}
@@ -621,7 +635,7 @@ class BboxOperator(bpy.types.Operator):
     bpy.ops.mesh.duplicate()
     bpy.ops.mesh.separate(type='SELECTED')
     new_object = context.selected_objects[-1]
-    for m in new_object.modifiers: new_object.modifiers.remove(m)
+    new_object.modifiers.clear()
     bpy.ops.object.editmode_toggle()
     select(new_object)
     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
@@ -1066,7 +1080,8 @@ class ClearModifiersOperator(bpy.types.Operator):
   bl_idname, bl_label, bl_options = 'qm.clear_modifiers', 'Clear Modifiers', {'REGISTER', 'UNDO'}
 
   def execute(self, context):
-    context.object.modifiers.clear()
+    for obj in context.selected_objects:
+      obj.modifiers.clear()
     return {'FINISHED'}
 
 class DeleteBackFacingOperator(bpy.types.Operator):
@@ -1760,8 +1775,8 @@ classes = (
   EditMenuItemsOperator,
   ReloadMenuItemsOperator,
 
-  JoinSeparateOperator, SmoothOperator, LocalViewOperator, SetOriginOperator,
-  ProportionalEditingOperator, WireframeOperator, RotateOperator, DrawOperator, ApplyToMultiuserOperator, CorrectAttributesOperator,
+  JoinSeparateOperator, SmoothOperator, LocalViewOperator, SetOriginOperator, ProportionalEditingOperator,
+  WireframeOperator, RotateOperator, DrawOperator, ApplyToMultiuserOperator, ConvertToInstancesOperator, CorrectAttributesOperator,
   SelectRingOperator, SelectMoreOperator, RegionToLoopOperator, InvertSelectionConnectedOperator,
   SelectSharpEdgesOperator, SelectViewGeometryOperator, AddSingleVertexOperator, SpinOperator,
   BboxOperator, ConnectOperator, AddGeometryOperator, ExtrudeBothWaysOperator, FlattenOperator,

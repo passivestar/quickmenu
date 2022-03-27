@@ -95,6 +95,10 @@
       "operator": "qm.correct_attributes"
     },
     {
+      "path": "General/(V) Convert To Instances",
+      "operator": "qm.convert_to_instances"
+    },
+    {
       "path": "Select/Select Ring",
       "operator": "qm.select_ring"
     },
