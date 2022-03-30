@@ -151,7 +151,13 @@
     },
     {
       "path": "Select/(X) Random",
-      "operator": "mesh.select_random"
+      "operator": "mesh.select_random",
+      "mode": "EDIT_MESH"
+    },
+    {
+      "path": "Select/(X) Random",
+      "operator": "object.select_random",
+      "mode": "OBJECT"
     },
     {
       "path": "Select/(C) Checker Deselect",
