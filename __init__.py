@@ -1172,6 +1172,42 @@ class StraightenUVsOperator(bpy.types.Operator):
     bpy.ops.uv.follow_active_quads()
     return {'FINISHED'}
 
+class UVProjectModifierOperator(bpy.types.Operator):
+  """UV Project Modifier"""
+  bl_idname, bl_label, bl_options = 'qm.uv_project_modifier', 'UV Project Modifier', {'REGISTER', 'UNDO'}
+
+  @classmethod
+  def poll(cls, context):
+    return context.object != None
+
+  def execute(self, context):
+    bpy.ops.object.modifier_add(type='UV_PROJECT')
+    uv_project = context.object.modifiers[-1]
+    uv_project.uv_layer = "UVMap"
+    uv_project.projector_count = 10
+
+    deg45 = math.pi / 4
+    deg90 = math.pi / 2
+
+    rotations = [
+      Vector((0, 0, 0)), Vector((math.pi, 0, 0)),
+      Vector((deg90, 0, 0)), Vector((deg90, 0, deg45)), Vector((deg90, 0, deg45 * 2)),
+      Vector((deg90, 0, deg45 * 3)), Vector((deg90, 0, deg45 * 4)), Vector((deg90, 0, deg45 * 5)),
+      Vector((deg90, 0, deg45 * 6)), Vector((deg90, 0, deg45 * 7))
+    ]
+
+    bpy.ops.object.empty_add(type='CUBE', location=context.object.location)
+    container = bpy.context.object
+    container.name = "ProjectorContainer";
+
+    for i, rot in enumerate(rotations):
+      bpy.ops.object.empty_add(type='SINGLE_ARROW', location=(0, 0, 0), rotation=rot)
+      bpy.context.object.name = "Projector";
+      bpy.context.object.parent = container
+      uv_project.projectors[i].object = bpy.context.object
+
+    return {'FINISHED'}
+
 class MarkSeamOperator(bpy.types.Operator):
   """Mark Or Clear Seam. Hold shift to clear seam"""
   bl_idname, bl_label, bl_options = 'qm.mark_seam', 'Mark Seam', {'REGISTER', 'UNDO'}
@@ -1783,10 +1819,8 @@ classes = (
   RandomizeOperator, ConvertOperator, ConvertToMeshOperator, MirrorOperator, SubsurfOperator,
   BevelOperator, SolidifyOperator, TriangulateOperator, ArrayOperator,
   SimpleDeformOperator, ClearModifiersOperator, DeleteBackFacingOperator,
-  SeparateByLoosePartsOperator, StraightenUVsOperator, MarkSeamOperator, MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator,
-  SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMap, BooleanOperator, WeldEdgesIntoFacesOperator,
-  ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator, PlaneIntersectOperator, KnifeIntersectOperator,
-  IntersectOperator, TransformOrientationOperator, TransformPivotOperator, SetSnapOperator, ModeOperator, ToolOperator,
+  SeparateByLoosePartsOperator, StraightenUVsOperator, UVProjectModifierOperator, MarkSeamOperator, 
+  MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMap, BooleanOperator, WeldEdgesIntoFacesOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator, PlaneIntersectOperator, KnifeIntersectOperator, IntersectOperator, TransformOrientationOperator, TransformPivotOperator, SetSnapOperator, ModeOperator, ToolOperator,
   SaveAndReloadOperator, ReimportTexturesOperator, RepackAllData, ExportOperator, ViewOperator,
 
   QuickMenu, QuickMenuPreferences, QuickMenuProperties

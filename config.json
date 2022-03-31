@@ -440,6 +440,10 @@
       "operator": "uv.project_from_view"
     },
     {
+      "path": "(W) UV-Textures/UV Project Modifier",
+      "operator": "qm.uv_project_modifier"
+    },
+    {
       "path": "(W) UV-Textures/[Separator]"
     },
     {
