@@ -263,6 +263,10 @@
       "path": "Modeling/[Separator]"
     },
     {
+      "path": "Modeling/(Z) Clear Sharp",
+      "operator": "qm.clear_sharp"
+    },
+    {
       "path": "Modeling/(X) Convex Hull",
       "operator": "mesh.convex_hull"
     },

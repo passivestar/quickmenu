@@ -6,9 +6,9 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 0, 3),
+  'version': (2, 1, 0),
   'author': 'passivestar',
-  'blender': (3, 1, 0),
+  'blender': (3, 1, 2),
   'location': 'Press the bound hotkey in 3D View',
   'description': 'Simplifies access to useful operators and adds new functionality',
   'category': 'Interface'
@@ -785,6 +785,20 @@ class FlattenOperator(bpy.types.Operator):
       context.scene.tool_settings.transform_pivot_point = previous_pivot
     if self.merge:
       bpy.ops.mesh.remove_doubles(threshold=0.0001, use_unselected=False, use_sharp_edge_from_normals=False)
+    return {'FINISHED'}
+
+class ClearSharpOperator(bpy.types.Operator):
+  """Clear Sharp"""
+  bl_idname, bl_label, bl_options = 'qm.clear_sharp', 'Clear Sharp', {'REGISTER', 'UNDO'}
+
+  @classmethod
+  def poll(cls, context):
+    return is_in_editmode()
+
+  def execute(self, context):
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.mark_sharp(clear=True)
+    bpy.ops.mesh.customdata_custom_splitnormals_clear()
     return {'FINISHED'}
 
 class RandomizeOperator(bpy.types.Operator):
@@ -1815,7 +1829,7 @@ classes = (
   WireframeOperator, RotateOperator, DrawOperator, ApplyToMultiuserOperator, ConvertToInstancesOperator, CorrectAttributesOperator,
   SelectRingOperator, SelectMoreOperator, RegionToLoopOperator, InvertSelectionConnectedOperator,
   SelectSharpEdgesOperator, SelectViewGeometryOperator, AddSingleVertexOperator, SpinOperator,
-  BboxOperator, ConnectOperator, AddGeometryOperator, ExtrudeBothWaysOperator, FlattenOperator,
+  BboxOperator, ConnectOperator, AddGeometryOperator, ExtrudeBothWaysOperator, ClearSharpOperator, FlattenOperator,
   RandomizeOperator, ConvertOperator, ConvertToMeshOperator, MirrorOperator, SubsurfOperator,
   BevelOperator, SolidifyOperator, TriangulateOperator, ArrayOperator,
   SimpleDeformOperator, ClearModifiersOperator, DeleteBackFacingOperator,
