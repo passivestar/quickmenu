@@ -363,7 +363,7 @@
       "path": "(Q) Delete-Split/Merge",
       "operator": "mesh.merge",
       "params": {
-        "type": 0
+        "type": "CENTER"
       }
     },
     {
