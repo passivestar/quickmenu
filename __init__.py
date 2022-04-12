@@ -159,11 +159,8 @@ def iterate_islands(operator, callback, restore_selection=False):
 def modifier_exists(modifier_type):
   return len([m for m in bpy.context.object.modifiers if m.type == modifier_type]) > 0
 
-def move_modifier_on_top(obj, modifier_name):
-  if obj.modifiers.find(modifier_name) == -1:
-    return
-  while obj.modifiers.find(modifier_name) != 0:
-    bpy.ops.object.modifier_move_up(modifier=modifier_name)
+def move_modifier_on_top(modifier_name):
+  bpy.ops.object.modifier_move_to_index(modifier=modifier_name, index=0)
 
 def add_or_get_modifier(modifier_type, move_on_top=False):
   if modifier_exists(modifier_type):
@@ -172,7 +169,7 @@ def add_or_get_modifier(modifier_type, move_on_top=False):
         return modifier
   bpy.ops.object.modifier_add(type=modifier_type)
   modifier = bpy.context.object.modifiers[-1]
-  if move_on_top: move_modifier_on_top(bpy.context.object, modifier.name)
+  if move_on_top: move_modifier_on_top(modifier.name)
   return modifier
 
 def is_in_editmode():
@@ -1476,7 +1473,7 @@ class BooleanOperator(bpy.types.Operator):
         boolean.object = obj
         boolean.object, boolean.operation, boolean.solver = obj, self.operation, self.solver
         if self.move_on_top:
-          move_modifier_on_top(active, boolean.name)
+          move_modifier_on_top(boolean.name)
         select(obj)
         context.object.display_type = 'BOUNDS'
         context.object.hide_render = True
