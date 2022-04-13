@@ -1192,6 +1192,7 @@ class UVProjectModifierOperator(bpy.types.Operator):
     return context.object != None
 
   def execute(self, context):
+    obj_name = context.object.name
     bpy.ops.object.modifier_add(type='UV_PROJECT')
     uv_project = context.object.modifiers[-1]
     uv_project.uv_layer = "UVMap"
@@ -1208,14 +1209,16 @@ class UVProjectModifierOperator(bpy.types.Operator):
     ]
 
     bpy.ops.object.empty_add(type='CUBE', location=context.object.location)
-    container = bpy.context.object
-    container.name = "ProjectorContainer";
+    container = context.object
+    container.name = f'ProjectorContainer_{obj_name}';
 
     for i, rot in enumerate(rotations):
       bpy.ops.object.empty_add(type='SINGLE_ARROW', location=(0, 0, 0), rotation=rot)
-      bpy.context.object.name = "Projector";
-      bpy.context.object.parent = container
-      uv_project.projectors[i].object = bpy.context.object
+      context.object.name = "Projector";
+      context.object.parent = container
+      uv_project.projectors[i].object = context.object
+
+    select(container)
 
     return {'FINISHED'}
 
