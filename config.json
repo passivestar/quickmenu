@@ -440,8 +440,8 @@
       "operator": "qm.straighten_uvs"
     },
     {
-      "path": "(W) UV-Textures/View Project",
-      "operator": "uv.project_from_view"
+      "path": "(W) UV-Textures/Cube Project",
+      "operator": "uv.cube_project"
     },
     {
       "path": "(W) UV-Textures/UV Project Modifier",
