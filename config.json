@@ -470,8 +470,8 @@
       "operator": "qm.select_by_vertex_color"
     },
     {
-      "path": "(W) UV-Textures/(G) Bake ID Map",
-      "operator": "qm.bake_id_map"
+      "path": "(W) UV-Textures/(G) Edit Albedo Map",
+      "operator": "qm.edit_albedo_map"
     },
     {
       "path": "(E) Boolean-Knife/Union",

@@ -1435,6 +1435,33 @@ class BakeIDMap(bpy.types.Operator):
 
     return {'FINISHED'}
 
+class EditAlbedoMapOperator(bpy.types.Operator):
+  """Edit albedo maps of selected objects externally"""
+  bl_idname, bl_label = 'qm.edit_albedo_map', 'Edit Albdeo Map'
+
+  def execute(self, context):
+    # Repack images first to make sure we're not editing the original
+    # from material library
+    if bpy.data.filepath == '':
+      self.report({'ERROR'}, 'File is not saved')
+      return {'FINISHED'}
+    bpy.ops.qm.repack_all_data()
+
+    # Make sure something is selected
+    if len(context.selected_objects) == 0:
+      self.report({'ERROR'}, 'Nothing is selected')
+      return {'FINISHED'}
+
+    for obj in context.selected_objects:
+      for material_slot in obj.material_slots:
+        material = material_slot.material
+        if material.use_nodes:
+          for link in material.node_tree.links:
+            if link.from_node.type == 'TEX_IMAGE' and link.to_socket.name == 'Base Color':
+              path = bpy.path.abspath(link.from_node.image.filepath)
+              bpy.ops.image.external_edit(filepath=path)
+    return {'FINISHED'}
+
 class BooleanOperator(bpy.types.Operator):
   """Boolean"""
   bl_idname, bl_label, bl_options = 'qm.boolean', 'Boolean', {'REGISTER', 'UNDO'}
@@ -1834,8 +1861,10 @@ classes = (
   BevelOperator, SolidifyOperator, TriangulateOperator, ArrayOperator,
   SimpleDeformOperator, ClearModifiersOperator, DeleteBackFacingOperator,
   SeparateByLoosePartsOperator, StraightenUVsOperator, UVProjectModifierOperator, MarkSeamOperator, 
-  MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMap, BooleanOperator, WeldEdgesIntoFacesOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator, PlaneIntersectOperator, KnifeIntersectOperator, IntersectOperator, TransformOrientationOperator, TransformPivotOperator, SetSnapOperator, ModeOperator, ToolOperator,
-  SaveAndReloadOperator, ReimportTexturesOperator, RepackAllData, ExportOperator, ViewOperator,
+  MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMap, EditAlbedoMapOperator,
+  BooleanOperator, WeldEdgesIntoFacesOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
+  PlaneIntersectOperator, KnifeIntersectOperator, IntersectOperator, TransformOrientationOperator, TransformPivotOperator,
+  SetSnapOperator, ModeOperator, ToolOperator, SaveAndReloadOperator, ReimportTexturesOperator, RepackAllData, ExportOperator, ViewOperator,
 
   QuickMenu, QuickMenuPreferences, QuickMenuProperties
 )
