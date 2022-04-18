@@ -1367,7 +1367,7 @@ class SelectByVertexColorOperator(bpy.types.Operator):
       execute_in_mode('OBJECT', fn)
     return {'FINISHED'}
 
-class BakeIDMap(bpy.types.Operator):
+class BakeIDMapOperator(bpy.types.Operator):
   """Bake ID Map From Vertex Colors"""
   bl_idname, bl_label = 'qm.bake_id_map', 'Bake ID Map'
   map_size: IntProperty(name='Map Size', default=2048)
@@ -1758,7 +1758,7 @@ class ReimportTexturesOperator(bpy.types.Operator):
     for item in bpy.data.images: item.reload()
     return {'FINISHED'}
 
-class RepackAllData(bpy.types.Operator):
+class RepackAllDataOperator(bpy.types.Operator):
   """Repack All Data"""
   bl_idname, bl_label, bl_options = 'qm.repack_all_data', 'Repack All Data', {'REGISTER', 'UNDO'}
 
@@ -1861,10 +1861,10 @@ classes = (
   BevelOperator, SolidifyOperator, TriangulateOperator, ArrayOperator,
   SimpleDeformOperator, ClearModifiersOperator, DeleteBackFacingOperator,
   SeparateByLoosePartsOperator, StraightenUVsOperator, UVProjectModifierOperator, MarkSeamOperator, 
-  MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMap, EditAlbedoMapOperator,
+  MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMapOperator, EditAlbedoMapOperator,
   BooleanOperator, WeldEdgesIntoFacesOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
   PlaneIntersectOperator, KnifeIntersectOperator, IntersectOperator, TransformOrientationOperator, TransformPivotOperator,
-  SetSnapOperator, ModeOperator, ToolOperator, SaveAndReloadOperator, ReimportTexturesOperator, RepackAllData, ExportOperator, ViewOperator,
+  SetSnapOperator, ModeOperator, ToolOperator, SaveAndReloadOperator, ReimportTexturesOperator, RepackAllDataOperator, ExportOperator, ViewOperator,
 
   QuickMenu, QuickMenuPreferences, QuickMenuProperties
 )
