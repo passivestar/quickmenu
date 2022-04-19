@@ -107,7 +107,7 @@
       "operator": "qm.select_more"
     },
     {
-      "path": "Select/Region-Loop",
+      "path": "Select/Region - Loop",
       "operator": "qm.region_to_loop"
     },
     {
@@ -282,7 +282,7 @@
       }
     },
     {
-      "path": "Convert-Modify/Curve",
+      "path": "Convert - Modify/Curve",
       "operator": "qm.convert",
       "params": {
         "type": 0,
@@ -290,18 +290,18 @@
       }
     },
     {
-      "path": "Convert-Modify/Skin",
+      "path": "Convert - Modify/Skin",
       "operator": "qm.convert",
       "params": {
         "type": 1
       }
     },
     {
-      "path": "Convert-Modify/Mesh",
+      "path": "Convert - Modify/Mesh",
       "operator": "qm.convert_to_mesh"
     },
     {
-      "path": "Convert-Modify/Mirror",
+      "path": "Convert - Modify/Mirror",
       "operator": "qm.mirror",
       "params": {
         "axis": [
@@ -317,145 +317,145 @@
       }
     },
     {
-      "path": "Convert-Modify/Subsurf",
+      "path": "Convert - Modify/Subsurf",
       "operator": "qm.subsurf"
     },
     {
-      "path": "Convert-Modify/[Separator]"
+      "path": "Convert - Modify/[Separator]"
     },
     {
-      "path": "Convert-Modify/(Q) Bevel",
+      "path": "Convert - Modify/(Q) Bevel",
       "operator": "qm.bevel"
     },
     {
-      "path": "Convert-Modify/(W) Solidify",
+      "path": "Convert - Modify/(W) Solidify",
       "operator": "qm.solidify"
     },
     {
-      "path": "Convert-Modify/(E) Triangulate",
+      "path": "Convert - Modify/(E) Triangulate",
       "operator": "qm.triangulate"
     },
     {
-      "path": "Convert-Modify/[Separator]"
+      "path": "Convert - Modify/[Separator]"
     },
     {
-      "path": "Convert-Modify/(A) Array",
+      "path": "Convert - Modify/(A) Array",
       "operator": "qm.array"
     },
     {
-      "path": "Convert-Modify/(F) Twist",
+      "path": "Convert - Modify/(F) Twist",
       "operator": "qm.simple_deform",
       "params": {
         "method": "TWIST"
       }
     },
     {
-      "path": "Convert-Modify/[Separator]"
+      "path": "Convert - Modify/[Separator]"
     },
     {
-      "path": "Convert-Modify/(Z) Clear Modifiers",
+      "path": "Convert - Modify/(Z) Clear Modifiers",
       "operator": "qm.clear_modifiers"
     },
     {
       "path": "[Separator]"
     },
     {
-      "path": "(Q) Delete-Split/Merge",
+      "path": "(Q) Delete - Split/Merge",
       "operator": "mesh.merge",
       "params": {
         "type": "CENTER"
       }
     },
     {
-      "path": "(Q) Delete-Split/Merge By Distance",
+      "path": "(Q) Delete - Split/Merge By Distance",
       "operator": "mesh.remove_doubles"
     },
     {
-      "path": "(Q) Delete-Split/Limited Dissolve",
+      "path": "(Q) Delete - Split/Limited Dissolve",
       "operator": "mesh.dissolve_limited"
     },
     {
-      "path": "(Q) Delete-Split/Decimate",
+      "path": "(Q) Delete - Split/Decimate",
       "operator": "mesh.decimate"
     },
     {
-      "path": "(Q) Delete-Split/Delete Loose",
+      "path": "(Q) Delete - Split/Delete Loose",
       "operator": "mesh.delete_loose"
     },
     {
-      "path": "(Q) Delete-Split/[Separator]"
+      "path": "(Q) Delete - Split/[Separator]"
     },
     {
-      "path": "(Q) Delete-Split/(Q) Delete Back Facing Faces",
+      "path": "(Q) Delete - Split/(Q) Delete Back Facing Faces",
       "operator": "qm.delete_back_facing",
       "params": {
         "both_ways": false
       }
     },
     {
-      "path": "(Q) Delete-Split/(W) Delete Back-Front Facing Faces",
+      "path": "(Q) Delete - Split/(W) Delete Back - Front Facing Faces",
       "operator": "qm.delete_back_facing",
       "params": {
         "both_ways": true
       }
     },
     {
-      "path": "(Q) Delete-Split/(E) Edge Split",
+      "path": "(Q) Delete - Split/(E) Edge Split",
       "operator": "mesh.edge_split",
       "params": {
         "type": 0
       }
     },
     {
-      "path": "(Q) Delete-Split/(R) Separate By Loose Parts",
+      "path": "(Q) Delete - Split/(R) Separate By Loose Parts",
       "operator": "qm.separate_by_loose_parts"
     },
     {
-      "path": "(Q) Delete-Split/[Separator]"
+      "path": "(Q) Delete - Split/[Separator]"
     },
     {
-      "path": "(Q) Delete-Split/(S) Split",
+      "path": "(Q) Delete - Split/(S) Split",
       "operator": "mesh.split"
     },
     {
-      "path": "(W) UV-Textures/Mark Seam",
+      "path": "(W) UV - Textures/Mark Seam",
       "operator": "qm.mark_seam",
       "params": {
         "clear": false
       }
     },
     {
-      "path": "(W) UV-Textures/Clear Seam",
+      "path": "(W) UV - Textures/Clear Seam",
       "operator": "qm.mark_seam",
       "params": {
         "clear": true
       }
     },
     {
-      "path": "(W) UV-Textures/Unwrap",
+      "path": "(W) UV - Textures/Unwrap",
       "operator": "uv.unwrap"
     },
     {
-      "path": "(W) UV-Textures/Straighten UVs",
+      "path": "(W) UV - Textures/Straighten UVs",
       "operator": "qm.straighten_uvs"
     },
     {
-      "path": "(W) UV-Textures/Cube Project",
+      "path": "(W) UV - Textures/Cube Project",
       "operator": "uv.cube_project"
     },
     {
-      "path": "(W) UV-Textures/UV Project Modifier",
+      "path": "(W) UV - Textures/UV Project Modifier",
       "operator": "qm.uv_project_modifier"
     },
     {
-      "path": "(W) UV-Textures/[Separator]"
+      "path": "(W) UV - Textures/[Separator]"
     },
     {
-      "path": "(W) UV-Textures/(Q) Mark Seams Sharp",
+      "path": "(W) UV - Textures/(Q) Mark Seams Sharp",
       "operator": "qm.mark_seams_sharp"
     },
     {
-      "path": "(W) UV-Textures/(W) Transform UVs",
+      "path": "(W) UV - Textures/(W) Transform UVs",
       "operator": "qm.transform_uvs",
       "params": {
         "offset_x": 0,
@@ -466,7 +466,7 @@
       }
     },
     {
-      "path": "(W) UV-Textures/(E) Rotate UVs 90",
+      "path": "(W) UV - Textures/(E) Rotate UVs 90",
       "operator": "qm.transform_uvs",
       "params": {
         "offset_x": 0,
@@ -477,71 +477,71 @@
       }
     },
     {
-      "path": "(W) UV-Textures/[Separator]"
+      "path": "(W) UV - Textures/[Separator]"
     },
     {
-      "path": "(W) UV-Textures/(D) Set Vertex Color",
+      "path": "(W) UV - Textures/(D) Set Vertex Color",
       "operator": "qm.set_vertex_color"
     },
     {
-      "path": "(W) UV-Textures/(F) Select By Vertex Color",
+      "path": "(W) UV - Textures/(F) Select By Vertex Color",
       "operator": "qm.select_by_vertex_color"
     },
     {
-      "path": "(W) UV-Textures/(G) Edit Albedo Map",
+      "path": "(W) UV - Textures/(G) Edit Albedo Map",
       "operator": "qm.edit_albedo_map"
     },
     {
-      "path": "(E) Boolean-Knife/Union",
+      "path": "(E) Boolean - Knife/Union",
       "operator": "qm.boolean",
       "params": {
         "operation": 1
       }
     },
     {
-      "path": "(E) Boolean-Knife/Difference",
+      "path": "(E) Boolean - Knife/Difference",
       "operator": "qm.boolean",
       "params": {
         "operation": 0
       }
     },
     {
-      "path": "(E) Boolean-Knife/Intersect",
+      "path": "(E) Boolean - Knife/Intersect",
       "operator": "qm.boolean",
       "params": {
         "operation": 2
       }
     },
     {
-      "path": "(E) Boolean-Knife/[Separator]"
+      "path": "(E) Boolean - Knife/[Separator]"
     },
     {
-      "path": "(E) Boolean-Knife/(Q) Plane Intersect Island",
+      "path": "(E) Boolean - Knife/(Q) Plane Intersect Island",
       "operator": "qm.plane_intersect",
       "params": {
         "mode": 1
       }
     },
     {
-      "path": "(E) Boolean-Knife/(W) Plane Intersect Selection",
+      "path": "(E) Boolean - Knife/(W) Plane Intersect Selection",
       "operator": "qm.plane_intersect",
       "params": {
         "mode": 0
       }
     },
     {
-      "path": "(E) Boolean-Knife/(E) Knife Intersect",
+      "path": "(E) Boolean - Knife/(E) Knife Intersect",
       "operator": "qm.knife_intersect"
     },
     {
-      "path": "(E) Boolean-Knife/(R) Projection Intersect",
+      "path": "(E) Boolean - Knife/(R) Projection Intersect",
       "operator": "qm.intersect"
     },
     {
-      "path": "(E) Boolean-Knife/[Separator]"
+      "path": "(E) Boolean - Knife/[Separator]"
     },
     {
-      "path": "(E) Boolean-Knife/(A) Weld Edges Into Faces",
+      "path": "(E) Boolean - Knife/(A) Weld Edges Into Faces",
       "operator": "qm.weld_edges_into_faces"
     },
     {

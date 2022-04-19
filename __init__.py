@@ -1866,8 +1866,8 @@ class QuickMenu(bpy.types.Menu):
     layout = self.layout
     draw_menu(self, app['items'])
     layout.separator()
-    layout.operator('qm.edit_items', text='Edit')
-    layout.operator('qm.load_items', text='Reload')
+    layout.operator('qm.edit_items', text='Edit Quick Menu')
+    layout.operator('qm.load_items', text='Reload Quick Menu')
 
 # @Preferences
 
