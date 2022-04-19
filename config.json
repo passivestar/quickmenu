@@ -471,7 +471,7 @@
       "params": {
         "offset_x": 0,
         "offset_y": 0,
-        "rotation": 90,
+        "rotation": 1.5708,
         "scale_x": 1,
         "scale_y": 1
       }
