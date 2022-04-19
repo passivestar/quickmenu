@@ -455,8 +455,26 @@
       "operator": "qm.mark_seams_sharp"
     },
     {
-      "path": "(W) UV-Textures/(W) Mark Seams From Islands",
-      "operator": "qm.mark_seams_from_islands"
+      "path": "(W) UV-Textures/(W) Transform UVs",
+      "operator": "qm.transform_uvs",
+      "params": {
+        "offset_x": 0,
+        "offset_y": 0,
+        "rotation": 0,
+        "scale_x": 1,
+        "scale_y": 1
+      }
+    },
+    {
+      "path": "(W) UV-Textures/(E) Rotate UVs 90",
+      "operator": "qm.transform_uvs",
+      "params": {
+        "offset_x": 0,
+        "offset_y": 0,
+        "rotation": 90,
+        "scale_x": 1,
+        "scale_y": 1
+      }
     },
     {
       "path": "(W) UV-Textures/[Separator]"

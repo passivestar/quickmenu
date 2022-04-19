@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 1, 0),
+  'version': (2, 2, 0),
   'author': 'passivestar',
   'blender': (3, 1, 2),
   'location': 'Press the bound hotkey in 3D View',
@@ -1283,6 +1283,46 @@ class MarkSeamsFromIslandsOperator(bpy.types.Operator):
     context.area.ui_type = previous_area
     return {'FINISHED'}
 
+class TransformUVsOperator(bpy.types.Operator):
+  """Transform UV"""
+  bl_idname, bl_label, bl_options = 'qm.transform_uvs', 'Transform UVs', {'REGISTER', 'UNDO'}
+
+  offset_x: FloatProperty(name='Offset X', default=0, step=0.1)
+  offset_y: FloatProperty(name='Offset Y', default=0, step=0.1)
+  rotation: FloatProperty(name='Rotation', default=0, soft_min=-360, soft_max=360)
+  scale_x: FloatProperty(name='Scale X', default=1, step=0.1, soft_min=0)
+  scale_y: FloatProperty(name='Scale Y', default=1, step=0.1, soft_min=0)
+
+  @classmethod
+  def poll(cls, context):
+    return is_in_editmode()
+
+  def execute(self, context):
+    me = bpy.context.edit_object.data
+    bm = bmesh.from_edit_mesh(me)
+    uv_layer = bm.loops.layers.uv.verify()
+    uvs = []
+    for face in bm.faces:
+      if face.select:
+        center = face.calc_center_median()
+        for loop in face.loops:
+          uvs.append(loop[uv_layer])
+    center = reduce(lambda a, b: a + b, [uv.uv for uv in uvs]) / len(uvs)
+
+    for uv in uvs:
+      if self.offset_x or self.offset_y:
+        uv.uv += Vector( (self.offset_x, self.offset_y) )
+      if self.rotation:
+        rotation_matrix = Matrix.Rotation(math.radians(self.rotation), 2)
+        offset_uv = uv.uv - center
+        offset_uv.rotate(rotation_matrix)
+        uv.uv = center + offset_uv
+      if self.scale_x != 1 or self.scale_y != 1:
+        uv.uv = center + Vector(uv.uv - center) * Vector((self.scale_x, self.scale_y))
+
+    bmesh.update_edit_mesh(me)
+    return {'FINISHED'}
+
 class SetVertexColorOperator(bpy.types.Operator):
   """Set Vertex Color"""
   bl_idname, bl_label, bl_options = 'qm.set_vertex_color', 'Set Vertex Color', {'REGISTER', 'UNDO'}
@@ -1861,7 +1901,7 @@ classes = (
   BevelOperator, SolidifyOperator, TriangulateOperator, ArrayOperator,
   SimpleDeformOperator, ClearModifiersOperator, DeleteBackFacingOperator,
   SeparateByLoosePartsOperator, StraightenUVsOperator, UVProjectModifierOperator, MarkSeamOperator, 
-  MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMapOperator, EditAlbedoMapOperator,
+  MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, TransformUVsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMapOperator, EditAlbedoMapOperator,
   BooleanOperator, WeldEdgesIntoFacesOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
   PlaneIntersectOperator, KnifeIntersectOperator, IntersectOperator, TransformOrientationOperator, TransformPivotOperator,
   SetSnapOperator, ModeOperator, ToolOperator, SaveAndReloadOperator, ReimportTexturesOperator, RepackAllDataOperator, ExportOperator, ViewOperator,
