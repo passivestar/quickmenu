@@ -720,6 +720,13 @@
       }
     },
     {
+      "path": "(F) Mode/(F) Vertex Paint",
+      "operator": "qm.mode_set",
+      "params": {
+        "mode": "VERTEX_PAINT"
+      }
+    },
+    {
       "path": "(F) Mode/[Separator]"
     },
     {
