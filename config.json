@@ -403,7 +403,7 @@
       "path": "(Q) Delete - Split/(E) Edge Split",
       "operator": "mesh.edge_split",
       "params": {
-        "type": 0
+        "type": "EDGE"
       }
     },
     {
