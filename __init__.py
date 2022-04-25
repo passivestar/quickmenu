@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 2, 0),
+  'version': (2, 3, 0),
   'author': 'passivestar',
   'blender': (3, 1, 2),
   'location': 'Press the bound hotkey in 3D View',
@@ -273,17 +273,21 @@ class JoinSeparateOperator(bpy.types.Operator):
       bpy.ops.object.join()
     return {'FINISHED'}
 
-class SmoothOperator(bpy.types.Operator):
-  """Shade Smooth"""
-  bl_idname, bl_label, bl_options = 'qm.smooth', 'Shade Smooth', {'REGISTER', 'UNDO'}
+class SetSmoothOperator(bpy.types.Operator):
+  """Set Smooth Shading"""
+  bl_idname, bl_label, bl_options = 'qm.smooth', 'Set Smooth', {'REGISTER', 'UNDO'}
+  smooth: BoolProperty(name='Smooth', default=True)
   auto: BoolProperty(name='Auto', default=True)
   angle: FloatProperty(name='Angle', subtype='ANGLE', default=0.872665, step=2)
 
   def execute(self, context):
     def fn():
-      bpy.ops.object.shade_smooth()
-      for data in [o.data for o in bpy.context.selected_objects if o.type == 'MESH']:
-        data.use_auto_smooth, data.auto_smooth_angle = self.auto, self.angle
+      if self.smooth:
+        bpy.ops.object.shade_smooth()
+        for data in [o.data for o in bpy.context.selected_objects if o.type == 'MESH']:
+          data.use_auto_smooth, data.auto_smooth_angle = self.auto, self.angle
+      else:
+        bpy.ops.object.shade_flat()
     execute_in_mode('OBJECT', fn)
     return {'FINISHED'}
 
@@ -1892,7 +1896,7 @@ classes = (
   EditMenuItemsOperator,
   ReloadMenuItemsOperator,
 
-  JoinSeparateOperator, SmoothOperator, LocalViewOperator, SetOriginOperator, ProportionalEditingOperator,
+  JoinSeparateOperator, SetSmoothOperator, LocalViewOperator, SetOriginOperator, ProportionalEditingOperator,
   WireframeOperator, RotateOperator, DrawOperator, ApplyToMultiuserOperator, ConvertToInstancesOperator, CorrectAttributesOperator,
   SelectRingOperator, SelectMoreOperator, RegionToLoopOperator, InvertSelectionConnectedOperator,
   SelectSharpEdgesOperator, SelectViewGeometryOperator, AddSingleVertexOperator, SpinOperator,
