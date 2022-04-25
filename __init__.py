@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 3, 0),
+  'version': (2, 3, 1),
   'author': 'passivestar',
   'blender': (3, 1, 2),
   'location': 'Press the bound hotkey in 3D View',
@@ -1807,6 +1807,7 @@ class RepackAllDataOperator(bpy.types.Operator):
   bl_idname, bl_label, bl_options = 'qm.repack_all_data', 'Repack All Data', {'REGISTER', 'UNDO'}
 
   def execute(self, context):
+    bpy.ops.outliner.orphans_purge(do_local_ids=True, do_linked_ids=True, do_recursive=True)
     bpy.ops.file.pack_all()
     bpy.ops.file.unpack_all(method='WRITE_LOCAL')
     return {'FINISHED'}
