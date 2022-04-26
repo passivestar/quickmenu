@@ -168,38 +168,10 @@
       "operator": "qm.add_single_vertex"
     },
     {
-      "path": "Modeling/Spin/Spin 90",
+      "path": "Modeling/Spin",
       "operator": "qm.spin",
       "params": {
         "angle": 1.5708
-      }
-    },
-    {
-      "path": "Modeling/Spin/Spin 180",
-      "operator": "qm.spin",
-      "params": {
-        "angle": 3.14159265359
-      }
-    },
-    {
-      "path": "Modeling/Spin/Spin 360",
-      "operator": "qm.spin",
-      "params": {
-        "angle": 6.28318530718
-      }
-    },
-    {
-      "path": "Modeling/Spin/Spin -90",
-      "operator": "qm.spin",
-      "params": {
-        "angle": -1.5708
-      }
-    },
-    {
-      "path": "Modeling/Spin/Spin -180",
-      "operator": "qm.spin",
-      "params": {
-        "angle": -3.14159265359
       }
     },
     {

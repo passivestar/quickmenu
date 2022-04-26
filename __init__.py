@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 3, 1),
+  'version': (2, 4, 0),
   'author': 'passivestar',
   'blender': (3, 1, 2),
   'location': 'Press the bound hotkey in 3D View',
@@ -607,6 +607,7 @@ class AddSingleVertexOperator(bpy.types.Operator):
 class SpinOperator(bpy.types.Operator):
   """Spin Operator"""
   bl_idname, bl_label, bl_options = 'qm.spin', 'Spin', {'REGISTER', 'UNDO'}
+  negative_angle: BoolProperty(name='Negative Angle', default=False)
   steps: IntProperty(name='Steps', default=6, min=1)
   angle: FloatProperty(name='Angle', subtype='ANGLE', default=1.5708)
   flip_normals: BoolProperty(name='Flip Normals', default=False)
@@ -615,10 +616,15 @@ class SpinOperator(bpy.types.Operator):
   @classmethod
   def poll(cls, context):
     return is_in_editmode()
+  
+  def invoke(self, context, event):
+    self.negative_angle = event.shift
+    return self.execute(context)
 
   def execute(self, context):
     vsv = view_snapped_vector(False, False)
-    bpy.ops.mesh.spin(dupli=self.duplicates, steps=self.steps, angle=self.angle, use_normal_flip=self.flip_normals, center=context.scene.cursor.location, axis=vsv)
+    angle = -self.angle if self.negative_angle else self.angle
+    bpy.ops.mesh.spin(dupli=self.duplicates, steps=self.steps, angle=angle, use_normal_flip=self.flip_normals, center=context.scene.cursor.location, axis=vsv)
     return {'FINISHED'}
 
 class BboxOperator(bpy.types.Operator):
