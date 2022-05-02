@@ -186,8 +186,8 @@
       "path": "Modeling/[Separator]"
     },
     {
-      "path": "Modeling/(Q) Recalculate Normals",
-      "operator": "mesh.normals_make_consistent"
+      "path": "Modeling/(Q) Flip Normals",
+      "operator": "mesh.flip_normals"
     },
     {
       "path": "Modeling/(E) Extrude Both Ways",
