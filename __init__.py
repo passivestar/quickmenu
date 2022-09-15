@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 4, 1),
+  'version': (2, 4, 2),
   'author': 'passivestar',
   'blender': (3, 3, 0),
   'location': 'Press the bound hotkey in 3D View',
@@ -1074,8 +1074,8 @@ class ArrayOperator(bpy.types.Operator):
   def execute(self, context):
     v = view_snapped_vector() * self.offset
     v.negate()
-    bpy.ops.object.modifier_add(type='ARRAY')
-    a = context.object.modifiers[-1]
+    existed = modifier_exists('ARRAY')
+    a = add_or_get_modifier('ARRAY')
     a.count = self.count
     a.relative_offset_displace = v
     return {'FINISHED'}
@@ -1089,8 +1089,7 @@ class SimpleDeformOperator(bpy.types.Operator):
   def execute(self, context):
     vsv = view_snapped_vector()
     axis, negative = axis_by_vector(vsv)
-    bpy.ops.object.modifier_add(type='SIMPLE_DEFORM')
-    sd = context.object.modifiers[-1]
+    sd = add_or_get_modifier('SIMPLE_DEFORM')
     sd.deform_method, sd.angle, sd.deform_axis = self.method, self.angle, axis
     return {'FINISHED'}
 
