@@ -6,9 +6,9 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 4, 0),
+  'version': (2, 4, 1),
   'author': 'passivestar',
-  'blender': (3, 1, 2),
+  'blender': (3, 3, 0),
   'location': 'Press the bound hotkey in 3D View',
   'description': 'Simplifies access to useful operators and adds new functionality',
   'category': 'Interface'
@@ -283,9 +283,7 @@ class SetSmoothOperator(bpy.types.Operator):
   def execute(self, context):
     def fn():
       if self.smooth:
-        bpy.ops.object.shade_smooth()
-        for data in [o.data for o in bpy.context.selected_objects if o.type == 'MESH']:
-          data.use_auto_smooth, data.auto_smooth_angle = self.auto, self.angle
+        bpy.ops.object.shade_smooth(use_auto_smooth=self.auto, auto_smooth_angle=self.angle)
       else:
         bpy.ops.object.shade_flat()
     execute_in_mode('OBJECT', fn)
