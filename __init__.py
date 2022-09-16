@@ -1844,6 +1844,8 @@ class ExportOperator(bpy.types.Operator):
         mesh_smooth_type='EDGE',
         use_mesh_modifiers=self.apply_modifiers,
         add_leaf_bones=False,
+        apply_scale_options='FBX_SCALE_ALL',
+        use_batch_own_dir=False,
         bake_anim_use_nla_strips=False,
         batch_mode=self.batch_mode,
         filepath=directory + file + '.fbx'
