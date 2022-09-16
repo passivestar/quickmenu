@@ -1848,7 +1848,7 @@ class ExportOperator(bpy.types.Operator):
         use_batch_own_dir=False,
         bake_anim_use_nla_strips=False,
         batch_mode=self.batch_mode,
-        filepath=directory + file + '.fbx'
+        filepath=directory + file + '.fbx' if self.batch_mode == 'OFF' else directory
       )
     else:
       self.report({'ERROR'}, 'Unknown export extension')
