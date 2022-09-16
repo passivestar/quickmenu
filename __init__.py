@@ -423,12 +423,18 @@ class ConvertToInstancesOperator(bpy.types.Operator):
   """Convert Geometry Node Instances To Object Instances"""
   bl_idname, bl_label, bl_options = 'qm.convert_to_instances', 'Convert To Instances', {'REGISTER', 'UNDO'}
 
+  suffix: StringProperty(name='Add Suffix', default='-prefab')
+
   def execute(self, context):
+    if not modifier_exists('NODES'):
+      return {'FINISHED'}
     original_object = context.object
     # Convert to instances:
     bpy.ops.object.duplicates_make_real(use_base_parent=True)
-    # Clear modifiers on new objects
-    for obj in context.selected_objects: obj.modifiers.clear()
+    # Clear modifiers on new objects and add suffix
+    for obj in context.selected_objects:
+      obj.name = obj.name + self.suffix
+      obj.modifiers.clear()
     # Hide the original:
     original_object.modifiers["GeometryNodes"].show_viewport = False
     return {'FINISHED'}
