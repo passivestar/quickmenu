@@ -754,11 +754,20 @@
       }
     },
     {
-      "path": "(Z) Files/(C) Reimport All Textures",
+      "path": "(Z) Files/(C) Export FBX Collections (Apply Transform)",
+      "operator": "qm.export",
+      "params": {
+        "mode": "fbx",
+        "batch_mode": "COLLECTION",
+        "apply_transform": true
+      }
+    },
+    {
+      "path": "(Z) Files/(V) Reimport All Textures",
       "operator": "qm.reimport_textures"
     },
     {
-      "path": "(Z) Files/(V) Repack All Data",
+      "path": "(Z) Files/(B) Repack All Data",
       "operator": "qm.repack_all_data"
     },
     {

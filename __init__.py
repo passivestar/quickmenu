@@ -1825,6 +1825,7 @@ class ExportOperator(bpy.types.Operator):
   bl_idname, bl_label = 'qm.export', 'Export'
   mode: StringProperty(name='Mode', default='fbx')
   apply_modifiers: BoolProperty(name='Apply Modifiers', default=True)
+  apply_transform: BoolProperty(name='Apply Transform', default=True)
   batch_mode: StringProperty(name='Batch Mode', default='OFF')
   remove_suffix: BoolProperty(name='Remove Suffix', default=True)
 
@@ -1853,6 +1854,7 @@ class ExportOperator(bpy.types.Operator):
         apply_scale_options='FBX_SCALE_ALL',
         use_batch_own_dir=False,
         bake_anim_use_nla_strips=False,
+        bake_space_transform=self.apply_transform,
         batch_mode=self.batch_mode,
         filepath=directory + file + '.fbx' if self.batch_mode == 'OFF' else directory
       )
