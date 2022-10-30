@@ -8,7 +8,7 @@ Open the menu and press `Edit`:
 
 `config.json` file will be opened in the default associated app. In it you will find `items` field with a list of all of the operators:
 
-<img width="673" alt="image" src="https://user-images.githubusercontent.com/60579014/158865944-74885267-a6e0-444f-8bec-f6f9a04b4a49.png">
+<img width="810" alt="image" src="https://user-images.githubusercontent.com/60579014/198869597-a71ee7d2-342a-4dad-94ea-6f60e1ddbffd.png">
 
 You can remove, reorder, and rename them however you like. Submenus are generated automatically for all of the paths in `path` fields. Notice how `[Separator]` is used in place of operator title to make separators!
 
@@ -20,7 +20,7 @@ To add an operator to quick menu you must first know its name! The easiest way t
 
 The name of the operator is `mesh.primitive_cube_add`. Knowing that, you can now add a new button to quick menu like this:
 
-<img width="600" alt="image" src="https://user-images.githubusercontent.com/60579014/158867659-96a105ef-fc65-4c8d-b51e-0773abb5a824.png">
+<img width="819" alt="image" src="https://user-images.githubusercontent.com/60579014/198870010-0e736cac-e245-427c-adf5-cfff78d6ecd4.png">
 
 Don't forget to save the `config.json` file after you're done editing it, and press the `Reload` button in quick menu:
 
@@ -31,6 +31,23 @@ After that you'll be able to find your new `Add Cube` button:
 <img width="559" alt="image" src="https://user-images.githubusercontent.com/60579014/158868098-d166992d-cdcf-42e8-9b5a-8d4c75cc69e6.png">
 
 This is it! You'll also find that `config.json` supports more advanced use-cases with parameters (`params` field) and conditional `mode` - your menu item will only be shown if you're in the specified mode!
+
+
+## Adding existing blender menus
+
+You can also add existing blender menus to quick menu by their name. To find out a name of any menu you can hover over it with your mouse and press `Ctrl+C`. For example, if you hover over "Object" menu on top of the viewport in object mode, you'll get a string like this in your clipboard:
+
+  `bpy.ops.wm.call_menu(name="VIEW3D_MT_object")`
+
+where `VIEW3D_MT_object` is the name that you're looking for!
+
+We can add it to our menu with a `menu` field like so:
+
+<img width="787" alt="image" src="https://user-images.githubusercontent.com/60579014/198870062-47c45ff2-c278-4a35-bbdf-a322de0d4227.png">
+
+Don't forget to reload the menu!
+
+<img width="1014" alt="image" src="https://user-images.githubusercontent.com/60579014/198870157-668bf0d6-efd7-4be2-99b4-1c9e209c782d.png">
 
 ## Save your config!
 
