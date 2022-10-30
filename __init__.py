@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 4, 4),
+  'version': (2, 4, 5),
   'author': 'passivestar',
   'blender': (3, 3, 0),
   'location': 'Press the bound hotkey in 3D View',
@@ -1941,14 +1941,14 @@ def draw_menu(self, items):
     elif item['title'] == '[Separator]':
       layout.separator()
       i -= 1
-    else:
-      if 'operator' not in item:
-        raise Exception(f'Item {title} doesn\'t have an "operator" field')
+    elif 'operator' in item:
       operator = layout.operator(item['operator'], text=title)
       if 'params' in item:
         for key, val in item['params'].items():
           if isinstance(val, list): val = tuple(val)
           operator[key] = val
+    elif 'menu' in item:
+      layout.menu(item['menu'], text=title) 
 
 def register_menu_type(menu_definition):
   title = menu_definition['title']
@@ -2014,7 +2014,7 @@ def load_items(config_path):
 def get_config_path():
   if __name__ == '__main__':
     # For testing purposes:
-    return 'C:/Files/blender/addons/quickmenu/config.json'
+    return '/Users/passivestar/Files/blender/addons/quickmenu/config.json'
   else:
     print(__location__)
     return os.path.join(__location__, 'config.json')
