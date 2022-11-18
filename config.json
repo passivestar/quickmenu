@@ -720,25 +720,17 @@
       }
     },
     {
-      "path": "(Z) Files/(A) Export GLB",
+      "path": "(Z) Files/(Q) Export GLB",
       "operator": "qm.export",
       "params": {
         "mode": "glb"
       }
     },
     {
-      "path": "(Z) Files/(S) Save And Reload",
-      "operator": "qm.save_and_reload"
-    },
-    {
-      "path": "(Z) Files/(D) Reload",
-      "operator": "wm.revert_mainfile"
-    },
-    {
       "path": "(Z) Files/[Separator]"
     },
     {
-      "path": "(Z) Files/(Z) Export FBX",
+      "path": "(Z) Files/(A) Export FBX",
       "operator": "qm.export",
       "params": {
         "mode": "fbx",
@@ -746,7 +738,7 @@
       }
     },
     {
-      "path": "(Z) Files/(X) Export FBX Collections",
+      "path": "(Z) Files/(S) Export FBX Collections",
       "operator": "qm.export",
       "params": {
         "mode": "fbx",
@@ -754,21 +746,25 @@
       }
     },
     {
-      "path": "(Z) Files/(C) Export FBX Collections (Apply Transform)",
+      "path": "(Z) Files/(D) Export FBX Collections (Unpack Data and Apply Transform)",
       "operator": "qm.export",
       "params": {
         "mode": "fbx",
         "batch_mode": "COLLECTION",
-        "apply_transform": true
+        "apply_transform": true,
+        "unpack_data": true
       }
     },
     {
-      "path": "(Z) Files/(V) Reimport All Textures",
+      "path": "(Z) Files/[Separator]"
+    },
+    {
+      "path": "(Z) Files/(Z) Reimport All Textures",
       "operator": "qm.reimport_textures"
     },
     {
-      "path": "(Z) Files/(B) Repack All Data",
-      "operator": "qm.repack_all_data"
+      "path": "(Z) Files/(X) Unpack All Data To Files",
+      "operator": "qm.unpack_all_data_to_files"
     },
     {
       "path": "[Separator]"

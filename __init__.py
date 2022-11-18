@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 4, 5),
+  'version': (2, 4, 6),
   'author': 'passivestar',
   'blender': (3, 3, 0),
   'location': 'Press the bound hotkey in 3D View',
@@ -1492,12 +1492,12 @@ class EditAlbedoMapOperator(bpy.types.Operator):
   bl_idname, bl_label = 'qm.edit_albedo_map', 'Edit Albdeo Map'
 
   def execute(self, context):
-    # Repack images first to make sure we're not editing the original
+    # Unpack images first to make sure we're not editing the original
     # from material library
     if bpy.data.filepath == '':
       self.report({'ERROR'}, 'File is not saved')
       return {'FINISHED'}
-    bpy.ops.qm.repack_all_data()
+    bpy.ops.qm.unpack_all_data_to_files()
 
     # Make sure something is selected
     if len(context.selected_objects) == 0:
@@ -1810,9 +1810,9 @@ class ReimportTexturesOperator(bpy.types.Operator):
     for item in bpy.data.images: item.reload()
     return {'FINISHED'}
 
-class RepackAllDataOperator(bpy.types.Operator):
-  """Repack All Data"""
-  bl_idname, bl_label, bl_options = 'qm.repack_all_data', 'Repack All Data', {'REGISTER', 'UNDO'}
+class UnpackAllDataToFilesOperator(bpy.types.Operator):
+  """Unpack All Data To Files"""
+  bl_idname, bl_label, bl_options = 'qm.unpack_all_data_to_files', 'Unpack All Data To Files', {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     bpy.ops.outliner.orphans_purge(do_local_ids=True, do_linked_ids=True, do_recursive=True)
@@ -1824,6 +1824,7 @@ class ExportOperator(bpy.types.Operator):
   """Export"""
   bl_idname, bl_label = 'qm.export', 'Export'
   mode: StringProperty(name='Mode', default='fbx')
+  unpack_data: BoolProperty(name='Unpack Data', default=False)
   apply_modifiers: BoolProperty(name='Apply Modifiers', default=True)
   apply_transform: BoolProperty(name='Apply Transform', default=True)
   batch_mode: StringProperty(name='Batch Mode', default='OFF')
@@ -1836,7 +1837,14 @@ class ExportOperator(bpy.types.Operator):
 
     directory, file = get_paths()
 
-    # remove _a, _b, _c, etc suffix if present
+    # Save the blend file
+    bpy.ops.wm.save_mainfile()
+
+    # Unpack all data to files if needed
+    if self.unpack_data:
+      bpy.ops.qm.unpack_all_data_to_files()
+
+    # Remove _a, _b, _c, etc suffix if present
     if self.remove_suffix:
       file = re.sub('_[a-cA-C]$', '', file)
 
@@ -1921,7 +1929,7 @@ classes = (
   MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, TransformUVsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMapOperator, EditAlbedoMapOperator,
   BooleanOperator, WeldEdgesIntoFacesOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
   PlaneIntersectOperator, KnifeIntersectOperator, IntersectOperator, TransformOrientationOperator, TransformPivotOperator,
-  SetSnapOperator, ModeOperator, ToolOperator, SaveAndReloadOperator, ReimportTexturesOperator, RepackAllDataOperator, ExportOperator, ViewOperator,
+  SetSnapOperator, ModeOperator, ToolOperator, SaveAndReloadOperator, ReimportTexturesOperator, UnpackAllDataToFilesOperator, ExportOperator, ViewOperator,
 
   QuickMenu, QuickMenuPreferences, QuickMenuProperties
 )
