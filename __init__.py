@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 4, 6),
+  'version': (2, 4, 7),
   'author': 'passivestar',
   'blender': (3, 3, 0),
   'location': 'Press the bound hotkey in 3D View',
@@ -1637,6 +1637,15 @@ class WeldEdgesIntoFacesOperator(bpy.types.Operator):
     bpy.ops.mesh.select_all(action='DESELECT')
     return {'FINISHED'}
 
+class ToggleAutoKeyingOperator(bpy.types.Operator):
+  """Toggle Auto Keying"""
+  bl_idname, bl_label, bl_options = 'qm.toggle_auto_keying', 'Toggle Auto Keying', {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    context.scene.tool_settings.use_keyframe_insert_auto = not context.scene.tool_settings.use_keyframe_insert_auto
+    self.report({'INFO'}, f'Auto Keying: {context.scene.tool_settings.use_keyframe_insert_auto}')
+    return {'FINISHED'}
+
 class ParentToNewEmptyOperator(bpy.types.Operator):
   """Parent To New Empty"""
   bl_idname, bl_label, bl_options = 'qm.parent_to_new_empty', 'Parent To New Empty', {'REGISTER', 'UNDO'}
@@ -1927,7 +1936,7 @@ classes = (
   SimpleDeformOperator, ClearModifiersOperator, DeleteBackFacingOperator,
   SeparateByLoosePartsOperator, StraightenUVsOperator, UVProjectModifierOperator, MarkSeamOperator, 
   MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, TransformUVsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMapOperator, EditAlbedoMapOperator,
-  BooleanOperator, WeldEdgesIntoFacesOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
+  BooleanOperator, WeldEdgesIntoFacesOperator, ToggleAutoKeyingOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
   PlaneIntersectOperator, KnifeIntersectOperator, IntersectOperator, TransformOrientationOperator, TransformPivotOperator,
   SetSnapOperator, ModeOperator, ToolOperator, SaveAndReloadOperator, ReimportTexturesOperator, UnpackAllDataToFilesOperator, ExportOperator, ViewOperator,
 

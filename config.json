@@ -532,6 +532,13 @@
       "path": "(R) Animation/[Separator]"
     },
     {
+      "path": "(R) Animation/(Q) Toggle Auto Keying",
+      "operator": "qm.toggle_auto_keying"
+    },
+    {
+      "path": "(R) Animation/[Separator]"
+    },
+    {
       "path": "(R) Animation/(Z) Clear Drivers",
       "operator": "qm.clear_drivers"
     },
