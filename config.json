@@ -529,6 +529,10 @@
       "operator": "object.constraint_add_with_targets"
     },
     {
+      "path": "(R) Animation/Add Bone",
+      "operator": "qm.add_bone"
+    },
+    {
       "path": "(R) Animation/[Separator]"
     },
     {

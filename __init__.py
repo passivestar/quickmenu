@@ -107,9 +107,10 @@ def execute_in_mode(mode, callback):
   except: pass
   return result
 
-def make_vertex_group(name):
+def make_vertex_group(name, assign=True):
   bpy.context.object.vertex_groups.new(name=name)
   bpy.ops.object.vertex_group_set_active(group=name)
+  if assign: bpy.ops.object.vertex_group_assign()
 
 def calculate_number_of_vertices_by_radius(radius, subsurf=False):
   if subsurf or modifier_exists('SUBSURF') or modifier_exists('MULTIRES'):
@@ -120,7 +121,6 @@ def calculate_number_of_vertices_by_radius(radius, subsurf=False):
 def iterate_islands(operator, callback, restore_selection=False):
   if restore_selection:
     make_vertex_group('qm_iterate_islands_selection')
-    bpy.ops.object.vertex_group_assign()
   bpy.ops.mesh.hide(unselected=True)
   bpy.ops.mesh.select_all(action='DESELECT')
   mode = tuple(bpy.context.scene.tool_settings.mesh_select_mode).index(True)
@@ -140,7 +140,6 @@ def iterate_islands(operator, callback, restore_selection=False):
     entities[0].select_set(True)
     bpy.ops.mesh.select_linked()
     make_vertex_group('qm_iterate_islands_island_selection')
-    bpy.ops.object.vertex_group_assign()
     callback(operator)
     bpy.ops.object.vertex_group_set_active(group='qm_iterate_islands_island_selection')
     bpy.ops.object.vertex_group_select()
@@ -1589,7 +1588,6 @@ class KnifeIntersectOperator(bpy.types.Operator):
       bpy.ops.transform.resize(value=(val, val, val))
       context.scene.tool_settings.transform_pivot_point = transform_pivot
     make_vertex_group('qm_knife_intersect_original')
-    bpy.ops.object.vertex_group_assign()
     bpy.ops.mesh.intersect(mode='SELECT_UNSELECT', separate_mode='CUT', solver=self.solver)
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.object.vertex_group_select()
@@ -1696,6 +1694,55 @@ class SetUseSelfDriversOperator(bpy.types.Operator):
           dr.driver.use_self = True
           # Reevaluate expression with use self enabled:
           dr.driver.expression = dr.driver.expression
+    return {'FINISHED'}
+
+class AddBoneOperator(bpy.types.Operator):
+  """Add Bone"""
+  bl_idname, bl_label, bl_options = 'qm.add_bone', 'Add Bone', {'REGISTER', 'UNDO'}
+
+  @classmethod
+  def poll(cls, context):
+    return is_in_editmode()
+
+  def execute(self, context):
+    cursor_to_selected()
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+    active = context.object
+    active_bone_name = None
+
+    # If armature exists, add bone to it:
+    parent = context.object.parent
+    if parent and parent.type == 'ARMATURE':
+      select(parent)
+      bpy.ops.object.mode_set(mode='EDIT')
+      bpy.ops.armature.bone_primitive_add()
+      bpy.ops.armature.select_linked()
+      bpy.ops.view3d.snap_selected_to_cursor(use_offset=False)
+      active_bone_name = context.selected_bones[0].name
+      bpy.ops.object.mode_set(mode='OBJECT')
+      select(active)
+      bpy.ops.object.mode_set(mode='EDIT')
+      # Remove selected geometry from all existing vertex groups:
+      for group in active.vertex_groups:
+        bpy.ops.object.vertex_group_set_active(group=group.name)
+        bpy.ops.object.vertex_group_remove_from()
+      # Add to vertex group:
+      make_vertex_group(active_bone_name)
+
+    # Else if armature doesnt exist, create it:
+    else:
+      bpy.ops.object.armature_add()
+      armature = context.object
+      active.select_set(True)
+      bpy.ops.object.parent_set(type='ARMATURE_AUTO')
+      armature.data.display_type = 'STICK'
+      context.object.show_in_front = True
+      bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
+      active_bone_name = armature.data.bones[0].name
+      select(active)
+      bpy.ops.object.mode_set(mode='EDIT')
+
     return {'FINISHED'}
 
 class IntersectOperator(bpy.types.Operator):
@@ -1937,6 +1984,7 @@ classes = (
   SeparateByLoosePartsOperator, StraightenUVsOperator, UVProjectModifierOperator, MarkSeamOperator, 
   MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, TransformUVsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMapOperator, EditAlbedoMapOperator,
   BooleanOperator, WeldEdgesIntoFacesOperator, ToggleAutoKeyingOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
+  AddBoneOperator,
   PlaneIntersectOperator, KnifeIntersectOperator, IntersectOperator, TransformOrientationOperator, TransformPivotOperator,
   SetSnapOperator, ModeOperator, ToolOperator, SaveAndReloadOperator, ReimportTexturesOperator, UnpackAllDataToFilesOperator, ExportOperator, ViewOperator,
 
