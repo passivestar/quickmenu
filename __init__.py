@@ -6,9 +6,9 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 4, 7),
+  'version': (2, 4, 8),
   'author': 'passivestar',
-  'blender': (3, 3, 0),
+  'blender': (3, 4, 1),
   'location': 'Press the bound hotkey in 3D View',
   'description': 'Simplifies access to useful operators and adds new functionality',
   'category': 'Interface'
@@ -218,6 +218,9 @@ def modal_run(operator, context, event, delete=True):
     operator.report({'INFO'}, 'modal finished')
     return {'CANCELLED'}
   return {'RUNNING_MODAL'}
+
+def snake_to_title_case(string):
+  return ''.join([s.title() for s in string.split('_')])
 
 # @MenuOperators
 
@@ -436,6 +439,15 @@ class ConvertToInstancesOperator(bpy.types.Operator):
       obj.modifiers.clear()
     # Hide the original:
     original_object.modifiers["GeometryNodes"].show_viewport = False
+    return {'FINISHED'}
+
+class MoveIntoNewCollection(bpy.types.Operator):
+  """Move Into New Collection"""
+  bl_idname, bl_label, bl_options = 'qm.move_into_new_collection', 'Move Into New Collection', {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    name = snake_to_title_case(context.object.name)
+    bpy.ops.object.move_to_collection(collection_index=0, is_new=True, new_collection_name=name)
     return {'FINISHED'}
 
 class CorrectAttributesOperator(bpy.types.Operator):
@@ -1974,7 +1986,7 @@ classes = (
   ReloadMenuItemsOperator,
 
   JoinSeparateOperator, SetSmoothOperator, LocalViewOperator, SetOriginOperator, ProportionalEditingOperator,
-  WireframeOperator, RotateOperator, DrawOperator, ApplyToMultiuserOperator, ConvertToInstancesOperator, CorrectAttributesOperator,
+  WireframeOperator, RotateOperator, DrawOperator, ApplyToMultiuserOperator, ConvertToInstancesOperator, MoveIntoNewCollection, CorrectAttributesOperator,
   SelectRingOperator, SelectMoreOperator, RegionToLoopOperator, InvertSelectionConnectedOperator,
   SelectSharpEdgesOperator, SelectViewGeometryOperator, AddSingleVertexOperator, SpinOperator,
   BboxOperator, ConnectOperator, AddGeometryOperator, ExtrudeBothWaysOperator, ClearSharpOperator, FlattenOperator,

@@ -103,6 +103,10 @@
       "operator": "qm.convert_to_instances"
     },
     {
+      "path": "General/(B) Move Into New Collection",
+      "operator": "qm.move_into_new_collection"
+    },
+    {
       "path": "Select/Select Ring",
       "operator": "qm.select_ring"
     },
