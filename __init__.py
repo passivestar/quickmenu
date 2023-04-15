@@ -6,9 +6,9 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 4, 8),
+  'version': (2, 4, 9),
   'author': 'passivestar',
-  'blender': (3, 4, 1),
+  'blender': (3, 5, 0),
   'location': 'Press the bound hotkey in 3D View',
   'description': 'Simplifies access to useful operators and adds new functionality',
   'category': 'Interface'

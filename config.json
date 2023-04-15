@@ -30,14 +30,6 @@
       }
     },
     {
-      "path": "General/Origin To Cursor",
-      "operator": "object.origin_set",
-      "params": {
-        "type": 2,
-        "center": 1
-      }
-    },
-    {
       "path": "General/[Separator]"
     },
     {
