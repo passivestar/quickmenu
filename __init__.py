@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 4, 9),
+  'version': (2, 4, 10),
   'author': 'passivestar',
   'blender': (3, 5, 0),
   'location': 'Press the bound hotkey in 3D View',
@@ -172,7 +172,7 @@ def add_or_get_modifier(modifier_type, move_on_top=False):
   return modifier
 
 def is_in_editmode():
-  return bpy.context.mode == 'EDIT_MESH'
+  return bpy.context.mode == 'EDIT_MESH' or bpy.context.mode == 'EDIT_CURVE' or bpy.context.mode == 'EDIT_SURFACE' or bpy.context.mode == 'EDIT_METABALL' or bpy.context.mode == 'EDIT_TEXT' or bpy.context.mode == 'EDIT_ARMATURE'
 
 def anything_is_selected_in_editmode(obj = None):
   if obj != None:
@@ -265,7 +265,10 @@ class JoinSeparateOperator(bpy.types.Operator):
   def execute(self, context):
     if is_in_editmode():
       if anything_is_selected_in_editmode():
-        bpy.ops.mesh.separate(type='SELECTED')
+        if bpy.context.object.type == 'CURVE':
+          bpy.ops.curve.separate()
+        elif bpy.context.object.type == 'MESH':
+          bpy.ops.mesh.separate(type='SELECTED')
         bpy.ops.object.editmode_toggle()
         select(bpy.context.selected_objects[-1])
         if self.reset_origin: bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
@@ -1206,45 +1209,6 @@ class StraightenUVsOperator(bpy.types.Operator):
     bpy.ops.uv.follow_active_quads()
     return {'FINISHED'}
 
-class UVProjectModifierOperator(bpy.types.Operator):
-  """UV Project Modifier"""
-  bl_idname, bl_label, bl_options = 'qm.uv_project_modifier', 'UV Project Modifier', {'REGISTER', 'UNDO'}
-
-  @classmethod
-  def poll(cls, context):
-    return context.object != None
-
-  def execute(self, context):
-    obj_name = context.object.name
-    bpy.ops.object.modifier_add(type='UV_PROJECT')
-    uv_project = context.object.modifiers[-1]
-    uv_project.uv_layer = "UVMap"
-    uv_project.projector_count = 10
-
-    deg45 = math.pi / 4
-    deg90 = math.pi / 2
-
-    rotations = [
-      Vector((0, 0, 0)), Vector((math.pi, 0, 0)),
-      Vector((deg90, 0, 0)), Vector((deg90, 0, deg45)), Vector((deg90, 0, deg45 * 2)),
-      Vector((deg90, 0, deg45 * 3)), Vector((deg90, 0, deg45 * 4)), Vector((deg90, 0, deg45 * 5)),
-      Vector((deg90, 0, deg45 * 6)), Vector((deg90, 0, deg45 * 7))
-    ]
-
-    bpy.ops.object.empty_add(type='CUBE', location=context.object.location)
-    container = context.object
-    container.name = f'ProjectorContainer_{obj_name}';
-
-    for i, rot in enumerate(rotations):
-      bpy.ops.object.empty_add(type='SINGLE_ARROW', location=(0, 0, 0), rotation=rot)
-      context.object.name = "Projector";
-      context.object.parent = container
-      uv_project.projectors[i].object = context.object
-
-    select(container)
-
-    return {'FINISHED'}
-
 class MarkSeamOperator(bpy.types.Operator):
   """Mark Or Clear Seam. Hold shift to clear seam"""
   bl_idname, bl_label, bl_options = 'qm.mark_seam', 'Mark Seam', {'REGISTER', 'UNDO'}
@@ -1993,7 +1957,7 @@ classes = (
   RandomizeOperator, ConvertOperator, ConvertToMeshOperator, MirrorOperator, SubsurfOperator,
   BevelOperator, SolidifyOperator, TriangulateOperator, ArrayOperator,
   SimpleDeformOperator, ClearModifiersOperator, DeleteBackFacingOperator,
-  SeparateByLoosePartsOperator, StraightenUVsOperator, UVProjectModifierOperator, MarkSeamOperator, 
+  SeparateByLoosePartsOperator, StraightenUVsOperator, MarkSeamOperator, 
   MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, TransformUVsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMapOperator, EditAlbedoMapOperator,
   BooleanOperator, WeldEdgesIntoFacesOperator, ToggleAutoKeyingOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
   AddBoneOperator,
