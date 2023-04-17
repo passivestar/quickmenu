@@ -1148,38 +1148,6 @@ class DeleteBackFacingOperator(bpy.types.Operator):
     bmesh.update_edit_mesh(me)
     return {'FINISHED'}
 
-class SeparateByLoosePartsOperator(bpy.types.Operator):
-  """Separate By Loose Parts"""
-  bl_idname, bl_label, bl_options = 'qm.separate_by_loose_parts', 'Separate By Loose Parts', {'REGISTER', 'UNDO'}
-  calculate_rotation: BoolProperty(name='Calculate Rotation', default=False)
-
-  @classmethod
-  def poll(cls, context):
-    return is_in_editmode()
-
-  def execute(self, context):
-    bpy.ops.mesh.separate()
-    bpy.ops.object.editmode_toggle()
-    new_object = context.selected_objects[-1]
-    select(new_object)
-    bpy.ops.object.editmode_toggle()
-    bpy.ops.mesh.separate(type='LOOSE')
-    bpy.ops.object.editmode_toggle()
-    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
-    bpy.ops.object.make_links_data(type='OBDATA')
-    if self.calculate_rotation:
-      active = context.object
-      objects = [o for o in context.selected_objects if o != active]
-      locations = [o.location for o in context.selected_objects]
-      center = reduce((lambda x, y: x + y), locations) / len(locations)
-      for o in objects:
-        active_direction = center - active.location
-        current_direction = center - o.location
-        angle = active_direction.angle(current_direction)
-        cross = active_direction.cross(current_direction)
-        o.rotation_euler = Quaternion(cross, angle).to_euler()
-    return {'FINISHED'}
-
 class StraightenUVsOperator(bpy.types.Operator):
   """Straighten UVs"""
   bl_idname, bl_label, bl_options = 'qm.straighten_uvs', 'Straighten UVs', {'REGISTER', 'UNDO'}
@@ -1957,7 +1925,7 @@ classes = (
   RandomizeOperator, ConvertOperator, ConvertToMeshOperator, MirrorOperator, SubsurfOperator,
   BevelOperator, SolidifyOperator, TriangulateOperator, ArrayOperator,
   SimpleDeformOperator, ClearModifiersOperator, DeleteBackFacingOperator,
-  SeparateByLoosePartsOperator, StraightenUVsOperator, MarkSeamOperator, 
+  StraightenUVsOperator, MarkSeamOperator, 
   MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, TransformUVsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMapOperator, EditAlbedoMapOperator,
   BooleanOperator, WeldEdgesIntoFacesOperator, ToggleAutoKeyingOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
   AddBoneOperator,

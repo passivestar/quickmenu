@@ -351,10 +351,6 @@
       "operator": "mesh.decimate"
     },
     {
-      "path": "(Q) Delete - Split/Delete Loose",
-      "operator": "mesh.delete_loose"
-    },
-    {
       "path": "(Q) Delete - Split/[Separator]"
     },
     {
@@ -377,10 +373,6 @@
       "params": {
         "type": "EDGE"
       }
-    },
-    {
-      "path": "(Q) Delete - Split/(R) Separate By Loose Parts",
-      "operator": "qm.separate_by_loose_parts"
     },
     {
       "path": "(Q) Delete - Split/[Separator]"
