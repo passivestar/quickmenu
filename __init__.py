@@ -1927,7 +1927,7 @@ classes = (
   SimpleDeformOperator, ClearModifiersOperator, DeleteBackFacingOperator,
   StraightenUVsOperator, MarkSeamOperator, 
   MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, TransformUVsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMapOperator, EditAlbedoMapOperator,
-  BooleanOperator, WeldEdgesIntoFacesOperator, ToggleAutoKeyingOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
+  BooleanOperator, WeldEdgesIntoFacesOperator, TargetWeldToggle, ToggleAutoKeyingOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
   AddBoneOperator,
   PlaneIntersectOperator, KnifeIntersectOperator, IntersectOperator, TransformOrientationOperator, TransformPivotOperator,
   SetSnapOperator, ModeOperator, ToolOperator, SaveAndReloadOperator, ReimportTexturesOperator, UnpackAllDataToFilesOperator, ExportOperator, ViewOperator,
