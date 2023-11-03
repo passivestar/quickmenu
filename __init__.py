@@ -434,14 +434,33 @@ class ConvertToInstancesOperator(bpy.types.Operator):
     if not modifier_exists('NODES'):
       return {'FINISHED'}
     original_object = context.object
+    original_object.hide_render = False
+
     # Convert to instances:
     bpy.ops.object.duplicates_make_real(use_base_parent=True)
     # Clear modifiers on new objects and add suffix
     for obj in context.selected_objects:
       obj.name = obj.name + self.suffix
       obj.modifiers.clear()
-    # Hide the original:
-    original_object.modifiers["GeometryNodes"].show_viewport = False
+
+    # Cycle through modifiers, hide all the NODES
+    for modifier in original_object.modifiers:
+      if modifier.type == 'NODES':
+        modifier.show_viewport = False
+
+    # Save selected instances and hide everything
+    selected_objects = [*context.selected_objects]
+    bpy.ops.object.select_all(action='DESELECT')
+
+    # Hide the source in viewport and render
+    original_object.select_set(True)
+    bpy.ops.object.hide_view_set(unselected=False)
+    original_object.hide_render = True
+
+    # Restore selection
+    for obj in selected_objects:
+      obj.select_set(True)
+
     return {'FINISHED'}
 
 class MoveIntoNewCollection(bpy.types.Operator):
