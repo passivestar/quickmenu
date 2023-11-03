@@ -1585,6 +1585,9 @@ class TargetWeldToggle(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def toggle_target_weld(self, context):
+        if bpy.context.mode != 'EDIT_MESH':
+            bpy.ops.object.mode_set(mode='EDIT')
+         
         if context.scene.tool_settings.use_mesh_automerge and bpy.context.scene.tool_settings.use_snap:
             context.scene.tool_settings.use_mesh_automerge = False
             bpy.context.scene.tool_settings.use_snap = False
@@ -1599,7 +1602,7 @@ class TargetWeldToggle(bpy.types.Operator):
     def execute(self, context):
         self.toggle_target_weld(context)
         return{'FINISHED'}
-      
+    
 class ToggleAutoKeyingOperator(bpy.types.Operator):
   """Toggle Auto Keying"""
   bl_idname, bl_label, bl_options = 'qm.toggle_auto_keying', 'Toggle Auto Keying', {'REGISTER', 'UNDO'}
