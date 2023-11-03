@@ -505,6 +505,10 @@
       "operator": "qm.weld_edges_into_faces"
     },
     {
+      "path": "(E) Boolean - Knife/(F)Target Weld Toggle",
+      "operator": "qm.target_weld_toggle"
+    },
+    {
       "path": "(R) Animation/Parent To New Empty",
       "operator": "qm.parent_to_new_empty"
     },
