@@ -1,3 +1,6 @@
+
+<img width="960" alt="qm" src="https://github.com/passivestar/quickmenu/assets/60579014/6b419737-61f4-419c-9e14-5db46e104fcc">
+
 # Quick Menu is a minimalistic productivity addon for Blender
 
 ## Installation
