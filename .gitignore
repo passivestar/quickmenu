@@ -5,3 +5,8 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+*.blend1
+*.spp
+*.fbx
+*.glb
+textures
