@@ -28,8 +28,8 @@
     { "path": "General/(Z) Make Parent", "operator": "object.parent_set" },
     { "path": "General/(X) Toggle Correct Face Attributes", "operator": "qm.correct_attributes" },
     { "path": "General/(V) Clear Modifiers", "operator": "qm.clear_modifiers" },
-    { "path": "General/(B) Convert To Instances", "operator": "qm.convert_to_instances" },
-    { "path": "General/(N) Move Into New Collections", "operator": "qm.move_into_new_collections" },
+    { "path": "General/(N) Convert To Instances", "operator": "qm.convert_to_instances" },
+    { "path": "General/(M) Move Into New Collections", "operator": "qm.move_into_new_collections" },
 
 
     { "path": "Select/Select Ring Or Loop", "operator": "qm.select_ring" },
@@ -176,6 +176,7 @@
       "params": { "name": "QMT Voxel Remesh" }
     },
     { "path": "Modify/Triangulate", "operator": "qm.triangulate" },
+
     { "path": "Modify/[Separator]"},
     { "path": "Modify/(Q) Flip Normals", "operator": "mesh.flip_normals" },
     {
@@ -198,6 +199,10 @@
     },
     { "path": "Modify/[Separator]"},
     {
+      "path": "Modify/(A) Snap Rotation By Normal", "operator": "geometry.execute_node_group",
+      "params": { "name": "QMT Snap Rotation By Face Normal" }
+    },
+    {
       "path": "Modify/(D) Shrinkwrap", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Shrinkwrap" }
     },
@@ -216,21 +221,20 @@
     },
     { "path": "Modify/[Separator]" },
     { "path": "Modify/(Z) Clear Sharp", "operator": "qm.clear_sharp" },
-
     {
-      "path": "Wear/Holes", "operator": "geometry.execute_node_group",
+      "path": "Modify/(X) Damage/Holes", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Holes" }
     },
     {
-      "path": "Wear/[WIP] Edge Wear", "operator": "geometry.execute_node_group",
+      "path": "Modify/(X) Damage/[WIP] Edge Wear", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Edge Wear" }
     },
     {
-      "path": "Wear/Chunks", "operator": "geometry.execute_node_group",
+      "path": "Modify/(X) Damage/Chunks", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Chunks" }
     },
     {
-      "path": "Wear/Cracks", "operator": "geometry.execute_node_group",
+      "path": "Modify/(X) Damage/Cracks", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Cracks" }
     },
 
@@ -248,12 +252,12 @@
       "params": { "name": "QMT Delete View Perpendicular" }
     },
     {
-      "path": "(Q) Delete and Split/(R) Delete Unselected", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Delete Unselected" }
-    },
-    {
       "path": "(Q) Delete and Split/(E) Edge Split", "operator": "mesh.edge_split",
       "params": { "type": "EDGE" }
+    },
+    {
+      "path": "(Q) Delete and Split/(R) Delete Unselected", "operator": "geometry.execute_node_group",
+      "params": { "name": "QMT Delete Unselected" }
     },
 
     { "path": "(Q) Delete and Split/[Separator]" },
@@ -264,7 +268,7 @@
     { "path": "(W) UV and Textures/Unwrap", "operator": "uv.unwrap" },
     { "path": "(W) UV and Textures/Straighten UVs", "operator": "qm.straighten_uvs" },
     { "path": "(W) UV and Textures/Cube Project", "operator": "uv.cube_project" },
-    { "path": "(W) UV and Textures/Project From View", "operator": "uv.project_from_view" },
+    { "path": "(W) UV and Textures/View Project", "operator": "uv.project_from_view" },
 
     { "path": "(W) UV and Textures/[Separator]" },
 
@@ -378,6 +382,7 @@
 
     { "path": "[Separator]" },
 
+    { "path": "(C) Select Linked All", "operator": "mesh.select_linked" },
     { "path": "(V) View Selected or Camera", "operator": "qm.view" }
   ]
 }

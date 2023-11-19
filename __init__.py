@@ -8,7 +8,7 @@ bl_info = {
   'name': 'QuickMenu',
   'version': (3, 0, 0),
   'author': 'passivestar',
-  'blender': (4, 0, 0),
+  'blender': (4, 1, 0),
   'location': 'Press the hotkey in 3D View',
   'description': 'Simplifies access to useful operators and adds new functionality',
   'category': '3D View'
@@ -171,7 +171,7 @@ def nodes_were_loaded():
 
 class QuickMenuOperator(bpy.types.Operator):
   """Quick Menu"""
-  bl_idname, bl_label = 'qm.quick_menu', 'Quick Menu Operator'
+  bl_idname, bl_label, bl_options = 'qm.quick_menu', 'Quick Menu Operator', {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     # Inject cursor
@@ -234,13 +234,16 @@ class SetSmoothOperator(bpy.types.Operator):
   """Set Smooth Shading"""
   bl_idname, bl_label, bl_options = 'qm.smooth', 'Set Smooth', {'REGISTER', 'UNDO'}
   smooth: BoolProperty(name='Smooth', default=True)
-  auto: BoolProperty(name='Auto', default=True)
+  by_angle: BoolProperty(name='By Angle', default=True)
   angle: FloatProperty(name='Angle', subtype='ANGLE', default=0.872665, step=2)
 
   def execute(self, context):
     def fn():
       if self.smooth:
-        bpy.ops.object.shade_smooth(use_auto_smooth=self.auto, auto_smooth_angle=self.angle)
+        if self.by_angle:
+          try : bpy.ops.object.shade_smooth_by_angle(angle=self.angle)
+          except : bpy.ops.object.shade_smooth(use_auto_smooth=True, auto_smooth_angle=self.angle)
+        else: bpy.ops.object.shade_smooth()
       else:
         bpy.ops.object.shade_flat()
     execute_in_mode('OBJECT', fn)
@@ -626,7 +629,7 @@ class BevelOperator(bpy.types.Operator):
     existed = modifier_exists('BEVEL')
     b = add_or_get_modifier('BEVEL')
     if not existed: b.miter_outer = 'MITER_ARC'
-    if self.use_weight: b.limit_method = 'WEIGHT'
+    b.limit_method = 'WEIGHT' if self.use_weight else 'ANGLE'
     b.width, b.segments, b.angle_limit, b.harden_normals, b.loop_slide, b.use_clamp_overlap = self.amount, self.segments, self.angle, self.harden_normals, self.loop_slide, self.use_clamp_overlap
     return {'FINISHED'}
 
@@ -1150,7 +1153,7 @@ class ViewOperator(bpy.types.Operator):
     if is_in_editmode() or len(context.selected_objects) > 0:
       bpy.ops.view3d.view_selected()
     else:
-      bpy.ops.view3d.CAMERA_DATA()
+      bpy.ops.view3d.view_camera()
     return {'FINISHED'}
 
 class SetCursorRotationToViewOperator(bpy.types.Operator):
@@ -1165,7 +1168,7 @@ class SetCursorRotationToViewOperator(bpy.types.Operator):
 # @QuickMenu
 
 class QuickMenu(bpy.types.Menu):
-  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (Beta)'
+  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 2)'
 
   def draw(self, context):
     layout = self.layout
