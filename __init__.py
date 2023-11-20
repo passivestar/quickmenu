@@ -1179,7 +1179,7 @@ class VoidEditModeOnlyOperator(bpy.types.Operator):
 # @QuickMenu
 
 class QuickMenu(bpy.types.Menu):
-  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 2)'
+  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 3)'
 
   def draw(self, context):
     layout = self.layout
