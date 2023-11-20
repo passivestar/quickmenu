@@ -1161,8 +1161,19 @@ class SetCursorRotationToViewOperator(bpy.types.Operator):
   bl_idname, bl_label = 'qm.set_cursor_rotation_to_view', 'Set Cursor Rotation To View'
 
   def execute(self, context):
-    euler = view_snapped_vector().to_track_quat('Z', 'Y').to_euler()
+    euler = view_vector().to_track_quat('Z', 'Y').to_euler()
     context.scene.cursor.rotation_euler = euler
+    return {'FINISHED'}
+
+class VoidEditModeOnlyOperator(bpy.types.Operator):
+  """Edit Mode Only"""
+  bl_idname, bl_label = 'qm.void_edit_mode_only', 'Edit Mode Only'
+
+  @classmethod
+  def poll(cls, context):
+    return is_in_editmode()
+
+  def execute(self, context):
     return {'FINISHED'}
 
 # @QuickMenu
@@ -1172,7 +1183,14 @@ class QuickMenu(bpy.types.Menu):
 
   def draw(self, context):
     layout = self.layout
+
+    # Draw a label that shows a warning if the current version is less than blender 4.1.0
+    if bpy.app.version < (4, 1, 0):
+      layout.label(text=f'You need Blender 4.1 for the addon to work properly', icon='ERROR')
+      layout.label(text=f'Current version: {bpy.app.version_string}')
+
     draw_menu(self, app['items'])
+
     layout.separator()
     layout.operator('qm.edit_items', text='Edit Menu')
     layout.operator('qm.load_items', text='Reload Menu')
@@ -1215,10 +1233,15 @@ def draw_menu(self, items):
     elif 'operator' in item:
       icon = 'NODETREE' if item['operator'] == 'geometry.execute_node_group' else 'NONE'
       if 'icon' in item: icon = item['icon']
-      operator = layout.operator(item['operator'], text=title, icon=icon)
-      if 'params' in item:
-        for key, val in item['params'].items():
-          operator[key] = tuple(val) if isinstance(val, list) else val
+
+      if item['operator'] == 'geometry.execute_node_group' and not is_in_editmode():
+        layout.operator('qm.void_edit_mode_only', text=title, icon=icon)
+      else:
+        operator = layout.operator(item['operator'], text=title, icon=icon)
+        if 'params' in item:
+          for key, val in item['params'].items():
+            operator[key] = tuple(val) if isinstance(val, list) else val
+
     elif 'menu' in item:
       layout.menu(item['menu'], text=title) 
 

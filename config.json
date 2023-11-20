@@ -125,14 +125,14 @@
     },
     { "path": "Generate/(Q) Instantiate/[Separator]" },
     {
-      "path": "Generate/(Q) Instantiate/[Unavailable] Instances On Edges",
+      "path": "Generate/(Q) Instantiate/[Coming Soon] Instances On Edges",
       "operator": "geometry.execute_node_group",
       "params": {
         "name": "QMT Instances On Edges"
       }
     },
     {
-      "path": "Generate/(Q) Instantiate/[Unavailable] Distribute In Volume",
+      "path": "Generate/(Q) Instantiate/[Coming Soon] Distribute In Volume",
       "operator": "geometry.execute_node_group",
       "params": {
         "name": "QMT Distribute In Volume"
@@ -184,7 +184,7 @@
       "params": { "factor": 1 }
     },
     {
-      "path": "Modify/(E) [Unavailable] Loops Smooth", "operator": "geometry.execute_node_group",
+      "path": "Modify/(E) [Coming Soon] Loops Smooth", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Loops Smooth" }
     },
     {
