@@ -214,6 +214,12 @@ class JoinSeparateOperator(bpy.types.Operator):
   reset_origin: BoolProperty(name='Reset Origin on Separate', default=True)
   reset_drivers: BoolProperty(name='Reset Drivers on Separate', default=True)
 
+  @classmethod
+  def poll(cls, context):
+    if is_in_editmode() and not anything_is_selected_in_editmode():
+      return False
+    return True
+
   def execute(self, context):
     if is_in_editmode():
       if anything_is_selected_in_editmode():
@@ -560,6 +566,10 @@ class MirrorOperator(bpy.types.Operator):
   axis: BoolVectorProperty(name='Axis', subtype='XYZ')
   bisect_flip: BoolVectorProperty(name='Bisect Flip', subtype='XYZ')
 
+  @classmethod
+  def poll(cls, context):
+    return len(context.selected_objects) > 0
+
   def draw(self, context):
     l = self.layout
     l.row().prop(self.properties, 'axis', toggle=1)
@@ -605,6 +615,10 @@ class ArrayOperator(bpy.types.Operator):
   bl_idname, bl_label, bl_options = 'qm.array', 'Array', {'REGISTER', 'UNDO'}
   count: IntProperty(name='Count', default=3, step=1, min=0)
   offset: FloatProperty(name='Offset', default=1.1)
+
+  @classmethod
+  def poll(cls, context):
+    return len(context.selected_objects) > 0
 
   def execute(self, context):
     v = view_snapped_vector() * self.offset
@@ -774,8 +788,9 @@ class MarkSeamsSharpOperator(bpy.types.Operator):
     return is_in_editmode()
 
   def execute(self, context):
+    bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='EDGE')
     if self.from_islands: bpy.ops.qm.mark_seams_from_islands()
-    bpy.ops.qm.select_sharp_edges(sharpness=self.sharpness)
+    bpy.ops.mesh.edges_select_sharp(sharpness=self.sharpness)
     bpy.ops.qm.mark_seam()
     bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE')
     return {'FINISHED'}
@@ -808,7 +823,7 @@ class TransformUVsOperator(bpy.types.Operator):
 
   @classmethod
   def poll(cls, context):
-    return is_in_editmode()
+    return is_in_editmode() and anything_is_selected_in_editmode()
 
   def execute(self, context):
     me = bpy.context.edit_object.data
@@ -1114,6 +1129,7 @@ class ExportOperator(bpy.types.Operator):
 
     file = bpy.path.basename(bpy.data.filepath).split('.')[0]
     file_directory = os.path.dirname(bpy.data.filepath)
+    active_collection_name_clean = re.sub(r'[^a-zA-Z0-9_]', '_', bpy.context.view_layer.active_layer_collection.name)
 
     # Save the blend file
     bpy.ops.wm.save_mainfile()
@@ -1128,6 +1144,14 @@ class ExportOperator(bpy.types.Operator):
         export_apply=self.apply_modifiers,
         filepath=file_directory + file + '.glb'
       )
+    elif self.mode == 'gltf':
+      bpy.ops.export_scene.gltf(
+        export_format='GLTF_SEPARATE',
+        export_apply=self.apply_modifiers,
+        export_keep_originals=True,
+        use_active_collection=self.batch_mode == 'COLLECTION',
+        filepath = os.path.join(file_directory, active_collection_name_clean if self.batch_mode == 'COLLECTION' else file + '.gltf')
+      )
     elif self.mode == 'fbx':
       bpy.ops.export_scene.fbx(
         mesh_smooth_type='EDGE',
@@ -1138,7 +1162,7 @@ class ExportOperator(bpy.types.Operator):
         bake_anim_use_nla_strips=False,
         bake_space_transform=self.apply_transform,
         batch_mode=self.batch_mode,
-        filepath=file_directory + file + '.fbx' if self.batch_mode == 'OFF' else file_directory
+        filepath=os.path.join(file_directory, file + '.fbx') if self.batch_mode == 'OFF' else file_directory
       )
     else:
       self.report({'ERROR'}, 'Unknown export extension')
@@ -1179,7 +1203,7 @@ class VoidEditModeOnlyOperator(bpy.types.Operator):
 # @QuickMenu
 
 class QuickMenu(bpy.types.Menu):
-  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 3)'
+  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 4)'
 
   def draw(self, context):
     layout = self.layout

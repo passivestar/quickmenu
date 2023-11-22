@@ -146,13 +146,18 @@
       "path": "Generate/(E) Extrude Both Ways", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Extrude Both Ways" }
     },
-    { "path": "Generate/(R) Convex Hull", "operator": "mesh.convex_hull" },
     {
-      "path": "Generate/(T) Cables", "operator": "geometry.execute_node_group",
+      "path": "Generate/(R) Panel", "operator": "geometry.execute_node_group",
+      "params": { "name": "QMT Panel" }
+    },
+    { "path": "Generate/(T) Convex Hull", "operator": "mesh.convex_hull" },
+    {
+      "path": "Generate/(Y) Cables", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Cables" }
     },
+    { "path": "Generate/[Separator]" },
     {
-      "path": "Generate/(Y) Edges To Ropes", "operator": "geometry.execute_node_group",
+      "path": "Generate/(G) Edges To Ropes", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Edges To Ropes" }
     },
     { "path": "Generate/[Separator]"},
@@ -293,6 +298,7 @@
         "scale_y": 1
       }
     },
+    { "path": "(W) UV and Textures/(R) Pack Islands", "operator": "uv.pack_islands" },
 
     { "path": "(W) UV and Textures/[Separator]" },
 
@@ -359,7 +365,9 @@
     { "path": "(D) Tool/(E) Measure", "operator": "qm.tool", "params": { "tool_name": "builtin.measure" } },
     { "path": "(D) Tool/(R) Knife", "operator": "qm.tool", "params": { "tool_name": "builtin.knife" } },
     { "path": "(F) Mode", "operator": "view3d.object_mode_pie_or_toggle" },
+
     { "path": "(Z) Files/(Q) Export GLB", "operator": "qm.export", "params": { "mode": "glb" } },
+    { "path": "(Z) Files/(W) Export GLTF Active Collection", "operator": "qm.export", "params": { "mode": "gltf", "batch_mode": "COLLECTION" } },
 
     { "path": "(Z) Files/[Separator]" },
 
