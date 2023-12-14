@@ -57,9 +57,6 @@ def get_selection_and_active_indices():
 def grid_snap(grid, value):
   return round(value / grid) * grid
 
-def clamp(value, min, max):
-  return min if value < min else max if value > max else value
-
 def view_vector(left_to_right = False, use_object_transform = True):
   view_matrix = bpy.context.space_data.region_3d.view_matrix
   object_matrix = bpy.context.object.matrix_world if bpy.context.object else Matrix()
@@ -247,7 +244,10 @@ class SetSmoothOperator(bpy.types.Operator):
     def fn():
       if self.smooth:
         if self.by_angle:
-          try : bpy.ops.object.shade_smooth_by_angle(angle=self.angle)
+          bpy.ops.object.shade_smooth_by_angle(angle=self.angle)
+          try:
+            bpy.ops.object.shade_smooth_by_angle(angle=self.angle)
+            bpy.ops.mesh.customdata_custom_splitnormals_add()
           except : bpy.ops.object.shade_smooth(use_auto_smooth=True, auto_smooth_angle=self.angle)
         else: bpy.ops.object.shade_smooth()
       else:
@@ -404,12 +404,23 @@ class ConvertToInstancesOperator(bpy.types.Operator):
 class MoveIntoNewCollections(bpy.types.Operator):
   """Move Into New Collections"""
   bl_idname, bl_label, bl_options = 'qm.move_into_new_collections', 'Move Into New Collection', {'REGISTER', 'UNDO'}
+  link: BoolProperty(name='Link', default=False)
+
+  def invoke(self, context, event):
+    self.link = event.shift
+    return self.execute(context)
 
   def execute(self, context):
     objects = context.selected_objects
     for obj in objects:
+      obj.select_set(False)
+    for obj in objects:
+      obj.select_set(True)
       name = snake_to_title_case(obj.name)
-      bpy.ops.object.move_to_collection(collection_index=0, is_new=True, new_collection_name=name)
+      if self.link:
+        bpy.ops.object.link_to_collection(collection_index=0, is_new=True, new_collection_name=name)
+      else:
+        bpy.ops.object.move_to_collection(collection_index=0, is_new=True, new_collection_name=name)
       obj.select_set(False)
     for obj in objects:
       obj.select_set(True)
@@ -499,20 +510,6 @@ class SpinOperator(bpy.types.Operator):
     vsv = view_snapped_vector(False, False)
     angle = -self.angle if self.negative_angle else self.angle
     bpy.ops.mesh.spin(dupli=self.duplicates, steps=self.steps, angle=angle, use_normal_flip=self.flip_normals, center=context.scene.cursor.location, axis=vsv)
-    return {'FINISHED'}
-
-class ClearSharpOperator(bpy.types.Operator):
-  """Clear Sharp"""
-  bl_idname, bl_label, bl_options = 'qm.clear_sharp', 'Clear Sharp', {'REGISTER', 'UNDO'}
-
-  @classmethod
-  def poll(cls, context):
-    return is_in_editmode()
-
-  def execute(self, context):
-    bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.mesh.mark_sharp(clear=True)
-    bpy.ops.mesh.customdata_custom_splitnormals_clear()
     return {'FINISHED'}
 
 class ConvertToMeshOperator(bpy.types.Operator):
@@ -724,6 +721,17 @@ class StraightenUVsOperator(bpy.types.Operator):
   def execute(self, context):
     mesh = context.object.data
     selection_indeces, active_indeces = execute_in_mode('EDIT', get_selection_and_active_indices)
+
+    # Show an error if nothing is selected
+    if len(selection_indeces) == 0:
+      self.report({'ERROR'}, 'Nothing is selected')
+      return {'FINISHED'}
+
+    # Show an error if nothing is active
+    if len(active_indeces) == 0:
+      self.report({'ERROR'}, 'Nothing is active. Please make sure you have an active face')
+      return {'FINISHED'}
+
     def process_uvs():
       # Reorder active indices to ensure clockwise order
       active_uv = mesh.uv_layers.active.data
@@ -789,10 +797,21 @@ class MarkSeamsSharpOperator(bpy.types.Operator):
 
   def execute(self, context):
     bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='EDGE')
+    # Hide unselected
+    if anything_is_selected_in_editmode():
+      bpy.ops.mesh.hide(unselected=True)
+    
+    # Deselect everything
+    bpy.ops.mesh.select_all(action='DESELECT')
+
+    # Mark seams
     if self.from_islands: bpy.ops.qm.mark_seams_from_islands()
     bpy.ops.mesh.edges_select_sharp(sharpness=self.sharpness)
     bpy.ops.qm.mark_seam()
     bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE')
+
+    # Unhide
+    bpy.ops.mesh.reveal(select=False)
     return {'FINISHED'}
 
 class MarkSeamsFromIslandsOperator(bpy.types.Operator):
@@ -1203,7 +1222,7 @@ class VoidEditModeOnlyOperator(bpy.types.Operator):
 # @QuickMenu
 
 class QuickMenu(bpy.types.Menu):
-  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 4)'
+  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 5)'
 
   def draw(self, context):
     layout = self.layout

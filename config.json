@@ -85,8 +85,12 @@
     },
     { "path": "Generate/Spin", "operator": "qm.spin", "params": { "angle": 1.5708 } },
     {
-      "path": "Generate/Bounding Box", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Bounding Box" }
+      "path": "Generate/Selection To Box", "operator": "geometry.execute_node_group",
+      "params": { "name": "QMT Selection To Box" }
+    },
+    {
+      "path": "Generate/Selection To Cylinder", "operator": "geometry.execute_node_group",
+      "params": { "name": "QMT Selection To Cylinder" }
     },
     {
       "path": "Generate/Circles On Faces", "operator": "geometry.execute_node_group",
@@ -202,6 +206,10 @@
       "operator": "object.randomize_transform",
       "mode": "OBJECT"
     },
+    {
+      "path": "Modify/(Y) Randomize At Cursor", "operator": "geometry.execute_node_group",
+      "params": { "name": "QMT Randomize At Cursor" }
+    },
     { "path": "Modify/[Separator]"},
     {
       "path": "Modify/(A) Snap Rotation By Normal", "operator": "geometry.execute_node_group",
@@ -225,7 +233,6 @@
       "params": { "name": "QMT Noise At Cursor" }
     },
     { "path": "Modify/[Separator]" },
-    { "path": "Modify/(Z) Clear Sharp", "operator": "qm.clear_sharp" },
     {
       "path": "Modify/(X) Damage/Holes", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Holes" }
@@ -245,7 +252,7 @@
 
     { "path": "[Separator]"},
 
-    { "path": "(Q) Delete and Split/Merge", "operator": "mesh.merge", "params": { "type": "CENTER" } },
+    { "path": "(Q) Delete and Split/Merge", "operator": "mesh.merge", "params": { "type": 1 } },
     { "path": "(Q) Delete and Split/Merge By Distance", "operator": "mesh.remove_doubles" },
     { "path": "(Q) Delete and Split/Limited Dissolve", "operator": "mesh.dissolve_limited" },
     { "path": "(Q) Delete and Split/Decimate", "operator": "mesh.decimate" },
@@ -298,7 +305,6 @@
         "scale_y": 1
       }
     },
-    { "path": "(W) UV and Textures/(R) Pack Islands", "operator": "uv.pack_islands" },
 
     { "path": "(W) UV and Textures/[Separator]" },
 
