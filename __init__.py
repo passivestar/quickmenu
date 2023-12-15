@@ -737,10 +737,11 @@ class StraightenUVsOperator(bpy.types.Operator):
       active_uv = mesh.uv_layers.active.data
       center_x = sum(active_uv[i].uv.x for i in active_indeces) / len(active_indeces)
       center_y = sum(active_uv[i].uv.y for i in active_indeces) / len(active_indeces)
-      active_indeces.sort(key=lambda i: (math.atan2(active_uv[i].uv.y - center_y, active_uv[i].uv.x - center_x)))
+      active_indeces.sort(key=lambda i: math.atan2(active_uv[i].uv.y - center_y, active_uv[i].uv.x - center_x) % (2 * math.pi))
 
+      # Align UV vertices for the active quad
       prev_uv_coords = first_axis = None
-      for index in [*active_indeces, active_indeces[0]]:
+      for iteration_index, index in enumerate([*active_indeces, active_indeces[0]]):
         uv_coords = mesh.uv_layers.active.data[index].uv
         if prev_uv_coords:
           if first_axis == None:
@@ -749,7 +750,7 @@ class StraightenUVsOperator(bpy.types.Operator):
             min_axis = diff_abs.index(min(diff_abs))
             first_axis = min_axis
           else:
-            min_axis = (first_axis + index + 1) % 2
+            min_axis = (first_axis + iteration_index + 1) % 2
           uv_coords[min_axis] = prev_uv_coords[min_axis]
         prev_uv_coords = uv_coords
 
@@ -762,6 +763,7 @@ class MarkSeamOperator(bpy.types.Operator):
   bl_idname, bl_label, bl_options = 'qm.mark_seam', 'Mark Seam', {'REGISTER', 'UNDO'}
   clear_inner_region: BoolProperty(name='Clear Inner Region', default=False)
   clear: BoolProperty(name='Clear', default=False)
+  unwrap: BoolProperty(name='Unwrap', default=True)
 
   @classmethod
   def poll(cls, context):
@@ -772,8 +774,13 @@ class MarkSeamOperator(bpy.types.Operator):
     return self.execute(context)
 
   def execute(self, context):
+    if self.unwrap:
+      unwrap_previous_value = bpy.context.scene.tool_settings.use_edge_path_live_unwrap
+      bpy.context.scene.tool_settings.use_edge_path_live_unwrap = True
     if self.clear:
       bpy.ops.mesh.mark_seam(clear=True)
+      if self.unwrap:
+        bpy.context.scene.tool_settings.use_edge_path_live_unwrap = unwrap_previous_value
       return {'FINISHED'}
     mode = tuple(context.scene.tool_settings.mesh_select_mode).index(True)
     if self.clear_inner_region: bpy.ops.mesh.mark_seam(clear=True)
@@ -783,6 +790,8 @@ class MarkSeamOperator(bpy.types.Operator):
       bpy.ops.mesh.mark_seam()
       bpy.ops.mesh.loop_to_region()
       bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE')
+    if self.unwrap:
+      bpy.context.scene.tool_settings.use_edge_path_live_unwrap = unwrap_previous_value
     return {'FINISHED'}
 
 class MarkSeamsSharpOperator(bpy.types.Operator):
@@ -874,7 +883,7 @@ class SetVertexColorOperator(bpy.types.Operator):
   """Set Vertex Color"""
   bl_idname, bl_label, bl_options = 'qm.set_vertex_color', 'Set Vertex Color', {'REGISTER', 'UNDO'}
   color: FloatVectorProperty(name='Color', subtype='COLOR', min=0, max=1)
-  linked: BoolProperty(name='Linked', default = True)
+  linked: BoolProperty(name='Linked', default = False)
   set_to_active: BoolProperty(name='Set To Active', default = False)
 
   @classmethod
@@ -1222,7 +1231,7 @@ class VoidEditModeOnlyOperator(bpy.types.Operator):
 # @QuickMenu
 
 class QuickMenu(bpy.types.Menu):
-  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 5)'
+  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 6)'
 
   def draw(self, context):
     layout = self.layout
