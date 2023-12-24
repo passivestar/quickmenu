@@ -143,8 +143,8 @@
       }
     },
     {
-      "path": "Generate/(W) Connect Islands With Edge", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Connect Islands With Edge" }
+      "path": "Generate/(W) Connect Islands", "operator": "geometry.execute_node_group",
+      "params": { "name": "QMT Connect Islands" }
     },
     {
       "path": "Generate/(E) Extrude Both Ways", "operator": "geometry.execute_node_group",
@@ -154,10 +154,13 @@
       "path": "Generate/(R) Panel", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Panel" }
     },
-    { "path": "Generate/(T) Convex Hull", "operator": "mesh.convex_hull" },
     {
       "path": "Generate/(Y) Cables", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Cables" }
+    },
+    {
+      "path": "Generate/(U) Convex Hull", "operator": "geometry.execute_node_group",
+      "params": { "name": "QMT Convex Hull" }
     },
     { "path": "Generate/[Separator]" },
     {
@@ -271,6 +274,10 @@
       "path": "(Q) Delete and Split/(R) Delete Unselected", "operator": "geometry.execute_node_group",
       "params": { "name": "QMT Delete Unselected" }
     },
+    {
+      "path": "(Q) Delete and Split/(T) Delete Non-Boundary", "operator": "geometry.execute_node_group",
+      "params": { "name": "QMT Delete Non-Boundary" }
+    },
 
     { "path": "(Q) Delete and Split/[Separator]" },
 
@@ -284,7 +291,7 @@
 
     { "path": "(W) UV and Textures/[Separator]" },
 
-    { "path": "(W) UV and Textures/(Q) Mark Seams Sharp", "operator": "qm.mark_seams_sharp" },
+    { "path": "(W) UV and Textures/(Q) Smart UV Project", "operator": "qm.smart_uv_project" },
     {
       "path": "(W) UV and Textures/(W) Transform UVs", "operator": "qm.transform_uvs",
       "params": {
@@ -322,12 +329,16 @@
 
     { "path": "(E) Cut/[Separator]" },
 
-    { "path": "(E) Cut/(Q) [WIP] Grid Slice", "operator": "geometry.execute_node_group", "params": { "name": "QMT Grid Slice" } },
+    { "path": "(E) Cut/(Q) Grid Slice", "operator": "geometry.execute_node_group", "params": { "name": "QMT Grid Slice" } },
     { "path": "(E) Cut/(E) Knife Intersect", "operator": "geometry.execute_node_group", "params": { "name": "QMT Knife Intersect" } },
     { "path": "(E) Cut/(R) Grid Cut", "operator": "geometry.execute_node_group", "params": { "name": "QMT Grid Cut" } },
+
     { "path": "(R) Animation/Parent To New Empty", "operator": "qm.parent_to_new_empty" },
     { "path": "(R) Animation/Add Constraint", "operator": "object.constraint_add_with_targets" },
     { "path": "(R) Animation/Add Bone To Selection", "operator": "qm.add_bone" },
+    { "path": "(R) Animation/Add Collision", "operator": "qm.add_collision" },
+    { "path": "(R) Animation/Add Cloth", "operator": "qm.add_cloth" },
+    { "path": "(R) Animation/Animate Rotation", "operator": "qm.animate_rotation" },
 
     { "path": "(R) Animation/[Separator]" },
 

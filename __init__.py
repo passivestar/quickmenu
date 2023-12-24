@@ -123,6 +123,10 @@ def get_modifier(modifier_type, name):
 def move_modifier_on_top(modifier_name):
   bpy.ops.object.modifier_move_to_index(modifier=modifier_name, index=0)
 
+def add_modifier(modifier_type):
+  bpy.ops.object.modifier_add(type=modifier_type)
+  return bpy.context.object.modifiers[-1]
+
 def add_or_get_modifier(modifier_type, move_on_top=False):
   if modifier_exists(modifier_type):
     for modifier in bpy.context.object.modifiers:
@@ -132,6 +136,32 @@ def add_or_get_modifier(modifier_type, move_on_top=False):
   modifier = bpy.context.object.modifiers[-1]
   if move_on_top: move_modifier_on_top(modifier.name)
   return modifier
+
+def geonode_modifier_exists(node_group_name):
+  return len([m for m in bpy.context.object.modifiers if m.type == 'NODES' and m.node_group.name == node_group_name]) > 0
+
+def add_geonode_modifier(node_group_name):
+  bpy.ops.object.modifier_add(type='NODES')
+  modifier = bpy.context.object.modifiers[-1]
+  modifier.node_group = bpy.data.node_groups[node_group_name]
+  return modifier
+
+def add_or_get_geonode_modifier(node_group_name):
+  if geonode_modifier_exists(node_group_name):
+    for modifier in bpy.context.object.modifiers:
+      if modifier.type == 'NODES' and modifier.node_group.name == node_group_name:
+        return modifier
+  bpy.ops.object.modifier_add(type='NODES')
+  modifier = bpy.context.object.modifiers[-1]
+  modifier.node_group = bpy.data.node_groups[node_group_name]
+  return modifier
+
+def remove_geonode_modifier(node_group_name):
+  if geonode_modifier_exists(node_group_name):
+    for modifier in bpy.context.object.modifiers:
+      if modifier.type == 'NODES' and modifier.node_group.name == node_group_name:
+        bpy.context.object.modifiers.remove(modifier)
+        break
 
 def is_in_editmode():
   return bpy.context.mode == 'EDIT_MESH' or bpy.context.mode == 'EDIT_CURVE' or bpy.context.mode == 'EDIT_SURFACE' or bpy.context.mode == 'EDIT_METABALL' or bpy.context.mode == 'EDIT_TEXT' or bpy.context.mode == 'EDIT_ARMATURE'
@@ -234,25 +264,38 @@ class JoinSeparateOperator(bpy.types.Operator):
     return {'FINISHED'}
 
 class SetSmoothOperator(bpy.types.Operator):
-  """Set Smooth Shading"""
+  """Set Smooth Shading. Hold shift to use modifier"""
   bl_idname, bl_label, bl_options = 'qm.smooth', 'Set Smooth', {'REGISTER', 'UNDO'}
   smooth: BoolProperty(name='Smooth', default=True)
   by_angle: BoolProperty(name='By Angle', default=True)
-  angle: FloatProperty(name='Angle', subtype='ANGLE', default=0.872665, step=2)
+  angle: FloatProperty(name='Angle', subtype='ANGLE', default=0.872665, step=2, min=0, max=1.5708)
+  use_modifier: BoolProperty(name='Use Modifier', default=True)
+
+  def invoke(self, context, event):
+    if event.shift: self.use_modifier = True
+    return self.execute(context)
 
   def execute(self, context):
-    def fn():
+    if self.use_modifier:
       if self.smooth:
-        if self.by_angle:
-          bpy.ops.object.shade_smooth_by_angle(angle=self.angle)
-          try:
-            bpy.ops.object.shade_smooth_by_angle(angle=self.angle)
-            bpy.ops.mesh.customdata_custom_splitnormals_add()
-          except : bpy.ops.object.shade_smooth(use_auto_smooth=True, auto_smooth_angle=self.angle)
-        else: bpy.ops.object.shade_smooth()
+        m = add_or_get_geonode_modifier('Smooth by Angle')
+        m['Input_1'] = self.angle
+        m['Socket_1'] = True
       else:
-        bpy.ops.object.shade_flat()
-    execute_in_mode('OBJECT', fn)
+        remove_geonode_modifier('Smooth by Angle')
+    else:
+      remove_geonode_modifier('Smooth by Angle')
+      def fn():
+        if self.smooth:
+          if self.by_angle:
+            try:
+              bpy.ops.object.shade_smooth_by_angle(angle=self.angle)
+              bpy.ops.mesh.customdata_custom_splitnormals_add()
+            except : bpy.ops.object.shade_smooth(use_auto_smooth=True, auto_smooth_angle=self.angle)
+          else: bpy.ops.object.shade_smooth()
+        else:
+          bpy.ops.object.shade_flat()
+      execute_in_mode('OBJECT', fn)
     return {'FINISHED'}
 
 class LocalViewOperator(bpy.types.Operator):
@@ -794,50 +837,19 @@ class MarkSeamOperator(bpy.types.Operator):
       bpy.context.scene.tool_settings.use_edge_path_live_unwrap = unwrap_previous_value
     return {'FINISHED'}
 
-class MarkSeamsSharpOperator(bpy.types.Operator):
-  """Mark Seams Sharp"""
-  bl_idname, bl_label, bl_options = 'qm.mark_seams_sharp', 'Mark Seams Sharp', {'REGISTER', 'UNDO'}
-  sharpness: FloatProperty(name='Sharpness', subtype='ANGLE', default=1.0472, min=0.000174533, max=3.14159)
-  from_islands: BoolProperty(name='Preserve Islands', default=False)
+class SmartUVProject(bpy.types.Operator):
+  """Smart UV Project"""
+  bl_idname, bl_label, bl_options = 'qm.smart_uv_project', 'Smart UV Project', {'REGISTER', 'UNDO'}
+  angle: FloatProperty(name='Angle', subtype='ANGLE', default=1.0472, min=0.0001, max=3.14159)
 
   @classmethod
   def poll(cls, context):
     return is_in_editmode()
 
   def execute(self, context):
-    bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='EDGE')
-    # Hide unselected
-    if anything_is_selected_in_editmode():
-      bpy.ops.mesh.hide(unselected=True)
-    
-    # Deselect everything
-    bpy.ops.mesh.select_all(action='DESELECT')
-
-    # Mark seams
-    if self.from_islands: bpy.ops.qm.mark_seams_from_islands()
-    bpy.ops.mesh.edges_select_sharp(sharpness=self.sharpness)
-    bpy.ops.qm.mark_seam()
-    bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE')
-
-    # Unhide
-    bpy.ops.mesh.reveal(select=False)
-    return {'FINISHED'}
-
-class MarkSeamsFromIslandsOperator(bpy.types.Operator):
-  """Mark Seams From Islands"""
-  bl_idname, bl_label, bl_options = 'qm.mark_seams_from_islands', 'Mark Seams From Islands', {'REGISTER', 'UNDO'}
-
-  @classmethod
-  def poll(cls, context):
-    return is_in_editmode()
-
-  def execute(self, context):
-    previous_area = context.area.ui_type
-    context.area.ui_type = 'UV'
-    bpy.ops.uv.select_all(action='SELECT')
+    bpy.ops.uv.smart_project(angle_limit=self.angle)
     bpy.ops.uv.seams_from_islands()
-    context.area.ui_type = previous_area
-    return {'FINISHED'}
+    return {'FINISHED'} 
 
 class TransformUVsOperator(bpy.types.Operator):
   """Transform UV"""
@@ -1071,6 +1083,59 @@ class AddBoneOperator(bpy.types.Operator):
 
     return {'FINISHED'}
 
+class AddCollisionOperator(bpy.types.Operator):
+  """Add Collision"""
+  bl_idname, bl_label, bl_options = 'qm.add_collision', 'Add Collision', {'REGISTER', 'UNDO'}
+
+  thickness_outer: FloatProperty(name='Thickness Outer', default=0.02, min=0, max=1)
+
+  def execute(self, context):
+    add_or_get_modifier('COLLISION')
+    context.object.collision.thickness_outer = self.thickness_outer
+    return {'FINISHED'}
+
+class AddClothOperator(bpy.types.Operator):
+  """Add Cloth"""
+  bl_idname, bl_label, bl_options = 'qm.add_cloth', 'Add Cloth', {'REGISTER', 'UNDO'}
+
+  pressure: FloatProperty(name='Pressure', default=0, min=-2, max=2)
+  tension: FloatProperty(name='Tension', default=5, min=0, max=30)
+  compression: FloatProperty(name='Compression', default=5, min=0, max=30)
+  shear: FloatProperty(name='Shear', default=5, min=0, max=30)
+  bending: FloatProperty(name='Bending', default=0.1, min=0, max=30)
+  self_collisions: BoolProperty(name='Self Collisions', default=False)
+
+  def execute(self, context):
+    c = add_or_get_modifier('CLOTH')
+    c.settings.use_pressure = self.pressure != 0
+    c.settings.uniform_pressure_force = self.pressure
+    c.settings.tension_stiffness = self.tension
+    c.settings.compression_stiffness = self.compression
+    c.settings.shear_stiffness = self.shear
+    c.settings.bending_stiffness = self.bending
+    c.collision_settings.use_self_collision = self.self_collisions
+    context.scene.frame_set(0)
+    return {'FINISHED'}
+
+class AnimateRotationOperator(bpy.types.Operator):
+  """Animate Rotation"""
+  bl_idname, bl_label, bl_options = 'qm.animate_rotation', 'Animate Rotation', {'REGISTER', 'UNDO'}
+
+  cycles_x: IntProperty(name='Cycles X', default=0)
+  cycles_y: IntProperty(name='Cycles Y', default=0)
+  cycles_z: IntProperty(name='Cycles Z', default=1)
+
+  def execute(self, context):
+    end_frame = context.scene.frame_end
+
+    for obj in context.selected_objects:
+      for i, cycles in enumerate([self.cycles_x, self.cycles_y, self.cycles_z]):
+        if cycles > 0:
+          curve = obj.driver_add('rotation_euler', i)
+          curve.driver.expression = f'frame / {end_frame} * tau * {cycles}'
+
+    return {'FINISHED'}
+
 class TransformOrientationOperator(bpy.types.Operator):
   """Transform Orientation"""
   bl_idname, bl_label, bl_options = 'qm.transform_orientation', 'Transform Orientation', {'REGISTER', 'UNDO'}
@@ -1231,7 +1296,7 @@ class VoidEditModeOnlyOperator(bpy.types.Operator):
 # @QuickMenu
 
 class QuickMenu(bpy.types.Menu):
-  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 6)'
+  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 7)'
 
   def draw(self, context):
     layout = self.layout
