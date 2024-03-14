@@ -28,7 +28,6 @@
     { "path": "General/(Z) Make Parent", "operator": "object.parent_set" },
     { "path": "General/(X) Toggle Correct Face Attributes", "operator": "qm.correct_attributes" },
     { "path": "General/(V) Clear Modifiers", "operator": "qm.clear_modifiers" },
-    { "path": "General/(N) Convert To Instances", "operator": "qm.convert_to_instances" },
     { "path": "General/(M) Move Into New Collections", "operator": "qm.move_into_new_collections" },
 
 
@@ -37,34 +36,44 @@
     { "path": "Select/Select Region or Loop", "operator": "qm.region_to_loop" },
     {
       "path": "Select/Select View Parallel Edges", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Select View Parallel Edges" },
+      "params": { "name": "QM Select View Parallel Edges" },
       "icon": "CAMERA_DATA"
     },
     {
       "path": "Select/Select View Perpendicular Faces", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Select View Perpendicular Faces" },
+      "params": { "name": "QM Select View Perpendicular Faces" },
       "icon": "CAMERA_DATA"
+    },
+    {
+      "path": "Select/Expand Selection", "operator": "geometry.execute_node_group",
+      "params": { "name": "QM Expand Selection" }
     },
 
     { "path": "Select/[Separator]" },
 
     { "path": "Select/(Q) Select Linked Flat", "operator": "mesh.faces_select_linked_flat" },
     { "path": "Select/(W) Select Loose", "operator": "mesh.select_loose" },
-    { "path": "Select/(E) Select Sharp Edges", "operator": "geometry.execute_node_group", "params": { "name": "QMT Select Sharp Edges" } },
+    { "path": "Select/(E) Select Sharp Edges", "operator": "geometry.execute_node_group", "params": { "name": "QM Select Sharp Edges" } },
 
     { "path": "Select/[Separator]" },
 
     {
       "path": "Select/(A) Invert Selection Connected", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Invert Selection Connected" }
+      "params": { "name": "QM Invert Selection Connected" }
     },
 
     { "path": "Select/[Separator]" },
-
+    {
+      "path": "Select/(Z) Stripe Deselect", "operator": "geometry.execute_node_group",
+      "params": {
+        "name": "QM Stripe Deselect"
+      },
+      "mode": "EDIT_MESH"
+    },
     {
       "path": "Select/(X) Noise Deselect", "operator": "geometry.execute_node_group",
       "params": {
-        "name": "QMT Noise Deselect"
+        "name": "QM Noise Deselect"
       },
       "mode": "EDIT_MESH"
     },
@@ -80,92 +89,80 @@
     {
       "path": "Generate/Solidify Edges", "operator": "geometry.execute_node_group",
       "params": {
-        "name": "QMT Solidify Edges"
+        "name": "QM Solidify Edges"
       }
     },
-    { "path": "Generate/Spin", "operator": "qm.spin", "params": { "angle": 1.5708 } },
+    {
+      "path": "Generate/Spin", "operator": "geometry.execute_node_group",
+      "params": { "name": "QM Spin" }
+    },
     {
       "path": "Generate/Selection To Box", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Selection To Box" }
+      "params": { "name": "QM Selection To Box" }
     },
     {
       "path": "Generate/Selection To Cylinder", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Selection To Cylinder" }
+      "params": { "name": "QM Selection To Cylinder" }
     },
     {
       "path": "Generate/Circles On Faces", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Circles on Faces" }
+      "params": { "name": "QM Circles on Faces" }
     },
     {
       "path": "Generate/Circular Array", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Circular Array" }
+      "params": { "name": "QM Circular Array" }
     },
     { "path": "Generate/[Separator]" },
     {
       "path": "Generate/(Q) Instantiate/Cluster", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Cluster" }
+      "params": { "name": "QM Cluster" }
     },
     { "path": "Generate/(Q) Instantiate/[Separator]" },
     {
       "path": "Generate/(Q) Instantiate/Cubes On Edges", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Cubes On Edges" }
+      "params": { "name": "QM Cubes On Edges" }
     },
     {
       "path": "Generate/(Q) Instantiate/Spheres On Edges", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Spheres On Edges" }
+      "params": { "name": "QM Spheres On Edges" }
     },
     {
       "path": "Generate/(Q) Instantiate/Cylinders On Edges", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Cylinders On Edges" }
+      "params": { "name": "QM Cylinders On Edges" }
     },
     { "path": "Generate/(Q) Instantiate/[Separator]" },
     {
       "path": "Generate/(Q) Instantiate/Cubes On Surface", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Cubes On Surface" }
+      "params": { "name": "QM Cubes On Surface" }
     },
     {
       "path": "Generate/(Q) Instantiate/Spheres On Surface", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Spheres On Surface" }
-    },
-    { "path": "Generate/(Q) Instantiate/[Separator]" },
-    {
-      "path": "Generate/(Q) Instantiate/[Coming Soon] Instances On Edges",
-      "operator": "geometry.execute_node_group",
-      "params": {
-        "name": "QMT Instances On Edges"
-      }
-    },
-    {
-      "path": "Generate/(Q) Instantiate/[Coming Soon] Distribute In Volume",
-      "operator": "geometry.execute_node_group",
-      "params": {
-        "name": "QMT Distribute In Volume"
-      }
+      "params": { "name": "QM Spheres On Surface" }
     },
     {
       "path": "Generate/(W) Connect Islands", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Connect Islands" }
+      "params": { "name": "QM Connect Islands" }
     },
     {
       "path": "Generate/(E) Extrude Both Ways", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Extrude Both Ways" }
+      "params": { "name": "QM Extrude Both Ways" }
     },
     {
       "path": "Generate/(R) Panel", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Panel" }
+      "params": { "name": "QM Panel" }
     },
     {
       "path": "Generate/(Y) Cables", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Cables" }
+      "params": { "name": "QM Cables" }
     },
     {
       "path": "Generate/(U) Convex Hull", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Convex Hull" }
+      "params": { "name": "QM Convex Hull" }
     },
     { "path": "Generate/[Separator]" },
     {
       "path": "Generate/(G) Edges To Ropes", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Edges To Ropes" }
+      "params": { "name": "QM Edges To Ropes" }
     },
     { "path": "Generate/[Separator]"},
     {
@@ -179,15 +176,18 @@
     { "path": "Generate/(F) Array", "operator": "qm.array", "icon": "CAMERA_DATA"},
 
 
-
     { "path": "Modify/Convert To Mesh", "operator": "qm.convert_to_mesh" },
     { "path": "Modify/Subdivision Surface", "operator": "qm.subsurf" },
     { "path": "Modify/Bevel", "operator": "qm.bevel" },
     {
       "path": "Modify/Voxel Remesh", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Voxel Remesh" }
+      "params": { "name": "QM Voxel Remesh" }
     },
     { "path": "Modify/Triangulate", "operator": "qm.triangulate" },
+    {
+      "path": "Modify/Topology Expand Offset", "operator": "geometry.execute_node_group",
+      "params": { "name": "QM Topology Expand Offset" }
+    },
 
     { "path": "Modify/[Separator]"},
     { "path": "Modify/(Q) Flip Normals", "operator": "mesh.flip_normals" },
@@ -196,12 +196,8 @@
       "params": { "factor": 1 }
     },
     {
-      "path": "Modify/(E) [Coming Soon] Loops Smooth", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Loops Smooth" }
-    },
-    {
       "path": "Modify/(R) Randomize", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Randomize" },
+      "params": { "name": "QM Randomize" },
       "mode": "EDIT_MESH"
     },
     {
@@ -209,48 +205,36 @@
       "operator": "object.randomize_transform",
       "mode": "OBJECT"
     },
-    {
-      "path": "Modify/(Y) Randomize At Cursor", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Randomize At Cursor" }
-    },
     { "path": "Modify/[Separator]"},
     {
       "path": "Modify/(A) Snap Rotation By Normal", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Snap Rotation By Face Normal" }
+      "params": { "name": "QM Snap Rotation By Face Normal" }
     },
     {
       "path": "Modify/(D) Shrinkwrap", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Shrinkwrap" }
+      "params": { "name": "QM Shrinkwrap" }
     },
     {
       "path": "Modify/(F) Flatten", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Flatten" },
+      "params": { "name": "QM Flatten" },
       "icon": "CAMERA_DATA"
     },
     {
       "path": "Modify/(G) Noise", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Noise" }
-    },
-    {
-      "path": "Modify/(H) Noise At Cursor", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Noise At Cursor" }
+      "params": { "name": "QM Noise" }
     },
     { "path": "Modify/[Separator]" },
     {
       "path": "Modify/(X) Damage/Holes", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Holes" }
-    },
-    {
-      "path": "Modify/(X) Damage/[WIP] Edge Wear", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Edge Wear" }
+      "params": { "name": "QM Holes" }
     },
     {
       "path": "Modify/(X) Damage/Chunks", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Chunks" }
+      "params": { "name": "QM Chunks" }
     },
     {
       "path": "Modify/(X) Damage/Cracks", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Cracks" }
+      "params": { "name": "QM Cracks" }
     },
 
     { "path": "[Separator]"},
@@ -264,7 +248,7 @@
 
     {
       "path": "(Q) Delete and Split/(Q) Delete View Perpendicular", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Delete View Perpendicular" }
+      "params": { "name": "QM Delete View Perpendicular" }
     },
     {
       "path": "(Q) Delete and Split/(E) Edge Split", "operator": "mesh.edge_split",
@@ -272,11 +256,7 @@
     },
     {
       "path": "(Q) Delete and Split/(R) Delete Unselected", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Delete Unselected" }
-    },
-    {
-      "path": "(Q) Delete and Split/(T) Delete Non-Boundary", "operator": "geometry.execute_node_group",
-      "params": { "name": "QMT Delete Non-Boundary" }
+      "params": { "name": "QM Delete Unselected" }
     },
 
     { "path": "(Q) Delete and Split/[Separator]" },
@@ -317,21 +297,32 @@
 
     { "path": "(W) UV and Textures/(D) Set Vertex Color", "operator": "qm.set_vertex_color" },
     { "path": "(W) UV and Textures/(F) Select By Vertex Color", "operator": "qm.select_by_vertex_color" },
-    { "path": "(E) Cut/Union", "operator": "qm.boolean", "params": { "operation": 1 } },
+    { "path": "(E) Cut/Union", "operator": "qm.boolean", "params": { "operation": 1 }, "mode": "OBJECT" },
+    {
+      "path": "(E) Cut/Union", "operator": "geometry.execute_node_group",
+      "params": {
+        "name": "QM Union"
+      },
+      "mode": "EDIT_MESH"
+    },
     { "path": "(E) Cut/Difference", "operator": "qm.boolean", "params": { "operation": 0 } },
     { "path": "(E) Cut/Intersect", "operator": "qm.boolean", "params": { "operation": 2 } },
-    { "path": "(E) Cut/Cut", "operator": "geometry.execute_node_group", "params": { "name": "QMT Cut" } },
-    { "path": "(E) Cut/Inset Cut", "operator": "geometry.execute_node_group", "params": { "name": "QMT Inset Cut" } },
-    { "path": "(E) Cut/Panel Cut", "operator": "geometry.execute_node_group", "params": { "name": "QMT Panel Cut" } },
-    { "path": "(E) Cut/Groove Cut", "operator": "geometry.execute_node_group", "params": { "name": "QMT Groove Cut" } },
-    { "path": "(E) Cut/Pipe Cut", "operator": "geometry.execute_node_group", "params": { "name": "QMT Pipe Cut" } },
-    { "path": "(E) Cut/[WIP] Panel Hull Cut", "operator": "geometry.execute_node_group", "params": { "name": "QMT Panel Hull Cut" } },
+    { "path": "(E) Cut/Cut", "operator": "geometry.execute_node_group", "params": { "name": "QM Cut" } },
+    { "path": "(E) Cut/Inset Cut", "operator": "geometry.execute_node_group", "params": { "name": "QM Inset Cut" } },
+    { "path": "(E) Cut/Panel Cut", "operator": "geometry.execute_node_group", "params": { "name": "QM Panel Cut" } },
+    { "path": "(E) Cut/Groove Cut", "operator": "geometry.execute_node_group", "params": { "name": "QM Groove Cut" } },
+    { "path": "(E) Cut/Pipe Cut", "operator": "geometry.execute_node_group", "params": { "name": "QM Pipe Cut" } },
 
     { "path": "(E) Cut/[Separator]" },
 
-    { "path": "(E) Cut/(Q) Grid Slice", "operator": "geometry.execute_node_group", "params": { "name": "QMT Grid Slice" } },
-    { "path": "(E) Cut/(E) Knife Intersect", "operator": "geometry.execute_node_group", "params": { "name": "QMT Knife Intersect" } },
-    { "path": "(E) Cut/(R) Grid Cut", "operator": "geometry.execute_node_group", "params": { "name": "QMT Grid Cut" } },
+    { "path": "(E) Cut/(Q) Grid Slice", "operator": "geometry.execute_node_group", "params": { "name": "QM Grid Slice" } },
+    { "path": "(E) Cut/(E) Knife Intersect", "operator": "geometry.execute_node_group", "params": { "name": "QM Knife Intersect" } },
+    { "path": "(E) Cut/(R) Grid Cut", "operator": "geometry.execute_node_group", "params": { "name": "QM Grid Cut" } },
+    { "path": "(E) Cut/(T) Slice Mesh Through Selection", "operator": "geometry.execute_node_group", "params": { "name": "QM Slice Mesh Through Selection" } },
+
+    { "path": "(E) Cut/[Separator]" },
+
+    { "path": "(E) Cut/(A) Hull Cut", "operator": "geometry.execute_node_group", "params": { "name": "QM Hull Cut" } },
 
     { "path": "(R) Animation/Parent To New Empty", "operator": "qm.parent_to_new_empty" },
     { "path": "(R) Animation/Add Constraint", "operator": "object.constraint_add_with_targets" },
@@ -384,7 +375,8 @@
     { "path": "(F) Mode", "operator": "view3d.object_mode_pie_or_toggle" },
 
     { "path": "(Z) Files/(Q) Export GLB", "operator": "qm.export", "params": { "mode": "glb" } },
-    { "path": "(Z) Files/(W) Export GLTF Active Collection", "operator": "qm.export", "params": { "mode": "gltf", "batch_mode": "COLLECTION" } },
+    { "path": "(Z) Files/(W) Export GLTF Selected Object", "operator": "qm.export", "params": {"mode" : "gltf", "selected_object": true}},
+    { "path": "(Z) Files/(E) Export GLTF Active Collection", "operator": "qm.export", "params": { "mode": "gltf", "batch_mode": "COLLECTION" } },
 
     { "path": "(Z) Files/[Separator]" },
 

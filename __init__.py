@@ -19,7 +19,19 @@ bl_info = {
 app = {
   "keymaps": [],
   "items": [],
-  "first_run": True
+  "first_run": True,
+  "vertex_colors": [
+    (247, 241, 176),
+    (246, 212, 180),
+    (252, 202, 206),
+    (241, 192, 232),
+    (207, 186, 240),
+    (163, 196, 243),
+    (144, 219, 244),
+    (152, 245, 225),
+    (185, 251, 192),
+    (163, 240, 173),
+  ],
 }
 
 if __name__ == '__main__':
@@ -188,9 +200,9 @@ def snake_to_title_case(string):
   return ''.join([s.title() for s in string.split('_')])
 
 def nodes_were_loaded():
-  # If any node starting with 'QMT ' exists, assume nodes were loaded
+  # If any node starting with 'QM ' exists, assume nodes were loaded
   for n in bpy.data.node_groups:
-    if n.name.startswith('QMT '):
+    if n.name.startswith('QM '):
       return True
   return False
 
@@ -205,9 +217,9 @@ class QuickMenuOperator(bpy.types.Operator):
     bpy.ops.qm.set_cursor_rotation_to_view()
 
     # Load geometry nodes if not yet loaded
-    if app["first_run"] or not nodes_were_loaded():
+    if app['first_run'] or not nodes_were_loaded():
       load_geometry_nodes()
-    app["first_run"] = False
+    app['first_run'] = False
 
     bpy.ops.wm.call_menu(name=QuickMenu.bl_idname)
     return {'FINISHED'}
@@ -405,45 +417,6 @@ class RotateOperator(bpy.types.Operator):
     bpy.ops.transform.rotate(value=value, orient_axis=axis, orient_type='GLOBAL')
     return {'FINISHED'}
 
-class ConvertToInstancesOperator(bpy.types.Operator):
-  """Convert Geometry Node Instances To Object Instances"""
-  bl_idname, bl_label, bl_options = 'qm.convert_to_instances', 'Convert To Instances', {'REGISTER', 'UNDO'}
-
-  suffix: StringProperty(name='Add Suffix', default='-prefab')
-
-  def execute(self, context):
-    if not modifier_exists('NODES'):
-      return {'FINISHED'}
-    original_object = context.object
-    original_object.hide_render = False
-
-    # Convert to instances:
-    bpy.ops.object.duplicates_make_real(use_base_parent=True)
-    # Clear modifiers on new objects and add suffix
-    for obj in context.selected_objects:
-      obj.name = obj.name + self.suffix
-      obj.modifiers.clear()
-
-    # Cycle through modifiers, hide all the NODES
-    for modifier in original_object.modifiers:
-      if modifier.type == 'NODES':
-        modifier.show_viewport = False
-
-    # Save selected instances and hide everything
-    selected_objects = [*context.selected_objects]
-    bpy.ops.object.select_all(action='DESELECT')
-
-    # Hide the source in viewport and render
-    original_object.select_set(True)
-    bpy.ops.object.hide_view_set(unselected=False)
-    original_object.hide_render = True
-
-    # Restore selection
-    for obj in selected_objects:
-      obj.select_set(True)
-
-    return {'FINISHED'}
-
 class MoveIntoNewCollections(bpy.types.Operator):
   """Move Into New Collections"""
   bl_idname, bl_label, bl_options = 'qm.move_into_new_collections', 'Move Into New Collection', {'REGISTER', 'UNDO'}
@@ -530,29 +503,6 @@ class RegionToLoopOperator(bpy.types.Operator):
       bpy.ops.mesh.select_mode(use_extend=False, use_expand=False, type='FACE')
     elif mode == 2:
       bpy.ops.mesh.region_to_loop()
-    return {'FINISHED'}
-
-class SpinOperator(bpy.types.Operator):
-  """Spin Operator"""
-  bl_idname, bl_label, bl_options = 'qm.spin', 'Spin', {'REGISTER', 'UNDO'}
-  negative_angle: BoolProperty(name='Negative Angle', default=False)
-  steps: IntProperty(name='Steps', default=6, min=1)
-  angle: FloatProperty(name='Angle', subtype='ANGLE', default=1.5708)
-  flip_normals: BoolProperty(name='Flip Normals', default=False)
-  duplicates: BoolProperty(name='Use Duplicates', default=False)
-
-  @classmethod
-  def poll(cls, context):
-    return is_in_editmode()
-  
-  def invoke(self, context, event):
-    self.negative_angle = event.shift
-    return self.execute(context)
-
-  def execute(self, context):
-    vsv = view_snapped_vector(False, False)
-    angle = -self.angle if self.negative_angle else self.angle
-    bpy.ops.mesh.spin(dupli=self.duplicates, steps=self.steps, angle=angle, use_normal_flip=self.flip_normals, center=context.scene.cursor.location, axis=vsv)
     return {'FINISHED'}
 
 class ConvertToMeshOperator(bpy.types.Operator):
@@ -697,6 +647,7 @@ class TriangulateOperator(bpy.types.Operator):
     t = add_or_get_modifier('TRIANGULATE')
     if not existed:
       t.keep_custom_normals = self.keep_normals
+      t.min_vertices = 5
     return {'FINISHED'}
 
 class BooleanOperator(bpy.types.Operator):
@@ -895,28 +846,47 @@ class SetVertexColorOperator(bpy.types.Operator):
   """Set Vertex Color"""
   bl_idname, bl_label, bl_options = 'qm.set_vertex_color', 'Set Vertex Color', {'REGISTER', 'UNDO'}
   color: FloatVectorProperty(name='Color', subtype='COLOR', min=0, max=1)
-  linked: BoolProperty(name='Linked', default = False)
   set_to_active: BoolProperty(name='Set To Active', default = False)
+  reset_index: BoolProperty(name='Reset Index', default = False)
 
   @classmethod
   def poll(cls, context):
     return is_in_editmode()
+  
+  def invoke(self, context, event):
+    if event.shift: self.reset_index = True
+    return self.execute(context)
 
   def execute(self, context):
     context.space_data.shading.color_type = 'VERTEX'
 
+    # Reset index
+    if self.reset_index:
+      context.scene.quick_menu.vertex_color_index = 0
+
     # Generate next unique RGB
     if not self.set_to_active and not self.options.is_repeat:
       i = context.scene.quick_menu.vertex_color_index
-      values = (1 - math.floor(i % 10) / 10, 1 - math.floor(i / 100 % 10) / 10, 1 - math.floor(i / 10 % 10) / 10)
+
+      # If index is in colors range, use it
+      vertex_colors = app['vertex_colors']
+      if i < len(vertex_colors):
+        values = tuple([c / 255 for c in vertex_colors[i]])
+      # Else pick next unique one
+      else:
+        values = (
+          1 - (i * 3 % 10) / 10,
+          1 - ((i * 3 // 10) % 10) / 10,
+          1 - ((i * 3 // 10) % 10) / 10
+        )
       next_color = Color()
       next_color.r = values[0]
       next_color.g = values[1]
       next_color.b = values[2]
-      context.scene.quick_menu.vertex_color_index += 3
 
-    # Linked
-    if self.linked: bpy.ops.mesh.select_linked()
+      self.report({'INFO'}, 'Vertex Color Index: ' + str(i))
+
+      context.scene.quick_menu.vertex_color_index += 1
 
     # Track if we already set color from active so that we can copy between meshes:
     initial_active = context.active_object
@@ -1087,11 +1057,13 @@ class AddCollisionOperator(bpy.types.Operator):
   """Add Collision"""
   bl_idname, bl_label, bl_options = 'qm.add_collision', 'Add Collision', {'REGISTER', 'UNDO'}
 
-  thickness_outer: FloatProperty(name='Thickness Outer', default=0.02, min=0, max=1)
+  thickness_outer: FloatProperty(name='Thickness Outer', default=0.01, min=0, max=1)
+  cloth_friction: FloatProperty(name='Cloth Friction', default=5, min=0, max=80)
 
   def execute(self, context):
     add_or_get_modifier('COLLISION')
     context.object.collision.thickness_outer = self.thickness_outer
+    context.object.collision.cloth_friction = self.cloth_friction
     return {'FINISHED'}
 
 class AddClothOperator(bpy.types.Operator):
@@ -1214,6 +1186,7 @@ class ExportOperator(bpy.types.Operator):
   apply_modifiers: BoolProperty(name='Apply Modifiers', default=True)
   apply_transform: BoolProperty(name='Apply Transform', default=True)
   batch_mode: StringProperty(name='Batch Mode', default='OFF')
+  selected_object: BoolProperty(name='Selected Object', default=False)
 
   def execute(self, context):
     if bpy.data.filepath == '':
@@ -1230,20 +1203,25 @@ class ExportOperator(bpy.types.Operator):
     # Unpack all data to files if needed
     if self.unpack_data:
       bpy.ops.qm.unpack_all_data_to_files()
+    
+    # Name of the object if exporting selected object
+    filename = context.object.name if self.selected_object else file
 
     if self.mode == 'glb':
       bpy.ops.export_scene.gltf(
         export_format='GLB',
         export_apply=self.apply_modifiers,
-        filepath=file_directory + file + '.glb'
+        use_selection=self.selected_object,
+        filepath=file_directory + filename + '.glb'
       )
     elif self.mode == 'gltf':
       bpy.ops.export_scene.gltf(
         export_format='GLTF_SEPARATE',
         export_apply=self.apply_modifiers,
         export_keep_originals=True,
+        use_selection=self.selected_object,
         use_active_collection=self.batch_mode == 'COLLECTION',
-        filepath = os.path.join(file_directory, active_collection_name_clean if self.batch_mode == 'COLLECTION' else file + '.gltf')
+        filepath = os.path.join(file_directory, active_collection_name_clean if self.batch_mode == 'COLLECTION' else filename + '.gltf')
       )
     elif self.mode == 'fbx':
       bpy.ops.export_scene.fbx(
@@ -1255,7 +1233,8 @@ class ExportOperator(bpy.types.Operator):
         bake_anim_use_nla_strips=False,
         bake_space_transform=self.apply_transform,
         batch_mode=self.batch_mode,
-        filepath=os.path.join(file_directory, file + '.fbx') if self.batch_mode == 'OFF' else file_directory
+        use_selection=self.selected_object,
+        filepath=os.path.join(file_directory, filename + '.fbx') if self.batch_mode == 'OFF' else file_directory
       )
     else:
       self.report({'ERROR'}, 'Unknown export extension')
@@ -1296,7 +1275,7 @@ class VoidEditModeOnlyOperator(bpy.types.Operator):
 # @QuickMenu
 
 class QuickMenu(bpy.types.Menu):
-  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 7)'
+  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 8)'
 
   def draw(self, context):
     layout = self.layout
