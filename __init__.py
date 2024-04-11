@@ -17,7 +17,6 @@ bl_info = {
 # @Globals
 
 app = {
-  "keymaps": [],
   "items": [],
   "first_run": True,
   "vertex_colors": [
@@ -417,31 +416,6 @@ class RotateOperator(bpy.types.Operator):
     bpy.ops.transform.rotate(value=value, orient_axis=axis, orient_type='GLOBAL')
     return {'FINISHED'}
 
-class MoveIntoNewCollections(bpy.types.Operator):
-  """Move Into New Collections"""
-  bl_idname, bl_label, bl_options = 'qm.move_into_new_collections', 'Move Into New Collection', {'REGISTER', 'UNDO'}
-  link: BoolProperty(name='Link', default=False)
-
-  def invoke(self, context, event):
-    self.link = event.shift
-    return self.execute(context)
-
-  def execute(self, context):
-    objects = context.selected_objects
-    for obj in objects:
-      obj.select_set(False)
-    for obj in objects:
-      obj.select_set(True)
-      name = snake_to_title_case(obj.name)
-      if self.link:
-        bpy.ops.object.link_to_collection(collection_index=0, is_new=True, new_collection_name=name)
-      else:
-        bpy.ops.object.move_to_collection(collection_index=0, is_new=True, new_collection_name=name)
-      obj.select_set(False)
-    for obj in objects:
-      obj.select_set(True)
-    return {'FINISHED'}
-
 class CorrectAttributesOperator(bpy.types.Operator):
   """Toggle Correct Face Attributes"""
   bl_idname, bl_label, bl_options = 'qm.correct_attributes', 'Toggle Correct Face Attributes', {'REGISTER', 'UNDO'}
@@ -450,6 +424,15 @@ class CorrectAttributesOperator(bpy.types.Operator):
     ts = bpy.context.scene.tool_settings
     ts.use_transform_correct_face_attributes = not ts.use_transform_correct_face_attributes
     self.report({'INFO'}, 'Correct Face Attributes: ' + ('On' if ts.use_transform_correct_face_attributes else 'Off'))
+    return {'FINISHED'}
+
+class ClearModifiersOperator(bpy.types.Operator):
+  """Clear Modifiers"""
+  bl_idname, bl_label, bl_options = 'qm.clear_modifiers', 'Clear Modifiers', {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    for obj in context.selected_objects:
+      obj.modifiers.clear()
     return {'FINISHED'}
 
 class SelectRingOperator(bpy.types.Operator):
@@ -505,6 +488,59 @@ class RegionToLoopOperator(bpy.types.Operator):
       bpy.ops.mesh.region_to_loop()
     return {'FINISHED'}
 
+class MirrorOperator(bpy.types.Operator):
+  """Mirror"""
+  bl_idname, bl_label, bl_options = 'qm.mirror', 'Mirror', {'REGISTER', 'UNDO'}
+  axis: BoolVectorProperty(name='Axis', subtype='XYZ')
+  bisect_flip: BoolVectorProperty(name='Bisect Flip', subtype='XYZ')
+
+  @classmethod
+  def poll(cls, context):
+    return len(context.selected_objects) > 0
+
+  def draw(self, context):
+    l = self.layout
+    l.row().prop(self.properties, 'axis', toggle=1)
+    l.row().prop(self.properties, 'bisect_flip', toggle=1)
+
+  def execute(self, context):
+    if modifier_exists('MIRROR'):
+      m = add_or_get_modifier('MIRROR')
+      fn = lambda: bpy.ops.object.modifier_apply(modifier=m.name)
+      execute_in_mode('OBJECT', fn)
+      return {'FINISHED'}
+    m = add_or_get_modifier('MIRROR', move_on_top=True)
+    m.use_axis[0], m.show_on_cage = False, True
+    vsv = view_snapped_vector(True)
+    vsv_notransform = view_snapped_vector(True, False)
+    axis, negative = axis_by_vector(vsv)
+    if not self.options.is_repeat:
+      index = ['x', 'y', 'z'].index(axis.lower())
+      self.axis[index] = self.bisect_flip[index] = True
+      self.bisect_flip[index] = negative
+    for i in range(3):
+      m.use_axis[i] = m.use_bisect_axis[i] = self.axis[i]
+      m.use_bisect_flip_axis[i] = self.bisect_flip[i]
+    return {'FINISHED'}
+
+class ArrayOperator(bpy.types.Operator):
+  """Array"""
+  bl_idname, bl_label, bl_options = 'qm.array', 'Array', {'REGISTER', 'UNDO'}
+  count: IntProperty(name='Count', default=3, step=1, min=0)
+  offset: FloatProperty(name='Offset', default=1.1)
+
+  @classmethod
+  def poll(cls, context):
+    return len(context.selected_objects) > 0
+
+  def execute(self, context):
+    v = view_snapped_vector() * self.offset
+    v.negate()
+    a = add_or_get_modifier('ARRAY')
+    a.count = self.count
+    a.relative_offset_displace = v
+    return {'FINISHED'}
+
 class ConvertToMeshOperator(bpy.types.Operator):
   """Convert To Mesh"""
   bl_idname, bl_label, bl_options = 'qm.convert_to_mesh', 'Convert To Mesh', {'REGISTER', 'UNDO'}
@@ -550,41 +586,6 @@ class ConvertToMeshOperator(bpy.types.Operator):
     execute_in_mode('OBJECT', fn)
     return {'FINISHED'}
 
-class MirrorOperator(bpy.types.Operator):
-  """Mirror"""
-  bl_idname, bl_label, bl_options = 'qm.mirror', 'Mirror', {'REGISTER', 'UNDO'}
-  axis: BoolVectorProperty(name='Axis', subtype='XYZ')
-  bisect_flip: BoolVectorProperty(name='Bisect Flip', subtype='XYZ')
-
-  @classmethod
-  def poll(cls, context):
-    return len(context.selected_objects) > 0
-
-  def draw(self, context):
-    l = self.layout
-    l.row().prop(self.properties, 'axis', toggle=1)
-    l.row().prop(self.properties, 'bisect_flip', toggle=1)
-
-  def execute(self, context):
-    if modifier_exists('MIRROR'):
-      m = add_or_get_modifier('MIRROR')
-      fn = lambda: bpy.ops.object.modifier_apply(modifier=m.name)
-      execute_in_mode('OBJECT', fn)
-      return {'FINISHED'}
-    m = add_or_get_modifier('MIRROR', move_on_top=True)
-    m.use_axis[0], m.show_on_cage = False, True
-    vsv = view_snapped_vector(True)
-    vsv_notransform = view_snapped_vector(True, False)
-    axis, negative = axis_by_vector(vsv)
-    if not self.options.is_repeat:
-      index = ['x', 'y', 'z'].index(axis.lower())
-      self.axis[index] = self.bisect_flip[index] = True
-      self.bisect_flip[index] = negative
-    for i in range(3):
-      m.use_axis[i] = m.use_bisect_axis[i] = self.axis[i]
-      m.use_bisect_flip_axis[i] = self.bisect_flip[i]
-    return {'FINISHED'}
-
 class SubsurfOperator(bpy.types.Operator):
   """Subsurf"""
   bl_idname, bl_label, bl_options = 'qm.subsurf', 'Subsurf', {'REGISTER', 'UNDO'}
@@ -598,24 +599,6 @@ class SubsurfOperator(bpy.types.Operator):
       m = add_or_get_modifier('MULTIRES')
       bpy.ops.object.multires_subdivide(modifier=m.name, mode='CATMULL_CLARK')
       m.levels = min(m.sculpt_levels, self.level)
-    return {'FINISHED'}
-
-class ArrayOperator(bpy.types.Operator):
-  """Array"""
-  bl_idname, bl_label, bl_options = 'qm.array', 'Array', {'REGISTER', 'UNDO'}
-  count: IntProperty(name='Count', default=3, step=1, min=0)
-  offset: FloatProperty(name='Offset', default=1.1)
-
-  @classmethod
-  def poll(cls, context):
-    return len(context.selected_objects) > 0
-
-  def execute(self, context):
-    v = view_snapped_vector() * self.offset
-    v.negate()
-    a = add_or_get_modifier('ARRAY')
-    a.count = self.count
-    a.relative_offset_displace = v
     return {'FINISHED'}
 
 class BevelOperator(bpy.types.Operator):
@@ -648,60 +631,6 @@ class TriangulateOperator(bpy.types.Operator):
     if not existed:
       t.keep_custom_normals = self.keep_normals
       t.min_vertices = 5
-    return {'FINISHED'}
-
-class BooleanOperator(bpy.types.Operator):
-  """Boolean"""
-  bl_idname, bl_label, bl_options = 'qm.boolean', 'Boolean', {'REGISTER', 'UNDO'}
-  operation: EnumProperty(name='Operation', items=(
-    ('DIFFERENCE', 'Difference', 'Difference'),
-    ('UNION', 'Union', 'Union'),
-    ('INTERSECT', 'Intersect', 'Intersect')
-  ))
-  solver: EnumProperty(name='Solver', default='EXACT', items=(
-    ('FAST', 'Fast', 'Fast'),
-    ('EXACT', 'Exact', 'Exact'),
-  ))
-  boundary_extend: FloatProperty(name='Boundary Extend', default=0.0001, min=0)
-  use_self: BoolProperty(name='Self', default=False)
-  recalculate_normals: BoolProperty(name='Recalculate Normals', default=True)
-  move_on_top: BoolProperty(name='Move Modifier On Top', default=True)
-
-  def execute(self, context):
-    if self.recalculate_normals and is_in_editmode(): bpy.ops.mesh.normals_make_consistent(inside=False)
-    if not self.use_self and self.boundary_extend > 0:
-      transform_pivot = context.scene.tool_settings.transform_pivot_point
-      context.scene.tool_settings.transform_pivot_point = 'INDIVIDUAL_ORIGINS'
-      val = 1 + self.boundary_extend
-      bpy.ops.transform.resize(value=(val, val, val))
-      context.scene.tool_settings.transform_pivot_point = transform_pivot
-    if is_in_editmode():
-      bpy.ops.mesh.intersect_boolean(operation=self.operation, solver=self.solver, use_self=self.use_self)
-    else:
-      active = context.object
-      objects = [o for o in context.selected_objects if o != active]
-      for obj in objects:
-        select(active)
-        bpy.ops.object.modifier_add(type='BOOLEAN')
-        boolean = context.object.modifiers[-1]
-        boolean.object = obj
-        boolean.object, boolean.operation, boolean.solver = obj, self.operation, self.solver
-        if self.move_on_top:
-          move_modifier_on_top(boolean.name)
-        select(obj)
-        context.object.display_type = 'BOUNDS'
-        context.object.hide_render = True
-      bpy.ops.object.select_all(action='DESELECT')
-      for obj in objects: obj.select_set(True)
-    return {'FINISHED'}
-
-class ClearModifiersOperator(bpy.types.Operator):
-  """Clear Modifiers"""
-  bl_idname, bl_label, bl_options = 'qm.clear_modifiers', 'Clear Modifiers', {'REGISTER', 'UNDO'}
-
-  def execute(self, context):
-    for obj in context.selected_objects:
-      obj.modifiers.clear()
     return {'FINISHED'}
 
 class StraightenUVsOperator(bpy.types.Operator):
@@ -945,6 +874,76 @@ class SelectByVertexColorOperator(bpy.types.Operator):
       execute_in_mode('OBJECT', fn)
     return {'FINISHED'}
 
+class BooleanOperator(bpy.types.Operator):
+  """Boolean"""
+  bl_idname, bl_label, bl_options = 'qm.boolean', 'Boolean', {'REGISTER', 'UNDO'}
+  operation: EnumProperty(name='Operation', items=(
+    ('DIFFERENCE', 'Difference', 'Difference'),
+    ('UNION', 'Union', 'Union'),
+    ('INTERSECT', 'Intersect', 'Intersect')
+  ))
+  solver: EnumProperty(name='Solver', default='EXACT', items=(
+    ('FAST', 'Fast', 'Fast'),
+    ('EXACT', 'Exact', 'Exact'),
+  ))
+  boundary_extend: FloatProperty(name='Boundary Extend', default=0.0001, min=0)
+  use_self: BoolProperty(name='Self', default=False)
+  recalculate_normals: BoolProperty(name='Recalculate Normals', default=True)
+  move_on_top: BoolProperty(name='Move Modifier On Top', default=True)
+
+  def execute(self, context):
+    if self.recalculate_normals and is_in_editmode(): bpy.ops.mesh.normals_make_consistent(inside=False)
+    if not self.use_self and self.boundary_extend > 0:
+      transform_pivot = context.scene.tool_settings.transform_pivot_point
+      context.scene.tool_settings.transform_pivot_point = 'INDIVIDUAL_ORIGINS'
+      val = 1 + self.boundary_extend
+      bpy.ops.transform.resize(value=(val, val, val))
+      context.scene.tool_settings.transform_pivot_point = transform_pivot
+    if is_in_editmode():
+      bpy.ops.mesh.intersect_boolean(operation=self.operation, solver=self.solver, use_self=self.use_self)
+    else:
+      active = context.object
+      objects = [o for o in context.selected_objects if o != active]
+      for obj in objects:
+        select(active)
+        bpy.ops.object.modifier_add(type='BOOLEAN')
+        boolean = context.object.modifiers[-1]
+        boolean.object = obj
+        boolean.object, boolean.operation, boolean.solver = obj, self.operation, self.solver
+        if self.move_on_top:
+          move_modifier_on_top(boolean.name)
+        select(obj)
+        context.object.display_type = 'BOUNDS'
+        context.object.hide_render = True
+      bpy.ops.object.select_all(action='DESELECT')
+      for obj in objects: obj.select_set(True)
+    return {'FINISHED'}
+
+class PlaneIntersectOperator(bpy.types.Operator):
+  """Plane Intersect"""
+  bl_idname, bl_label, bl_options = 'qm.plane_intersect', 'Plane Intersect', {'REGISTER', 'UNDO'}
+  mode: EnumProperty(name='Mode', default='ISLAND', items=(
+    ('SELECTION', 'Selection', 'Selection'),
+    ('ISLAND', 'Island', 'Island'),
+    ('MESH', 'Whole Mesh', 'Whole Mesh')
+  ))
+  snap_view_axis: BoolProperty(name='Snap View Axis', default = True)
+  active: BoolProperty(name='Active', default = True)
+  clear_outer: BoolProperty(name='Clear Outer', default = False)
+  clear_inner: BoolProperty(name='Clear Inner', default = False)
+
+  @classmethod
+  def poll(cls, context):
+    return is_in_editmode()
+
+  def execute(self, context):
+    vector = view_snapped_vector(False, False) if self.snap_view_axis else view_vector(False, False)
+    cursor_to_selected(self.active)
+    if self.mode == 'ISLAND': bpy.ops.mesh.select_linked(delimit=set())
+    elif self.mode == 'MESH': bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.bisect(plane_co=context.scene.cursor.location, plane_no=vector, clear_outer=self.clear_outer, clear_inner=self.clear_inner)
+    return {'FINISHED'}
+
 class ParentToNewEmptyOperator(bpy.types.Operator):
   """Parent To New Empty"""
   bl_idname, bl_label, bl_options = 'qm.parent_to_new_empty', 'Parent To New Empty', {'REGISTER', 'UNDO'}
@@ -968,41 +967,6 @@ class ParentToNewEmptyOperator(bpy.types.Operator):
       context.view_layer.objects.active = parent
       bpy.ops.object.parent_set()
       select(empty)
-    return {'FINISHED'}
-
-class ToggleAutoKeyingOperator(bpy.types.Operator):
-  """Toggle Auto Keying"""
-  bl_idname, bl_label, bl_options = 'qm.toggle_auto_keying', 'Toggle Auto Keying', {'REGISTER', 'UNDO'}
-
-  def execute(self, context):
-    context.scene.tool_settings.use_keyframe_insert_auto = not context.scene.tool_settings.use_keyframe_insert_auto
-    self.report({'INFO'}, 'Auto Keying: ' + ('On' if context.scene.tool_settings.use_keyframe_insert_auto else 'Off'))
-    return {'FINISHED'}
-
-class ClearDriversOperator(bpy.types.Operator):
-  """Clear Drivers"""
-  bl_idname, bl_label, bl_options = 'qm.clear_drivers', 'Clear Drivers', {'REGISTER', 'UNDO'}
-
-  def execute(self, context):
-    for obj in context.selected_objects:
-      animation_data = obj.animation_data
-      if animation_data:
-        for dr in obj.animation_data.drivers:
-          obj.driver_remove(dr.data_path, -1)
-    return {'FINISHED'}
-
-class SetUseSelfDriversOperator(bpy.types.Operator):
-  """Set Use Self Drivers"""
-  bl_idname, bl_label, bl_options = 'qm.set_use_self_drivers', 'Set Use Self Drivers', {'REGISTER', 'UNDO'}
-
-  def execute(self, context):
-    for obj in context.selected_objects:
-      animation_data = obj.animation_data
-      if animation_data:
-        for dr in obj.animation_data.drivers:
-          dr.driver.use_self = True
-          # Reevaluate expression with use self enabled:
-          dr.driver.expression = dr.driver.expression
     return {'FINISHED'}
 
 class AddBoneOperator(bpy.types.Operator):
@@ -1106,6 +1070,41 @@ class AnimateRotationOperator(bpy.types.Operator):
           curve = obj.driver_add('rotation_euler', i)
           curve.driver.expression = f'frame / {end_frame} * tau * {cycles}'
 
+    return {'FINISHED'}
+
+class ToggleAutoKeyingOperator(bpy.types.Operator):
+  """Toggle Auto Keying"""
+  bl_idname, bl_label, bl_options = 'qm.toggle_auto_keying', 'Toggle Auto Keying', {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    context.scene.tool_settings.use_keyframe_insert_auto = not context.scene.tool_settings.use_keyframe_insert_auto
+    self.report({'INFO'}, 'Auto Keying: ' + ('On' if context.scene.tool_settings.use_keyframe_insert_auto else 'Off'))
+    return {'FINISHED'}
+
+class ClearDriversOperator(bpy.types.Operator):
+  """Clear Drivers"""
+  bl_idname, bl_label, bl_options = 'qm.clear_drivers', 'Clear Drivers', {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    for obj in context.selected_objects:
+      animation_data = obj.animation_data
+      if animation_data:
+        for dr in obj.animation_data.drivers:
+          obj.driver_remove(dr.data_path, -1)
+    return {'FINISHED'}
+
+class SetUseSelfDriversOperator(bpy.types.Operator):
+  """Set Use Self Drivers"""
+  bl_idname, bl_label, bl_options = 'qm.set_use_self_drivers', 'Set Use Self Drivers', {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    for obj in context.selected_objects:
+      animation_data = obj.animation_data
+      if animation_data:
+        for dr in obj.animation_data.drivers:
+          dr.driver.use_self = True
+          # Reevaluate expression with use self enabled:
+          dr.driver.expression = dr.driver.expression
     return {'FINISHED'}
 
 class TransformOrientationOperator(bpy.types.Operator):
@@ -1275,7 +1274,7 @@ class VoidEditModeOnlyOperator(bpy.types.Operator):
 # @QuickMenu
 
 class QuickMenu(bpy.types.Menu):
-  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu (v.3 beta 8)'
+  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu'
 
   def draw(self, context):
     layout = self.layout
@@ -1296,11 +1295,9 @@ class QuickMenu(bpy.types.Menu):
 class QuickMenuPreferences(bpy.types.AddonPreferences):
   bl_idname = __name__
 
-  hotkey: StringProperty(name='Hotkey (Needs Restart)', default='D')
-
   def draw(self, context):
     layout = self.layout
-    layout.prop(self, 'hotkey')
+    layout.label(text='To change the hotkey, go to Keymap and search for "Quick Menu Operator"')
 
 # @Properties
 
@@ -1408,6 +1405,15 @@ def load_geometry_nodes():
 
 def get_classes():
   return [cls for name, cls in globals().items() if isinstance(cls, type) and issubclass(cls, (bpy.types.Operator, bpy.types.PropertyGroup, bpy.types.Menu, bpy.types.AddonPreferences))]
+
+def find_keymap_item(km, idname):
+  if '3D View' not in km:
+    return None
+
+  for keymap_item in km['3D View'].keymap_items:
+    if keymap_item.idname == idname:
+      return keymap_item
+  return None
  
 def register():
   for cls in get_classes():
@@ -1416,27 +1422,19 @@ def register():
 
   bpy.types.Scene.quick_menu = PointerProperty(type=QuickMenuProperties)
 
-  window_manager = bpy.context.window_manager
-  key_config = window_manager.keyconfigs.addon
+  key_config = bpy.context.window_manager.keyconfigs.active
+  keymap_item = find_keymap_item(key_config.keymaps, QuickMenuOperator.bl_idname)
 
-  if key_config:
+  if keymap_item is None:
     km = key_config.keymaps.new(name='3D View', space_type='VIEW_3D')
-    hotkey = 'D' if __name__ == '__main__' else bpy.context.preferences.addons[__name__].preferences.hotkey
-    keymap_item = km.keymap_items.new(QuickMenuOperator.bl_idname, type=hotkey.upper(), value='PRESS')
-    app['keymaps'].append((km, keymap_item))
+    km.keymap_items.new(QuickMenuOperator.bl_idname, type='D', value='PRESS')
   
   # Load menu items from the config
   load_items(config_path)
 
 def unregister():
   for cls in get_classes(): bpy.utils.unregister_class(cls)
-
   del bpy.types.Scene.quick_menu
-
-  # Remove the hotkey
-  for keymap, keymap_item in app['keymaps']:
-    keymap.keymap_items.remove(keymap_item)
-  app['keymaps'].clear()
 
 # Call if ran as script
 if __name__ == '__main__': register()
