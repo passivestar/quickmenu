@@ -12,7 +12,7 @@
 
 Press `D` in 3D view to open the menu.
 
-Compatible with Blender `4.1.x` and newer
+Compatible with Blender `4.1.x`
 
 Join our [discord](https://discord.gg/pPHQ5HQ) for discussion.
 
