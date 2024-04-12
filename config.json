@@ -50,13 +50,15 @@
 
     { "path": "Select/(Q) Select Linked Flat", "operator": "mesh.faces_select_linked_flat" },
     { "path": "Select/(W) Select Loose", "operator": "mesh.select_loose" },
-    { "path": "Select/(E) Select Sharp Edges", "operator": "geometry.execute_node_group", "params": { "name": "QM Select Sharp Edges" } },
 
     { "path": "Select/[Separator]" },
 
     {
       "path": "Select/(A) Invert Selection Connected", "operator": "geometry.execute_node_group",
       "params": { "name": "QM Invert Selection Connected" }
+    },
+    { "path": "Select/(D) Select Sharp Edges", "operator": "geometry.execute_node_group",
+      "params": { "name": "QM Select Sharp Edges" }
     },
 
     { "path": "Select/[Separator]" },
