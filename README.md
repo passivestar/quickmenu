@@ -25,3 +25,9 @@ Join our [discord](https://discord.gg/pPHQ5HQ) for discussion.
 - It's **customizable**. You can remove any button from the menu, reorder them, create your own submenus through a JSON config. You can also add your own operators to it, even if they come from third-party addons!
 
 - It's **node-driven**. The addon makes use of Blender 4 node tools where possible, making its python footprint as small as possible, which in turn makes it easier for me to maintain and expand it. You can even look into the `nodetools.blend` file yourself to see how tools are put together. You can also make your own node tools and put them into the menu!
+
+## Tutorial
+
+Click here to watch a video showing every tool from the addon:
+
+<a href="https://twitter.com/passivestar_/status/1778974679769702635" target="_blank" rel="noreferrer"><img width="600" alt="quickmenututorial" src="https://github.com/passivestar/quickmenu/assets/60579014/5d046839-9cb5-48e7-8be1-89a87ef0a6ef"></a>
