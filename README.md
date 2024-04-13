@@ -30,4 +30,4 @@ Join our [discord](https://discord.gg/pPHQ5HQ) for discussion.
 
 Click here to watch a video showing every tool from the addon:
 
-<a href="https://twitter.com/passivestar_/status/1778974679769702635" target="_blank" rel="noreferrer"><img width="600" alt="quickmenututorial" src="https://github.com/passivestar/quickmenu/assets/60579014/5d046839-9cb5-48e7-8be1-89a87ef0a6ef"></a>
+<a href="https://youtu.be/55Vju6LYL6M" target="_blank" rel="noreferrer"><img width="600" alt="quickmenututorial" src="https://github.com/passivestar/quickmenu/assets/60579014/5d046839-9cb5-48e7-8be1-89a87ef0a6ef"></a>
