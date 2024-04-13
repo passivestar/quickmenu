@@ -149,7 +149,7 @@ def add_or_get_modifier(modifier_type, move_on_top=False):
   return modifier
 
 def geonode_modifier_exists(node_group_name):
-  return len([m for m in bpy.context.object.modifiers if m.type == 'NODES' and m.node_group.name == node_group_name]) > 0
+  return len([m for m in bpy.context.object.modifiers if m.type == 'NODES' and m.node_group is not None and m.node_group.name == node_group_name]) > 0
 
 def add_geonode_modifier(node_group_name):
   bpy.ops.object.modifier_add(type='NODES')
