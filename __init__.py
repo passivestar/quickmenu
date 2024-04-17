@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (3, 0, 2),
+  'version': (3, 0, 3),
   'author': 'passivestar',
   'blender': (4, 1, 0),
   'location': 'Press the hotkey in 3D View',
@@ -215,8 +215,13 @@ class QuickMenuOperator(bpy.types.Operator):
     # Inject cursor
     bpy.ops.qm.set_cursor_rotation_to_view()
 
+    # Unload geometry nodes on first run to make sure nodes are updated
+    # when you update the addon
+    if app['first_run']:
+      unload_geometry_nodes()
+
     # Load geometry nodes if not yet loaded
-    if app['first_run'] or not nodes_were_loaded():
+    if not nodes_were_loaded():
       load_geometry_nodes()
     app['first_run'] = False
 
@@ -1394,6 +1399,12 @@ def load_items(config_path):
     else:
       menu = get_or_create_menu_definition_at_path(path[:-1], app['items'])
       menu['children'].append(item)
+
+# Remove the node groups from the current file
+def unload_geometry_nodes():
+  for node_group in bpy.data.node_groups:
+    if node_group.name.startswith('QM '):
+      bpy.data.node_groups.remove(node_group)
 
 # Add built-in geometry nodes to the current file
 def load_geometry_nodes():
