@@ -256,7 +256,7 @@
     { "path": "(W) UV and Textures/Clear Seam", "operator": "qm.mark_seam", "params": { "clear": true } },
     { "path": "(W) UV and Textures/Unwrap", "operator": "uv.unwrap" },
     { "path": "(W) UV and Textures/Straighten UVs", "operator": "qm.straighten_uvs" },
-    { "path": "(W) UV and Textures/Cube Project", "operator": "uv.cube_project" },
+    { "path": "(W) UV and Textures/Cube Project", "operator": "uv.cube_project", "params": { "cube_size": 2.0 } },
     { "path": "(W) UV and Textures/View Project", "operator": "uv.project_from_view" },
 
     { "path": "(W) UV and Textures/[Separator]" },
