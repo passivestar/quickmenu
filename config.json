@@ -358,22 +358,12 @@
     { "path": "(F) Mode", "operator": "view3d.object_mode_pie_or_toggle" },
 
     { "path": "(Z) Files/(Q) Export GLB", "operator": "qm.export", "params": { "mode": "glb" } },
-    { "path": "(Z) Files/(W) Export GLTF Selected Object", "operator": "qm.export", "params": {"mode" : "gltf", "selected_object": true}},
-    { "path": "(Z) Files/(E) Export GLTF Active Collection", "operator": "qm.export", "params": { "mode": "gltf", "batch_mode": "COLLECTION" } },
+    { "path": "(Z) Files/(W) Export GLTF Active Collection", "operator": "qm.export", "params": { "mode": "gltf", "batch_mode": "COLLECTION" } },
 
     { "path": "(Z) Files/[Separator]" },
 
     { "path": "(Z) Files/(A) Export FBX", "operator": "qm.export", "params": { "mode": "fbx", "batch_mode": "OFF" } },
     { "path": "(Z) Files/(S) Export FBX Collections", "operator": "qm.export", "params": { "mode": "fbx", "batch_mode": "COLLECTION" } },
-    {
-      "path": "(Z) Files/(D) Export FBX Collections (Unpack Data and Apply Transform)", "operator": "qm.export",
-      "params": {
-        "mode": "fbx",
-        "batch_mode": "COLLECTION",
-        "apply_transform": true,
-        "unpack_data": true
-      }
-    },
 
     { "path": "(Z) Files/[Separator]" },
 

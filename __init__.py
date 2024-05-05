@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (3, 0, 7),
+  'version': (3, 0, 8),
   'author': 'passivestar',
   'blender': (4, 1, 0),
   'location': 'Press the hotkey in 3D View',
@@ -1186,7 +1186,7 @@ class ExportOperator(bpy.types.Operator):
   """Export"""
   bl_idname, bl_label = 'qm.export', 'Export'
   mode: StringProperty(name='Mode', default='fbx')
-  unpack_data: BoolProperty(name='Unpack Data', default=False)
+  unpack_data: BoolProperty(name='Unpack Data', default=True)
   apply_modifiers: BoolProperty(name='Apply Modifiers', default=True)
   apply_transform: BoolProperty(name='Apply Transform', default=True)
   batch_mode: StringProperty(name='Batch Mode', default='OFF')
@@ -1200,6 +1200,10 @@ class ExportOperator(bpy.types.Operator):
     file = bpy.path.basename(bpy.data.filepath).split('.')[0]
     file_directory = os.path.dirname(bpy.data.filepath)
     active_collection_name_clean = re.sub(r'[^a-zA-Z0-9_]', '_', bpy.context.view_layer.active_layer_collection.name)
+
+    if self.batch_mode == "COLLECTION" and (self.mode == "gltf" or self.mode == "glb") and active_collection_name_clean == "Scene_Collection":
+      self.report({'ERROR'}, 'Select a collection')
+      return {'FINISHED'}
 
     # Save the blend file
     bpy.ops.wm.save_mainfile()
