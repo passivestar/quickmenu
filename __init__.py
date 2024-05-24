@@ -6,7 +6,7 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (3, 0, 9),
+  'version': (3, 0, 10),
   'author': 'passivestar',
   'blender': (4, 1, 0),
   'location': 'Press the hotkey in 3D View',
@@ -1224,6 +1224,7 @@ class ExportOperator(bpy.types.Operator):
         export_keep_originals=True,
         export_extras=True,
         export_import_convert_lighting_mode='COMPAT',
+        export_gn_mesh=True,
         use_selection=self.selected_object,
         use_active_collection=self.batch_mode == 'COLLECTION',
         filepath = os.path.join(file_directory, active_collection_name_clean if self.batch_mode == 'COLLECTION' else filename + '.glb')
@@ -1237,6 +1238,7 @@ class ExportOperator(bpy.types.Operator):
         export_keep_originals=True,
         export_extras=True,
         export_import_convert_lighting_mode='COMPAT',
+        export_gn_mesh=True,
         use_selection=self.selected_object,
         use_active_collection=self.batch_mode == 'COLLECTION',
         filepath = os.path.join(file_directory, active_collection_name_clean if self.batch_mode == 'COLLECTION' else filename + '.gltf')
