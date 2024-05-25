@@ -4,16 +4,6 @@ from mathutils import Vector, Euler, Quaternion, Matrix, Color
 from random import random
 from functools import reduce
 
-bl_info = {
-  'name': 'QuickMenu',
-  'version': (3, 0, 10),
-  'author': 'passivestar',
-  'blender': (4, 1, 0),
-  'location': 'Press the hotkey in 3D View',
-  'description': 'Simplifies access to useful operators and adds new functionality',
-  'category': '3D View'
-}
-
 # @Globals
 
 app = {
