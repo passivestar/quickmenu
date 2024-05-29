@@ -12,9 +12,13 @@
 
 Press `D` in 3D view to open the menu.
 
-Compatible with Blender `4.1.x`
-
 Join our [discord](https://discord.gg/pPHQ5HQ) for discussion.
+
+## Compatibility
+
+For blender `4.1.x` use version [3.0.10](https://github.com/passivestar/quickmenu/releases/tag/3.0.10)
+
+Earlier Blender versions aren't supported
 
 ## Things to know about Quick Menu:
 
