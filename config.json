@@ -357,7 +357,7 @@
     { "path": "(D) Tool/(R) Knife", "operator": "qm.tool", "params": { "tool_name": "builtin.knife" } },
     { "path": "(F) Mode", "operator": "view3d.object_mode_pie_or_toggle" },
 
-    { "path": "(Z) Files/(Q) Export GLTF", "operator": "qm.export", "params": { "mode": "gltf" } },
+    { "path": "(Z) Files/(Q) Export GLTF", "operator": "qm.export", "params": { "mode": "gltf", "batch_mode": "OFF" } },
     { "path": "(Z) Files/(W) Export GLTF Active Collection", "operator": "qm.export", "params": { "mode": "gltf", "batch_mode": "COLLECTION" } },
 
     { "path": "(Z) Files/[Separator]" },
