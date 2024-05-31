@@ -1205,9 +1205,9 @@ class ExportOperator(bpy.types.Operator):
     # Name of the object if exporting selected object
     filename = context.object.name if self.selected_object else file
 
-    if self.mode == 'glb':
+    if self.mode == 'glb' or self.mode == 'gltf':
       bpy.ops.export_scene.gltf(
-        export_format='GLB',
+        export_format='GLB' if self.mode == 'glb' else 'GLTF_SEPARATE',
         export_apply=self.apply_modifiers,
         export_lights=True,
         export_cameras=True,
@@ -1217,21 +1217,7 @@ class ExportOperator(bpy.types.Operator):
         export_gn_mesh=True,
         use_selection=self.selected_object,
         use_active_collection=self.batch_mode == 'COLLECTION',
-        filepath = os.path.join(file_directory, active_collection_name_clean if self.batch_mode == 'COLLECTION' else filename + '.glb')
-      )
-    elif self.mode == 'gltf':
-      bpy.ops.export_scene.gltf(
-        export_format='GLTF_SEPARATE',
-        export_apply=self.apply_modifiers,
-        export_lights=True,
-        export_cameras=True,
-        export_keep_originals=True,
-        export_extras=True,
-        export_import_convert_lighting_mode='COMPAT',
-        export_gn_mesh=True,
-        use_selection=self.selected_object,
-        use_active_collection=self.batch_mode == 'COLLECTION',
-        filepath = os.path.join(file_directory, active_collection_name_clean if self.batch_mode == 'COLLECTION' else filename + '.gltf')
+        filepath = os.path.join(file_directory, active_collection_name_clean if self.batch_mode == 'COLLECTION' else filename + '.' + self.mode)
       )
     elif self.mode == 'fbx':
       bpy.ops.export_scene.fbx(
