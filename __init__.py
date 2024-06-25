@@ -1260,6 +1260,69 @@ class ExportOperator(bpy.types.Operator):
       self.report({'ERROR'}, 'Unknown export extension')
     return {'FINISHED'}
 
+class MakeLodsOperator(bpy.types.Operator):
+    """Make LODs from selection in object mode. This supports multiple objects"""
+    bl_idname = "qm.make_lods"
+    bl_label = "Make LODs"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    num_lods: IntProperty(name="Num of LODs",default=4,min=1,max=6)
+    lod0: FloatProperty(name="LOD 0",default=100,min=0.01,max=100.0,precision=2,subtype="PERCENTAGE", options={'HIDDEN'})
+    lod1: FloatProperty(name="LOD 1",default=50,min=0.01,max=100.0,precision=2,subtype="PERCENTAGE")
+    lod2: FloatProperty(name="LOD 2",default=25,min=0.01,max=100.0,precision=2,subtype="PERCENTAGE")
+    lod3: FloatProperty(name="LOD 3",default=12.5,min=0.01,max=100.0,precision=2,subtype="PERCENTAGE")
+    lod4: FloatProperty(name="LOD 4",default=6.25,min=0.01,max=100.0,precision=2,subtype="PERCENTAGE")
+    lod5: FloatProperty(name="LOD 5",default=3.125,min=0.01,max=100.0,precision=2,subtype="PERCENTAGE")
+    lod6: FloatProperty(name="LOD 6",default=1.5625,min=0.01,max=100.0,precision=2,subtype="PERCENTAGE")
+
+    is_no_lod0: BoolProperty(name="Do not create LOD0", default=True)
+    is_apply_modifier: BoolProperty(name="Apply modifiers", default=True)
+    
+    lods = []
+
+    @classmethod
+    def poll(cls, context):
+      return (context.mode == 'OBJECT') and len(context.selected_objects) > 0
+
+    def execute(self, context):
+        self.lods += [self.lod0, self.lod1, self.lod2, self.lod3, self.lod4, self.lod5, self.lod6]
+        
+        objs = context.selected_objects
+        outputs = []
+
+        for i in range(len(objs)):
+          for k in range(self.num_lods+1):
+            outputs.append(self.make_lod(objs[i], k))
+
+        if self.is_no_lod0:
+          [obj.select_set(True) for obj in objs+outputs if obj is not None]
+        else:
+          [obj.select_set(True) for obj in outputs if obj is not None]
+
+        return {'FINISHED'}
+    
+    def make_lod(self, object, level):
+      if level==0 and self.is_no_lod0:
+        return
+
+      bpy.context.view_layer.objects.active = object
+      bpy.ops.object.select_all(action="DESELECT")
+      bpy.context.view_layer.objects.active.select_set(True)
+      bpy.ops.object.duplicate()
+
+      obj = bpy.context.view_layer.objects.active
+
+      if level > 0:
+        bpy.ops.object.modifier_add(type='DECIMATE')
+        obj.modifiers["Decimate"].ratio = self.lods[level]*0.01
+        if self.is_apply_modifier:
+          for mod in obj.modifiers:
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+
+      obj.name = object.name + "_LOD" + str(level)
+
+      return obj
+
 class ViewOperator(bpy.types.Operator):
   """View Selected if in edit mode or anything is selected in object mode. View Camera otherwise"""
   bl_idname, bl_label = 'qm.view', 'View'
