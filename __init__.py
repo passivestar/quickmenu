@@ -1275,7 +1275,7 @@ class MakeLodsOperator(bpy.types.Operator):
     lod5: FloatProperty(name="LOD 5",default=3.125,min=0.01,max=100.0,precision=2,subtype="PERCENTAGE")
     lod6: FloatProperty(name="LOD 6",default=1.5625,min=0.01,max=100.0,precision=2,subtype="PERCENTAGE")
 
-    is_no_lod0: BoolProperty(name="Do not create LOD0", default=True)
+    is_no_lod0: BoolProperty(name="Do not create LOD0", default=False)
     is_apply_modifier: BoolProperty(name="Apply modifiers", default=True)
     
     lods = []
