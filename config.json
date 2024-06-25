@@ -372,6 +372,7 @@
     
     { "path": "(Z) Files/[Separator]" },
     { "path": "(Z) Files/(D) Make LODs", "operator": "qm.make_lods" },
+    { "path": "(Z) Files/(R) Rename For Game Engines", "operator": "qm.rename_game" },
 
 
     { "path": "[Separator]" },

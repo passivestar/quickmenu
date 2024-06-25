@@ -1323,6 +1323,34 @@ class MakeLodsOperator(bpy.types.Operator):
 
       return obj
 
+
+class RenameGameOperator(bpy.types.Operator):
+    bl_idname = "qm.rename_game"
+    bl_label = "Rename For Game Engines"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    obj_prefix: StringProperty(name="Object Name Prefix", default="SK_")
+    is_add_prefix_obj: BoolProperty(name="Add prefix to object names", default=True)
+    
+    mat_prefix: StringProperty(name="Material Name Prefix", default="M_")
+    is_add_prefix_mat: BoolProperty(name="Add prefix to material names", default=True)
+    
+    @classmethod
+    def poll(cls, context):
+      return (context.mode == 'OBJECT') and len(context.selected_objects) > 0
+
+    def execute(self, context):
+        for obj in context.selected_objects:
+          obj.name = (self.obj_prefix if self.is_add_prefix_obj else '') + obj.name
+          obj.name = obj.name.replace('.', '_')
+
+          for mat_slot in obj.material_slots:
+            mat = mat_slot.material
+            mat.name = (self.mat_prefix if self.is_add_prefix_mat else '') + mat.name
+            mat.name = mat.name.replace('.', '_')
+        
+        return {'FINISHED'}
+
 class ViewOperator(bpy.types.Operator):
   """View Selected if in edit mode or anything is selected in object mode. View Camera otherwise"""
   bl_idname, bl_label = 'qm.view', 'View'
