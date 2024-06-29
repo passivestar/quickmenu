@@ -1341,13 +1341,15 @@ class RenameGameOperator(bpy.types.Operator):
 
     def execute(self, context):
         for obj in context.selected_objects:
-          obj.name = (self.obj_prefix if self.is_add_prefix_obj else '') + obj.name
-          obj.name = obj.name.replace('.', '_')
+          if(obj and obj.type=='MESH' and obj.name!='' and not obj.name.startswith(self.obj_prefix)):
+            obj.name = (self.obj_prefix if self.is_add_prefix_obj else '') + obj.name
+            obj.name = obj.name.replace('.', '_')
 
           for mat_slot in obj.material_slots:
             mat = mat_slot.material
-            mat.name = (self.mat_prefix if self.is_add_prefix_mat else '') + mat.name
-            mat.name = mat.name.replace('.', '_')
+            if(mat and mat.name!='' and not mat.name.startswith(self.mat_prefix)):
+              mat.name = (self.mat_prefix if self.is_add_prefix_mat else '') + mat.name
+              mat.name = mat.name.replace('.', '_')
         
         return {'FINISHED'}
 
