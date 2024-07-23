@@ -16,6 +16,8 @@ Join our [discord](https://discord.gg/pPHQ5HQ) for discussion.
 
 ## Compatibility
 
+For blender `4.2.x` use the latest version
+
 For blender `4.1.x` use version [3.0.10](https://github.com/passivestar/quickmenu/releases/tag/3.0.10)
 
 Earlier Blender versions aren't supported
