@@ -282,6 +282,7 @@
         "scale_y": 1
       }
     },
+    { "path": "(W) UV and Textures/(R) Pack Islands", "operator": "uv.pack_islands", "params": {"rotate": false, "margin": 0.02} },
 
     { "path": "(W) UV and Textures/[Separator]" },
 
