@@ -1,7 +1,6 @@
-import bpy, bmesh, math, re, json, string, os, platform, subprocess
+import bpy, bmesh, math, re, json, os, platform, subprocess
 from bpy.props import IntProperty, FloatProperty, StringProperty, BoolProperty, EnumProperty, FloatVectorProperty, BoolVectorProperty, PointerProperty
-from mathutils import Vector, Euler, Quaternion, Matrix, Color
-from random import random
+from mathutils import Vector, Matrix, Color
 from functools import reduce
 
 # @Globals
@@ -23,12 +22,7 @@ app = {
   ],
 }
 
-if __name__ == '__main__':
-  # For development purposes when running the script directly in Blender:
-  addon_directory = '/Users/passivestar/Files/blender/addons/quickmenu/'
-else:
-  addon_directory = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-
+addon_directory = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 nodes_path = os.path.join(addon_directory, 'nodetools.blend')
 config_path = os.path.join(addon_directory, 'config.json')
 
@@ -188,13 +182,6 @@ def anything_is_hidden_in_editmode():
 def snake_to_title_case(string):
   return ''.join([s.title() for s in string.split('_')])
 
-def nodes_were_loaded():
-  # If any node starting with 'QM ' exists, assume nodes were loaded
-  for n in bpy.data.node_groups:
-    if n.name.startswith('QM '):
-      return True
-  return False
-
 # @MenuOperators
 
 class QuickMenuOperator(bpy.types.Operator):
@@ -202,16 +189,6 @@ class QuickMenuOperator(bpy.types.Operator):
   bl_idname, bl_label, bl_options = 'qm.quick_menu', 'Quick Menu Operator', {'REGISTER', 'UNDO'}
 
   def execute(self, context):
-    # Unload geometry nodes on first run to make sure nodes are updated
-    # when you update the addon
-    if app['first_run']:
-      unload_geometry_nodes()
-
-    # Load geometry nodes if not yet loaded
-    if not nodes_were_loaded():
-      load_geometry_nodes()
-    app['first_run'] = False
-
     bpy.ops.wm.call_menu(name=QuickMenu.bl_idname)
     return {'FINISHED'}
 
@@ -1229,12 +1206,18 @@ def draw_menu(self, items):
     elif item['title'] == '[Separator]':
       layout.separator()
       i -= 1
+    elif 'nodetool' in item:
+      if is_in_editmode():
+        operator = layout.operator('geometry.execute_node_group', text=title, icon='NODETREE')
+        operator.name = item['nodetool']
+        operator.asset_library_type = 'CUSTOM'
+        operator.asset_library_identifier = 'QuickMenuLibrary'
+        operator.relative_asset_identifier = 'nodetools.blend/NodeTree/' + item['nodetool']
+      else:
+        layout.operator('qm.void_edit_mode_only', text=title, icon='NODETREE')
     elif 'operator' in item:
       icon = 'NODETREE' if item['operator'] == 'geometry.execute_node_group' else 'NONE'
       if 'icon' in item: icon = item['icon']
-
-      if item['operator'] == 'geometry.execute_node_group' and not is_in_editmode():
-        layout.operator('qm.void_edit_mode_only', text=title, icon=icon)
       else:
         operator = layout.operator(item['operator'], text=title, icon=icon)
         if 'params' in item:
@@ -1301,20 +1284,6 @@ def load_items(config_path):
       menu = get_or_create_menu_definition_at_path(path[:-1], app['items'])
       menu['children'].append(item)
 
-# Remove the node groups from the current file
-def unload_geometry_nodes():
-  for node_group in bpy.data.node_groups:
-    if node_group.name.startswith('QM '):
-      bpy.data.node_groups.remove(node_group)
-
-# Add built-in geometry nodes to the current file
-def load_geometry_nodes():
-  with bpy.data.libraries.load(nodes_path) as (data_from, data_to):
-    # Append nodes groups that dont exist in the current file
-    for node_group in data_from.node_groups:
-      if node_group not in bpy.data.node_groups:
-        data_to.node_groups.append(node_group)
-
 def get_classes():
   return [cls for name, cls in globals().items() if isinstance(cls, type) and issubclass(cls, (bpy.types.Operator, bpy.types.PropertyGroup, bpy.types.Menu, bpy.types.AddonPreferences))]
 
@@ -1340,6 +1309,12 @@ def register():
   if keymap_item is None:
     km = key_config.keymaps.new(name='3D View', space_type='VIEW_3D')
     km.keymap_items.new(QuickMenuOperator.bl_idname, type='D', value='PRESS')
+
+  # Add assets to the library
+  asset_libraries = bpy.context.preferences.filepaths.asset_libraries
+  if asset_libraries.find("QuickMenuLibrary") == -1:
+    library = asset_libraries.new(name="QuickMenuLibrary", directory=addon_directory)
+    library.import_method = "LINK"
   
   # Load menu items from the config
   load_items(config_path)
@@ -1347,6 +1322,3 @@ def register():
 def unregister():
   for cls in get_classes(): bpy.utils.unregister_class(cls)
   del bpy.types.Scene.quick_menu
-
-# Call if ran as script
-if __name__ == '__main__': register()
