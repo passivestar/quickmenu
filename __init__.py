@@ -1218,11 +1218,10 @@ def draw_menu(self, items):
     elif 'operator' in item:
       icon = 'NODETREE' if item['operator'] == 'geometry.execute_node_group' else 'NONE'
       if 'icon' in item: icon = item['icon']
-      else:
-        operator = layout.operator(item['operator'], text=title, icon=icon)
-        if 'params' in item:
-          for key, val in item['params'].items():
-            operator[key] = tuple(val) if isinstance(val, list) else val
+      operator = layout.operator(item['operator'], text=title, icon=icon)
+      if 'params' in item:
+        for key, val in item['params'].items():
+          operator[key] = tuple(val) if isinstance(val, list) else val
 
     elif 'menu' in item:
       layout.menu(item['menu'], text=title) 
