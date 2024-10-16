@@ -223,6 +223,10 @@
       "params": { "name": "QM Chunks" }
     },
     {
+      "path": "Modify/(Z) Align Island To Active Face", "operator": "geometry.execute_node_group",
+      "params": { "name": "QM Align Island By Active Face" }
+    },
+    {
       "path": "Modify/(X) Damage/Cracks", "operator": "geometry.execute_node_group",
       "params": { "name": "QM Cracks" }
     },
