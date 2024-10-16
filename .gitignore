@@ -10,3 +10,5 @@ Thumbs.db
 *.fbx
 *.glb
 textures
+blender_assets.cats.txt~
+/__pycache__

@@ -272,16 +272,6 @@
         "scale_y": 1
       }
     },
-    {
-      "path": "(W) UV and Textures/(E) Rotate UVs 90", "operator": "qm.transform_uvs",
-      "params": {
-        "offset_x": 0,
-        "offset_y": 0,
-        "rotation": 1.5708,
-        "scale_x": 1,
-        "scale_y": 1
-      }
-    },
     { "path": "(W) UV and Textures/(R) Pack Islands", "operator": "uv.pack_islands", "params": {"rotate": false, "margin": 0.02} },
 
     { "path": "(W) UV and Textures/[Separator]" },

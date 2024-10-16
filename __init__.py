@@ -396,21 +396,6 @@ class WireframeOperator(bpy.types.Operator):
     context.space_data.overlay.wireframe_opacity = self.opacity
     return {'FINISHED'}
 
-class RotateOperator(bpy.types.Operator):
-  """Rotate. Hold shift to invert angle"""
-  bl_idname, bl_label, bl_options = 'qm.rotate', 'Rotate', {'REGISTER', 'UNDO'}
-  angle: FloatProperty(name='Angle', subtype='ANGLE', default=1.5708)
-
-  def invoke(self, context, event):
-    if event.shift: self.angle = -abs(self.angle)
-    return self.execute(context)
-
-  def execute(self, context):
-    axis, negative = axis_by_vector(view_snapped_vector(False, False))
-    value = -self.angle if negative else self.angle
-    bpy.ops.transform.rotate(value=value, orient_axis=axis, orient_type='GLOBAL')
-    return {'FINISHED'}
-
 class CorrectAttributesOperator(bpy.types.Operator):
   """Toggle Correct Face Attributes"""
   bl_idname, bl_label, bl_options = 'qm.correct_attributes', 'Toggle Correct Face Attributes', {'REGISTER', 'UNDO'}
