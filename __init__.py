@@ -118,10 +118,6 @@ def get_modifier(modifier_type, name):
 def move_modifier_on_top(modifier_name):
   bpy.ops.object.modifier_move_to_index(modifier=modifier_name, index=0)
 
-def add_modifier(modifier_type):
-  bpy.ops.object.modifier_add(type=modifier_type)
-  return bpy.context.object.modifiers[-1]
-
 def add_or_get_modifier(modifier_type, move_on_top=False):
   if modifier_exists(modifier_type):
     for modifier in bpy.context.object.modifiers:
@@ -131,32 +127,6 @@ def add_or_get_modifier(modifier_type, move_on_top=False):
   modifier = bpy.context.object.modifiers[-1]
   if move_on_top: move_modifier_on_top(modifier.name)
   return modifier
-
-def geonode_modifier_exists(node_group_name):
-  return len([m for m in bpy.context.object.modifiers if m.type == 'NODES' and m.node_group is not None and m.node_group.name == node_group_name]) > 0
-
-def add_geonode_modifier(node_group_name):
-  bpy.ops.object.modifier_add(type='NODES')
-  modifier = bpy.context.object.modifiers[-1]
-  modifier.node_group = bpy.data.node_groups[node_group_name]
-  return modifier
-
-def add_or_get_geonode_modifier(node_group_name):
-  if geonode_modifier_exists(node_group_name):
-    for modifier in bpy.context.object.modifiers:
-      if modifier.type == 'NODES' and modifier.node_group.name == node_group_name:
-        return modifier
-  bpy.ops.object.modifier_add(type='NODES')
-  modifier = bpy.context.object.modifiers[-1]
-  modifier.node_group = bpy.data.node_groups[node_group_name]
-  return modifier
-
-def remove_geonode_modifier(node_group_name):
-  if geonode_modifier_exists(node_group_name):
-    for modifier in bpy.context.object.modifiers:
-      if modifier.type == 'NODES' and modifier.node_group.name == node_group_name:
-        bpy.context.object.modifiers.remove(modifier)
-        break
 
 def is_in_editmode():
   return bpy.context.mode == 'EDIT_MESH' or bpy.context.mode == 'EDIT_CURVE' or bpy.context.mode == 'EDIT_SURFACE' or bpy.context.mode == 'EDIT_METABALL' or bpy.context.mode == 'EDIT_TEXT' or bpy.context.mode == 'EDIT_ARMATURE'
@@ -241,41 +211,6 @@ class JoinSeparateOperator(bpy.types.Operator):
           bpy.ops.qm.clear_drivers()
     elif len(context.selected_objects) > 0:
       bpy.ops.object.join()
-    return {'FINISHED'}
-
-class SetSmoothOperator(bpy.types.Operator):
-  """Set Smooth Shading. Hold shift to use modifier"""
-  bl_idname, bl_label, bl_options = 'qm.smooth', 'Set Smooth', {'REGISTER', 'UNDO'}
-  smooth: BoolProperty(name='Smooth', default=True)
-  by_angle: BoolProperty(name='By Angle', default=True)
-  angle: FloatProperty(name='Angle', subtype='ANGLE', default=0.872665, step=2, min=0, max=1.5708)
-  use_modifier: BoolProperty(name='Use Modifier', default=True)
-
-  def invoke(self, context, event):
-    if event.shift: self.use_modifier = True
-    return self.execute(context)
-
-  def execute(self, context):
-    if self.use_modifier:
-      if self.smooth:
-        m = add_or_get_geonode_modifier('Smooth by Angle')
-        m['Input_1'] = self.angle
-        m['Socket_1'] = True
-      else:
-        remove_geonode_modifier('Smooth by Angle')
-    else:
-      remove_geonode_modifier('Smooth by Angle')
-      def fn():
-        if self.smooth:
-          if self.by_angle:
-            try:
-              bpy.ops.object.shade_smooth_by_angle(angle=self.angle)
-              bpy.ops.mesh.customdata_custom_splitnormals_add()
-            except : bpy.ops.object.shade_smooth(use_auto_smooth=True, auto_smooth_angle=self.angle)
-          else: bpy.ops.object.shade_smooth()
-        else:
-          bpy.ops.object.shade_flat()
-      execute_in_mode('OBJECT', fn)
     return {'FINISHED'}
 
 class LocalViewOperator(bpy.types.Operator):
