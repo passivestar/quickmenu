@@ -60,15 +60,9 @@
     { "path": "Generate/[Separator]" },
 
     { "path": "Generate/(Q) Instantiate/Cluster", "nodetool": "QM Cluster" },
-
-    { "path": "Generate/(Q) Instantiate/[Separator]" },
-
-    { "path": "Generate/(Q) Instantiate/Cubes On Edges", "nodetool": "QM Cubes On Edges" },
-    { "path": "Generate/(Q) Instantiate/Spheres On Edges", "nodetool": "QM Spheres On Edges" },
-    { "path": "Generate/(Q) Instantiate/Cylinders On Edges", "nodetool": "QM Cylinders On Edges" },
-    { "path": "Generate/(Q) Instantiate/[Separator]" },
-    { "path": "Generate/(Q) Instantiate/Cubes On Surface", "nodetool": "QM Cubes On Surface" },
-    { "path": "Generate/(Q) Instantiate/Spheres On Surface", "nodetool": "QM Spheres On Surface" },
+    { "path": "Generate/(Q) Instantiate/Distribute On Edges", "nodetool": "QM Distribute On Edges" },
+    { "path": "Generate/(Q) Instantiate/Distribute On Surface", "nodetool": "QM Distribute On Surface" },
+    { "path": "Generate/(Q) Instantiate/Distribute In Volume", "nodetool": "QM Distribute In Volume" },
     { "path": "Generate/(W) Connect Islands", "nodetool": "QM Connect Islands" },
     { "path": "Generate/(E) Extrude Both Ways", "nodetool": "QM Extrude Both Ways" },
     { "path": "Generate/(R) Panel", "nodetool": "QM Panel" },
