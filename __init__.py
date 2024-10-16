@@ -202,9 +202,6 @@ class QuickMenuOperator(bpy.types.Operator):
   bl_idname, bl_label, bl_options = 'qm.quick_menu', 'Quick Menu Operator', {'REGISTER', 'UNDO'}
 
   def execute(self, context):
-    # Inject cursor
-    bpy.ops.qm.set_cursor_rotation_to_view()
-
     # Unload geometry nodes on first run to make sure nodes are updated
     # when you update the addon
     if app['first_run']:
@@ -1167,15 +1164,6 @@ class ViewOperator(bpy.types.Operator):
       bpy.ops.view3d.view_selected()
     else:
       bpy.ops.view3d.view_camera()
-    return {'FINISHED'}
-
-class SetCursorRotationToViewOperator(bpy.types.Operator):
-  """Set Cursor Rotation To View"""
-  bl_idname, bl_label = 'qm.set_cursor_rotation_to_view', 'Set Cursor Rotation To View'
-
-  def execute(self, context):
-    euler = view_vector().to_track_quat('Z', 'Y').to_euler()
-    context.scene.cursor.rotation_euler = euler
     return {'FINISHED'}
 
 class VoidEditModeOnlyOperator(bpy.types.Operator):
