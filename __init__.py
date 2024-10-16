@@ -923,7 +923,7 @@ class AddClothOperator(bpy.types.Operator):
   """Add Cloth"""
   bl_idname, bl_label, bl_options = 'qm.add_cloth', 'Add Cloth', {'REGISTER', 'UNDO'}
 
-  pressure: FloatProperty(name='Pressure', default=0, min=-2, max=2)
+  pressure: FloatProperty(name='Pressure', default=0, min=-20, max=20)
   tension: FloatProperty(name='Tension', default=5, min=0, max=30)
   compression: FloatProperty(name='Compression', default=5, min=0, max=30)
   shear: FloatProperty(name='Shear', default=5, min=0, max=30)
