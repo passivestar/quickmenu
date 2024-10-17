@@ -118,13 +118,12 @@ def get_modifier(modifier_type, name):
 def move_modifier_on_top(modifier_name):
   bpy.ops.object.modifier_move_to_index(modifier=modifier_name, index=0)
 
-def add_or_get_modifier(modifier_type, move_on_top=False):
+def add_or_get_modifier(modifier_name, modifier_type, move_on_top=False):
   if modifier_exists(modifier_type):
     for modifier in bpy.context.object.modifiers:
       if modifier.type == modifier_type:
         return modifier
-  bpy.ops.object.modifier_add(type=modifier_type)
-  modifier = bpy.context.object.modifiers[-1]
+  modifier = bpy.context.object.modifiers.new(name=modifier_name, type=modifier_type)
   if move_on_top: move_modifier_on_top(modifier.name)
   return modifier
 
@@ -394,11 +393,11 @@ class MirrorOperator(bpy.types.Operator):
 
   def execute(self, context):
     if modifier_exists('MIRROR'):
-      m = add_or_get_modifier('MIRROR')
+      m = add_or_get_modifier('QMMirror', 'MIRROR')
       fn = lambda: bpy.ops.object.modifier_apply(modifier=m.name)
       execute_in_mode('OBJECT', fn)
       return {'FINISHED'}
-    m = add_or_get_modifier('MIRROR', move_on_top=True)
+    m = add_or_get_modifier('QMMirror', 'MIRROR', move_on_top=True)
     m.use_axis[0], m.show_on_cage = False, True
     vsv = view_snapped_vector(True)
     vsv_notransform = view_snapped_vector(True, False)
@@ -425,7 +424,7 @@ class ArrayOperator(bpy.types.Operator):
   def execute(self, context):
     v = view_snapped_vector() * self.offset
     v.negate()
-    a = add_or_get_modifier('ARRAY')
+    a = add_or_get_modifier('QMArray', 'ARRAY')
     a.count = self.count
     a.relative_offset_displace = v
     return {'FINISHED'}
@@ -482,10 +481,10 @@ class SubsurfOperator(bpy.types.Operator):
 
   def execute(self, context):
     if context.mode != 'SCULPT':
-      m = add_or_get_modifier('SUBSURF')
+      m = add_or_get_modifier('QMSubsurf', 'SUBSURF')
       m.levels, m.boundary_smooth = self.level, 'PRESERVE_CORNERS'
     else:
-      m = add_or_get_modifier('MULTIRES')
+      m = add_or_get_modifier('QMMultires', 'MULTIRES')
       bpy.ops.object.multires_subdivide(modifier=m.name, mode='CATMULL_CLARK')
       m.levels = min(m.sculpt_levels, self.level)
     return {'FINISHED'}
@@ -503,7 +502,7 @@ class BevelOperator(bpy.types.Operator):
 
   def execute(self, context):
     existed = modifier_exists('BEVEL')
-    b = add_or_get_modifier('BEVEL')
+    b = add_or_get_modifier('QMBevel', 'BEVEL')
     if not existed: b.miter_outer = 'MITER_ARC'
     b.limit_method = 'WEIGHT' if self.use_weight else 'ANGLE'
     b.width, b.segments, b.angle_limit, b.harden_normals, b.loop_slide, b.use_clamp_overlap = self.amount, self.segments, self.angle, self.harden_normals, self.loop_slide, self.use_clamp_overlap
@@ -516,7 +515,7 @@ class TriangulateOperator(bpy.types.Operator):
 
   def execute(self, context):
     existed = modifier_exists('TRIANGULATE')
-    t = add_or_get_modifier('TRIANGULATE')
+    t = add_or_get_modifier('QMTriangulate', 'TRIANGULATE')
     if not existed:
       t.keep_custom_normals = self.keep_normals
       t.min_vertices = 5
@@ -914,7 +913,7 @@ class AddCollisionOperator(bpy.types.Operator):
   cloth_friction: FloatProperty(name='Cloth Friction', default=5, min=0, max=80)
 
   def execute(self, context):
-    add_or_get_modifier('COLLISION')
+    add_or_get_modifier('QMCollision', 'COLLISION')
     context.object.collision.thickness_outer = self.thickness_outer
     context.object.collision.cloth_friction = self.cloth_friction
     return {'FINISHED'}
@@ -931,7 +930,7 @@ class AddClothOperator(bpy.types.Operator):
   self_collisions: BoolProperty(name='Self Collisions', default=False)
 
   def execute(self, context):
-    c = add_or_get_modifier('CLOTH')
+    c = add_or_get_modifier('QMCloth', 'CLOTH')
     c.settings.use_pressure = self.pressure != 0
     c.settings.uniform_pressure_force = self.pressure
     c.settings.tension_stiffness = self.tension
