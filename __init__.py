@@ -178,12 +178,6 @@ def register_asset_library():
     library = asset_libraries.new(name="QuickMenuLibrary", directory=addon_directory)
     library.import_method = "LINK"
 
-def find_keymap_item(keymap_items):
-  for keymap_item in keymap_items:
-    if keymap_item.idname == 'wm.call_menu' and keymap_item.properties.name == QuickMenu.bl_idname:
-      return keymap_item
-  return None
-
 def register_hotkey():
   keymaps = bpy.context.window_manager.keyconfigs.addon.keymaps
   keymap = keymaps.new(name='3D View', space_type='VIEW_3D')
