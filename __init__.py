@@ -280,7 +280,7 @@ class SetOriginOperator(bpy.types.Operator):
           obj.data.transform(Matrix.Translation(-new_origin))
           obj.location += new_origin
         for obj in objects: obj.select_set(True)
-    execute_in_mode('OBJECT', fn)
+    execute_in_object_mode(fn)
     return {'FINISHED'}
 
 class ProportionalEditingOperator(bpy.types.Operator):
@@ -422,7 +422,7 @@ class MirrorOperator(bpy.types.Operator):
     if modifier_exists('MIRROR'):
       m = add_or_get_modifier('QMMirror', 'MIRROR')
       fn = lambda: bpy.ops.object.modifier_apply(modifier=m.name)
-      execute_in_mode('OBJECT', fn)
+      execute_in_object_mode(fn)
       return {'FINISHED'}
     m = add_or_get_modifier('QMMirror', 'MIRROR', move_on_top=True)
     m.use_axis[0], m.show_on_cage = False, True
@@ -498,7 +498,7 @@ class ConvertToMeshOperator(bpy.types.Operator):
         bpy.ops.mesh.remove_doubles(threshold=self.doubles_threshold)
       else:
         bpy.ops.object.convert(target='MESH')
-    execute_in_mode('OBJECT', fn)
+    execute_in_object_mode(fn)
     return {'FINISHED'}
 
 class SubsurfOperator(bpy.types.Operator):
@@ -558,7 +558,7 @@ class StraightenUVsOperator(bpy.types.Operator):
 
   def execute(self, context):
     mesh = context.object.data
-    selection_indeces, active_indeces = execute_in_mode('EDIT', get_selection_and_active_indices)
+    selection_indeces, active_indeces = execute_in_edit_mode(get_selection_and_active_indices)
 
     # Show an error if nothing is selected
     if len(selection_indeces) == 0:
@@ -592,7 +592,7 @@ class StraightenUVsOperator(bpy.types.Operator):
           uv_coords[min_axis] = prev_uv_coords[min_axis]
         prev_uv_coords = uv_coords
 
-    execute_in_mode('OBJECT', process_uvs)
+    execute_in_object_mode(process_uvs)
     bpy.ops.uv.follow_active_quads()
     return {'FINISHED'}
 
@@ -737,7 +737,7 @@ class SetVertexColorOperator(bpy.types.Operator):
     for obj in context.objects_in_mode:
       mesh = obj.data
       context.view_layer.objects.active = obj
-      selection_indeces, active_indeces = execute_in_mode('EDIT', get_selection_and_active_indices)
+      selection_indeces, active_indeces = execute_in_edit_mode(get_selection_and_active_indices)
       def assign_colors():
         # Set color to the next random color:
         if self.set_to_active:
@@ -750,7 +750,7 @@ class SetVertexColorOperator(bpy.types.Operator):
         # Set the color of selection
         for index in selection_indeces:
           mesh.vertex_colors.active.data[index].color = (self.color[0], self.color[1], self.color[2], 1)
-      execute_in_mode('OBJECT', assign_colors)
+      execute_in_object_mode(assign_colors)
     return {'FINISHED'}
 
 class SelectByVertexColorOperator(bpy.types.Operator):
@@ -767,16 +767,16 @@ class SelectByVertexColorOperator(bpy.types.Operator):
     # Gather all of the selected colors across all of the objects first
     for obj in context.objects_in_mode:
       context.view_layer.objects.active = obj
-      selection_indeces, active_indeces = execute_in_mode('EDIT', get_selection_and_active_indices)
+      selection_indeces, active_indeces = execute_in_edit_mode(get_selection_and_active_indices)
       def fn():
         for index in selection_indeces:
           selected_colors.append(obj.data.vertex_colors.active.data[index].color)
-      execute_in_mode('OBJECT', fn)
+      execute_in_object_mode(fn)
     # Set selection
     for obj in context.objects_in_mode:
       mesh = obj.data
       context.view_layer.objects.active = obj
-      selection_indeces, active_indeces = execute_in_mode('EDIT', get_selection_and_active_indices)
+      selection_indeces, active_indeces = execute_in_edit_mode(get_selection_and_active_indices)
       def fn():
         for poly in mesh.polygons:
           poly.select = False
@@ -786,7 +786,7 @@ class SelectByVertexColorOperator(bpy.types.Operator):
               if c[0] == sc[0] and c[1] == sc[1] and c[2] == sc[2]:
                 poly.select = True
                 continue
-      execute_in_mode('OBJECT', fn)
+      execute_in_object_mode(fn)
     return {'FINISHED'}
 
 class BooleanOperator(bpy.types.Operator):
