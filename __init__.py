@@ -134,7 +134,7 @@ def add_or_get_modifier(modifier_name, modifier_type, move_on_top=False):
   return modifier
 
 def is_in_editmode():
-  return bpy.context.mode == 'EDIT_MESH' or bpy.context.mode == 'EDIT_CURVE' or bpy.context.mode == 'EDIT_SURFACE' or bpy.context.mode == 'EDIT_METABALL' or bpy.context.mode == 'EDIT_TEXT' or bpy.context.mode == 'EDIT_ARMATURE'
+  return 'EDIT' in bpy.context.mode
 
 def anything_is_selected_in_editmode():
   for o in bpy.context.objects_in_mode:
