@@ -222,18 +222,18 @@
 
     { "path": "(A) Snapping/(C) Closest", "operator": "qm.set_snap", "params": { "mode": "TARGET", "type": "CLOSEST" } },
     { "path": "(A) Snapping/(E) Center", "operator": "qm.set_snap", "params": { "mode": "TARGET", "type": "CENTER" } },
-    { "path": "(D) Tool/Add Cube", "operator": "qm.tool", "params": { "tool_name": "builtin.primitive_cube_add" } },
-    { "path": "(D) Tool/Add Cylinder", "operator": "qm.tool", "params": { "tool_name": "builtin.primitive_cylinder_add" } },
-    { "path": "(D) Tool/Add Sphere", "operator": "qm.tool", "params": { "tool_name": "builtin.primitive_uv_sphere_add" } },
-    { "path": "(D) Tool/Add Ico Sphere", "operator": "qm.tool", "params": { "tool_name": "builtin.primitive_ico_sphere_add" } },
-    { "path": "(D) Tool/Add Cone", "operator": "qm.tool", "params": { "tool_name": "builtin.primitive_cone_add" } },
+    { "path": "(D) Tool/Add Cube", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.primitive_cube_add" } },
+    { "path": "(D) Tool/Add Cylinder", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.primitive_cylinder_add" } },
+    { "path": "(D) Tool/Add Sphere", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.primitive_uv_sphere_add" } },
+    { "path": "(D) Tool/Add Ico Sphere", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.primitive_ico_sphere_add" } },
+    { "path": "(D) Tool/Add Cone", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.primitive_cone_add" } },
 
     { "path": "(D) Tool/[Separator]" },
 
-    { "path": "(D) Tool/(Q) Shear", "operator": "qm.tool", "params": { "tool_name": "builtin.shear" } },
-    { "path": "(D) Tool/(W) Annotate", "operator": "qm.tool", "params": { "tool_name": "builtin.annotate" } },
-    { "path": "(D) Tool/(E) Measure", "operator": "qm.tool", "params": { "tool_name": "builtin.measure" } },
-    { "path": "(D) Tool/(R) Knife", "operator": "qm.tool", "params": { "tool_name": "builtin.knife" } },
+    { "path": "(D) Tool/(Q) Shear", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.shear" } },
+    { "path": "(D) Tool/(W) Annotate", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.annotate" } },
+    { "path": "(D) Tool/(E) Measure", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.measure" } },
+    { "path": "(D) Tool/(R) Knife", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.knife" } },
     { "path": "(F) Mode", "operator": "view3d.object_mode_pie_or_toggle" },
 
     { "path": "(Z) Files/[Separator]" },

@@ -1039,15 +1039,6 @@ class SetSnapOperator(bpy.types.Operator):
         context.scene.tool_settings.transform_pivot_point = 'BOUNDING_BOX_CENTER'
     return {'FINISHED'}
 
-class ToolOperator(bpy.types.Operator):
-  """Set Tool"""
-  bl_idname, bl_label = 'qm.tool', 'Set Tool'
-  tool_name: StringProperty(name='Tool')
-
-  def execute(self, context):
-    bpy.ops.wm.tool_set_by_id(name=self.tool_name)
-    return {'FINISHED'}
-
 class ReimportTexturesOperator(bpy.types.Operator):
   """Reimport Textures"""
   bl_idname, bl_label, bl_options = 'qm.reimport_textures', 'Reimport Textures', {'REGISTER', 'UNDO'}
