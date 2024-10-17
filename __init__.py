@@ -15,7 +15,8 @@ nodes_path = os.path.join(addon_directory, 'nodetools.blend')
 config_path = os.path.join(addon_directory, 'config.json')
 
 app = {
-  "items": []
+  "items": [],
+  "keymaps": []
 }
 
 class EditMenuItemsOperator(bpy.types.Operator):
@@ -171,29 +172,29 @@ def load_items(config_path):
       menu = get_or_create_menu_definition_at_path(path[:-1], app['items'])
       menu['children'].append(item)
 
-def find_keymap_item(keymaps):
-  if '3D View' not in keymaps:
-    return None
-
-  for keymap_item in keymaps['3D View'].keymap_items:
-    if keymap_item.idname == 'wm.call_menu' and keymap_item.properties.name == QuickMenu.bl_idname:
-      return keymap_item
-  return None
-
 def register_asset_library():
   asset_libraries = bpy.context.preferences.filepaths.asset_libraries
   if asset_libraries.find("QuickMenuLibrary") == -1:
     library = asset_libraries.new(name="QuickMenuLibrary", directory=addon_directory)
     library.import_method = "LINK"
 
-def register_hotkey():
-  keymaps = bpy.context.window_manager.keyconfigs.active.keymaps
-  keymap_item = find_keymap_item(keymaps)
+def find_keymap_item(keymap_items):
+  for keymap_item in keymap_items:
+    if keymap_item.idname == 'wm.call_menu' and keymap_item.properties.name == QuickMenu.bl_idname:
+      return keymap_item
+  return None
 
-  if keymap_item is None:
-    keymap = keymaps.new(name='3D View', space_type='VIEW_3D')
-    keymap_item = keymap.keymap_items.new('wm.call_menu', type='D', value='PRESS')
-    keymap_item.properties.name = QuickMenu.bl_idname
+def register_hotkey():
+  keymaps = bpy.context.window_manager.keyconfigs.addon.keymaps
+  keymap = keymaps.new(name='3D View', space_type='VIEW_3D')
+  keymap_item = keymap.keymap_items.new('wm.call_menu', type='D', value='PRESS')
+  keymap_item.properties.name = QuickMenu.bl_idname
+  app['keymaps'].append((keymap, keymap_item))
+
+def unregister_hotkey():
+  for keymap, keymap_item in app['keymaps']:
+    keymap.keymap_items.remove(keymap_item)
+  app['keymaps'].clear()
  
 def register():
   bpy.utils.register_class(QuickMenu)
@@ -240,3 +241,4 @@ def unregister():
   files.unregister()
 
   del bpy.types.Scene.quick_menu
+  unregister_hotkey()
