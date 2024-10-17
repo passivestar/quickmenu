@@ -1,6 +1,7 @@
 {
   "items": [
     { "path": "General/Separate or Join", "operator": "qm.join_separate" },
+    { "path": "General/Shade Smooth or Flat", "operator": "qm.smooth" },
     { "path": "General/Hide or Unhide", "operator": "qm.local_view" },
 
     { "path": "General/[Separator]" },

@@ -98,6 +98,12 @@ def execute_in_mode(mode, callback, *args):
   except: pass
   return result
 
+def execute_in_object_mode(callback, *args):
+  return execute_in_mode('OBJECT', callback, *args)
+
+def execute_in_edit_mode(callback, *args):
+  return execute_in_mode('EDIT', callback, *args)
+
 def make_vertex_group(name, assign=True):
   bpy.context.object.vertex_groups.new(name=name)
   bpy.ops.object.vertex_group_set_active(group=name)
@@ -221,6 +227,27 @@ class LocalViewOperator(bpy.types.Operator):
       if anything_is_hidden_in_editmode(): bpy.ops.mesh.reveal(select=False)
       elif anything_is_selected_in_editmode(): bpy.ops.mesh.hide(unselected=True)
     else: bpy.ops.view3d.localview()
+    return {'FINISHED'}
+
+class SetSmoothOperator(bpy.types.Operator):
+  """Set Smooth Shading. Hold shift to use modifier"""
+  bl_idname, bl_label, bl_options = 'qm.smooth', 'Set Smooth', {'REGISTER', 'UNDO'}
+  smooth: BoolProperty(name='Smooth', default=True)
+  auto: BoolProperty(name='Auto', default=True)
+  auto_angle: FloatProperty(name='Angle', subtype='ANGLE', default=0.872665, step=2, min=0, max=1.5708)
+
+  def invoke(self, context, event):
+    if event.shift: self.auto = True
+    return self.execute(context)
+
+  def execute(self, context):
+    if self.smooth:
+      if self.auto:
+        execute_in_object_mode(lambda: bpy.ops.object.shade_auto_smooth(angle=self.auto_angle))
+      else:
+        execute_in_object_mode(bpy.ops.object.shade_smooth)
+    else:
+      execute_in_object_mode(bpy.ops.object.shade_flat)
     return {'FINISHED'}
 
 class SetOriginOperator(bpy.types.Operator):
