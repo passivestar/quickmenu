@@ -174,6 +174,14 @@ class AnimateRotationOperator(bpy.types.Operator):
 
     return {'FINISHED'}
 
+class RewindOperator(bpy.types.Operator):
+  """Rewind"""
+  bl_idname, bl_label, bl_options = 'qm.rewind', 'Rewind', {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    context.scene.frame_set(0)
+    return {'FINISHED'}
+
 class ToggleAutoKeyingOperator(bpy.types.Operator):
   """Toggle Auto Keying"""
   bl_idname, bl_label, bl_options = 'qm.toggle_auto_keying', 'Toggle Auto Keying', {'REGISTER', 'UNDO'}
@@ -216,6 +224,7 @@ def register():
     bpy.utils.register_class(AddCollisionOperator)
     bpy.utils.register_class(AddClothOperator)
     bpy.utils.register_class(AnimateRotationOperator)
+    bpy.utils.register_class(RewindOperator)
     bpy.utils.register_class(ToggleAutoKeyingOperator)
     bpy.utils.register_class(ClearDriversOperator)
     bpy.utils.register_class(SetUseSelfDriversOperator)
@@ -227,6 +236,7 @@ def unregister():
     bpy.utils.unregister_class(AddCollisionOperator)
     bpy.utils.unregister_class(AddClothOperator)
     bpy.utils.unregister_class(AnimateRotationOperator)
+    bpy.utils.unregister_class(RewindOperator)
     bpy.utils.unregister_class(ToggleAutoKeyingOperator)
     bpy.utils.unregister_class(ClearDriversOperator)
     bpy.utils.unregister_class(SetUseSelfDriversOperator)

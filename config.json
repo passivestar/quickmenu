@@ -198,7 +198,8 @@
 
     { "path": "(R) Animation/[Separator]" },
 
-    { "path": "(R) Animation/(Q) Toggle Auto Keying", "operator": "qm.toggle_auto_keying" },
+    { "path": "(R) Animation/(Q) Rewind", "operator": "qm.rewind" },
+    { "path": "(R) Animation/(W) Toggle Auto Keying", "operator": "qm.toggle_auto_keying" },
     { "path": "(R) Animation/[Separator]" },
     { "path": "(R) Animation/(Z) Clear Drivers", "operator": "qm.clear_drivers" },
     { "path": "(R) Animation/(X) Drivers Set Use Self", "operator": "qm.set_use_self_drivers" },
