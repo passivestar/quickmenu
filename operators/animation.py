@@ -88,6 +88,8 @@ class AddBodyOperator(bpy.types.Operator):
   )
 
   mass: bpy.props.FloatProperty(name='Mass', default=1, min=0)
+  friction: bpy.props.FloatProperty(name='Friction', default=0.5, min=0, max=1)
+  bounciness: bpy.props.FloatProperty(name='Bounciness', default=0, min=0, max=1)
 
   def execute(self, context):
     all_selected_objects = context.selected_objects
@@ -96,6 +98,8 @@ class AddBodyOperator(bpy.types.Operator):
       select(obj)
       bpy.ops.rigidbody.object_add()
       bpy.context.object.rigid_body.type = self.type
+      bpy.context.object.rigid_body.friction = self.friction
+      bpy.context.object.rigid_body.restitution = self.bounciness
 
       if self.type == 'ACTIVE':
         bpy.context.object.rigid_body.mass = self.mass
