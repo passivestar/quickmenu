@@ -91,18 +91,23 @@ class AddBodyOperator(bpy.types.Operator):
   friction: bpy.props.FloatProperty(name='Friction', default=0.5, min=0, max=1)
   bounciness: bpy.props.FloatProperty(name='Bounciness', default=0, min=0, max=1)
 
+  @classmethod
+  def poll(cls, context):
+    return len(context.selected_objects) > 0
+
   def execute(self, context):
     all_selected_objects = context.selected_objects
 
     for obj in all_selected_objects:
-      select(obj)
-      bpy.ops.rigidbody.object_add()
-      bpy.context.object.rigid_body.type = self.type
-      bpy.context.object.rigid_body.friction = self.friction
-      bpy.context.object.rigid_body.restitution = self.bounciness
+      if obj.type == 'MESH':
+        select(obj)
+        bpy.ops.rigidbody.object_add()
+        bpy.context.object.rigid_body.type = self.type
+        bpy.context.object.rigid_body.friction = self.friction
+        bpy.context.object.rigid_body.restitution = self.bounciness
 
-      if self.type == 'ACTIVE':
-        bpy.context.object.rigid_body.mass = self.mass
+        if self.type == 'ACTIVE':
+          bpy.context.object.rigid_body.mass = self.mass
  
     for obj in all_selected_objects:
       obj.select_set(True)
