@@ -74,6 +74,36 @@ class AddBoneOperator(bpy.types.Operator):
 
     return {'FINISHED'}
 
+class AddBodyOperator(bpy.types.Operator):
+  """Add Physics Body"""
+  bl_idname, bl_label, bl_options = 'qm.add_body', 'Add Body', {'REGISTER', 'UNDO'}
+
+  type: bpy.props.EnumProperty(
+    name = 'Type',
+    items = (
+      ('ACTIVE', 'Active', 'Active'),
+      ('PASSIVE', 'Passive', 'Passive'),
+    ),
+    default = 'ACTIVE'
+  )
+
+  mass: bpy.props.FloatProperty(name='Mass', default=1, min=0)
+
+  def execute(self, context):
+    all_selected_objects = context.selected_objects
+
+    for obj in all_selected_objects:
+      select(obj)
+      bpy.ops.rigidbody.object_add()
+      bpy.context.object.rigid_body.type = self.type
+
+      if self.type == 'ACTIVE':
+        bpy.context.object.rigid_body.mass = self.mass
+ 
+    for obj in all_selected_objects:
+      obj.select_set(True)
+    return {'FINISHED'}
+
 class AddCollisionOperator(bpy.types.Operator):
   """Add Collision"""
   bl_idname, bl_label, bl_options = 'qm.add_collision', 'Add Collision', {'REGISTER', 'UNDO'}
@@ -182,6 +212,7 @@ class SetUseSelfDriversOperator(bpy.types.Operator):
 def register():
     bpy.utils.register_class(ParentToNewEmptyOperator)
     bpy.utils.register_class(AddBoneOperator)
+    bpy.utils.register_class(AddBodyOperator)
     bpy.utils.register_class(AddCollisionOperator)
     bpy.utils.register_class(AddClothOperator)
     bpy.utils.register_class(AnimateRotationOperator)
@@ -192,6 +223,7 @@ def register():
 def unregister():
     bpy.utils.unregister_class(ParentToNewEmptyOperator)
     bpy.utils.unregister_class(AddBoneOperator)
+    bpy.utils.unregister_class(AddBodyOperator)
     bpy.utils.unregister_class(AddCollisionOperator)
     bpy.utils.unregister_class(AddClothOperator)
     bpy.utils.unregister_class(AnimateRotationOperator)

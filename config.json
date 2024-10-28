@@ -190,6 +190,8 @@
     { "path": "(R) Animation/Parent To New Empty", "operator": "qm.parent_to_new_empty" },
     { "path": "(R) Animation/Add Constraint", "operator": "object.constraint_add_with_targets" },
     { "path": "(R) Animation/Add Bone To Selection", "operator": "qm.add_bone" },
+    { "path": "(R) Animation/Add Active Body", "operator": "qm.add_body", "params": { "type": 0 } },
+    { "path": "(R) Animation/Add Passive Body", "operator": "qm.add_body", "params": { "type": 1 } },
     { "path": "(R) Animation/Add Collision", "operator": "qm.add_collision" },
     { "path": "(R) Animation/Add Cloth", "operator": "qm.add_cloth" },
     { "path": "(R) Animation/Animate Rotation", "operator": "qm.animate_rotation" },
