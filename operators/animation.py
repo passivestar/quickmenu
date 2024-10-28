@@ -113,6 +113,32 @@ class AddBodyOperator(bpy.types.Operator):
       obj.select_set(True)
     return {'FINISHED'}
 
+class RemoveBodyOperator(bpy.types.Operator):
+  """Remove Physics Body"""
+  bl_idname, bl_label, bl_options = 'qm.remove_body', 'Remove Body', {'REGISTER', 'UNDO'}
+
+  apply_transforms: bpy.props.BoolProperty(name='Apply Transforms', default=True)
+
+  @classmethod
+  def poll(cls, context):
+    return len(context.selected_objects) > 0
+
+  def execute(self, context):
+    all_selected_objects = context.selected_objects
+
+    if self.apply_transforms:
+      bpy.ops.object.visual_transform_apply()
+
+    for obj in all_selected_objects:
+      if obj.type == 'MESH' and obj.rigid_body:
+        select(obj)
+        bpy.ops.rigidbody.object_remove()
+
+    for obj in all_selected_objects:
+      obj.select_set(True)
+
+    return {'FINISHED'}
+
 class AddCollisionOperator(bpy.types.Operator):
   """Add Collision"""
   bl_idname, bl_label, bl_options = 'qm.add_collision', 'Add Collision', {'REGISTER', 'UNDO'}
@@ -230,6 +256,7 @@ def register():
     bpy.utils.register_class(ParentToNewEmptyOperator)
     bpy.utils.register_class(AddBoneOperator)
     bpy.utils.register_class(AddBodyOperator)
+    bpy.utils.register_class(RemoveBodyOperator)
     bpy.utils.register_class(AddCollisionOperator)
     bpy.utils.register_class(AddClothOperator)
     bpy.utils.register_class(AnimateRotationOperator)
@@ -242,6 +269,7 @@ def unregister():
     bpy.utils.unregister_class(ParentToNewEmptyOperator)
     bpy.utils.unregister_class(AddBoneOperator)
     bpy.utils.unregister_class(AddBodyOperator)
+    bpy.utils.unregister_class(RemoveBodyOperator)
     bpy.utils.unregister_class(AddCollisionOperator)
     bpy.utils.unregister_class(AddClothOperator)
     bpy.utils.unregister_class(AnimateRotationOperator)
