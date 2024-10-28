@@ -82,9 +82,16 @@ class AddCollisionOperator(bpy.types.Operator):
   cloth_friction: bpy.props.FloatProperty(name='Cloth Friction', default=5, min=0, max=80)
 
   def execute(self, context):
-    add_or_get_modifier('QMCollision', 'COLLISION')
-    context.object.collision.thickness_outer = self.thickness_outer
-    context.object.collision.cloth_friction = self.cloth_friction
+    all_selected_objects = context.selected_objects
+
+    for obj in all_selected_objects:
+      select(obj)
+      add_or_get_modifier('QMCollision', 'COLLISION')
+      context.object.collision.thickness_outer = self.thickness_outer
+      context.object.collision.cloth_friction = self.cloth_friction
+    
+    for obj in all_selected_objects:
+      obj.select_set(True)
     return {'FINISHED'}
 
 class AddClothOperator(bpy.types.Operator):
@@ -99,14 +106,22 @@ class AddClothOperator(bpy.types.Operator):
   self_collisions: bpy.props.BoolProperty(name='Self Collisions', default=False)
 
   def execute(self, context):
-    c = add_or_get_modifier('QMCloth', 'CLOTH')
-    c.settings.use_pressure = self.pressure != 0
-    c.settings.uniform_pressure_force = self.pressure
-    c.settings.tension_stiffness = self.tension
-    c.settings.compression_stiffness = self.compression
-    c.settings.shear_stiffness = self.shear
-    c.settings.bending_stiffness = self.bending
-    c.collision_settings.use_self_collision = self.self_collisions
+    all_selected_objects = context.selected_objects
+
+    for obj in all_selected_objects:
+      select(obj)
+      c = add_or_get_modifier('QMCloth', 'CLOTH')
+      c.settings.use_pressure = self.pressure != 0
+      c.settings.uniform_pressure_force = self.pressure
+      c.settings.tension_stiffness = self.tension
+      c.settings.compression_stiffness = self.compression
+      c.settings.shear_stiffness = self.shear
+      c.settings.bending_stiffness = self.bending
+      c.collision_settings.use_self_collision = self.self_collisions
+    
+    for obj in all_selected_objects:
+      obj.select_set(True)
+
     context.scene.frame_set(0)
     return {'FINISHED'}
 
