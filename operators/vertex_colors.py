@@ -1,7 +1,7 @@
 import bpy
 from mathutils import Color
 
-from ..common.common import *
+from .. common.common import *
 
 colors = [
     (247, 241, 176),

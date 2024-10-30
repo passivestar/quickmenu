@@ -1,6 +1,6 @@
 import bpy
 from mathutils import Vector, Matrix
-from ..common.common import *
+from .. common.common import *
 
 class ViewOperator(bpy.types.Operator):
   """View Selected if in edit mode or anything is selected in object mode. View Camera otherwise"""

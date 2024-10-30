@@ -1,7 +1,7 @@
 import bpy, bmesh, math
 from mathutils import Vector, Matrix
 from functools import reduce
-from ..common.common import *
+from .. common.common import *
 
 class StraightenUVsOperator(bpy.types.Operator):
   """Straighten UVs"""

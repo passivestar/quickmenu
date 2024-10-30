@@ -1,5 +1,5 @@
 import bpy
-from ..common.common import *
+from .. common.common import *
 
 class SelectRingOperator(bpy.types.Operator):
   """Select ring. Hold shift to select loop"""

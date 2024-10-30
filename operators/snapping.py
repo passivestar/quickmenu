@@ -1,5 +1,5 @@
 import bpy
-from ..common.common import *
+from .. common.common import *
 
 class TransformOrientationOperator(bpy.types.Operator):
   """Transform Orientation"""
