@@ -5,7 +5,9 @@ from .. common.common import *
 
 class StraightenUVsOperator(bpy.types.Operator):
   """Straighten UVs"""
-  bl_idname, bl_label, bl_options = 'qm.straighten_uvs', 'Straighten UVs', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.straighten_uvs'
+  bl_label = 'Straighten UVs'
+  bl_options = {'REGISTER', 'UNDO'}
 
   @classmethod
   def poll(cls, context):
@@ -53,9 +55,14 @@ class StraightenUVsOperator(bpy.types.Operator):
 
 class MarkSeamOperator(bpy.types.Operator):
   """Mark Or Clear Seam. Hold shift to clear seam"""
-  bl_idname, bl_label, bl_options = 'qm.mark_seam', 'Mark Seam', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.mark_seam'
+  bl_label = 'Mark Seam'
+  bl_options = {'REGISTER', 'UNDO'}
+
   clear_inner_region: bpy.props.BoolProperty(name='Clear Inner Region', default=False)
+
   clear: bpy.props.BoolProperty(name='Clear', default=False)
+
   unwrap: bpy.props.BoolProperty(name='Unwrap', default=True)
 
   @classmethod
@@ -89,7 +96,10 @@ class MarkSeamOperator(bpy.types.Operator):
 
 class SmartUVProject(bpy.types.Operator):
   """Smart UV Project"""
-  bl_idname, bl_label, bl_options = 'qm.smart_uv_project', 'Smart UV Project', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.smart_uv_project'
+  bl_label = 'Smart UV Project'
+  bl_options = {'REGISTER', 'UNDO'}
+
   angle: bpy.props.FloatProperty(name='Angle', subtype='ANGLE', default=1.0472, min=0.0001, max=3.14159)
 
   @classmethod
@@ -103,12 +113,18 @@ class SmartUVProject(bpy.types.Operator):
 
 class TransformUVsOperator(bpy.types.Operator):
   """Transform UV"""
-  bl_idname, bl_label, bl_options = 'qm.transform_uvs', 'Transform UVs', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.transform_uvs'
+  bl_label = 'Transform UVs'
+  bl_options = {'REGISTER', 'UNDO'}
 
   offset_x: bpy.props.FloatProperty(name='Offset X', default=0, step=0.1)
+
   offset_y: bpy.props.FloatProperty(name='Offset Y', default=0, step=0.1)
+
   rotation: bpy.props.FloatProperty(name='Rotation', subtype='ANGLE', default=0, soft_min=-3.14159, soft_max=3.14159)
+
   scale_x: bpy.props.FloatProperty(name='Scale X', default=1, step=0.1, soft_min=0)
+
   scale_y: bpy.props.FloatProperty(name='Scale Y', default=1, step=0.1, soft_min=0)
 
   @classmethod

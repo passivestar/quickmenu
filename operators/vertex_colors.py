@@ -18,9 +18,14 @@ colors = [
 
 class SetVertexColorOperator(bpy.types.Operator):
   """Set Vertex Color"""
-  bl_idname, bl_label, bl_options = 'qm.set_vertex_color', 'Set Vertex Color', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.set_vertex_color'
+  bl_label = 'Set Vertex Color'
+  bl_options = {'REGISTER', 'UNDO'}
+
   color: bpy.props.FloatVectorProperty(name='Color', subtype='COLOR', min=0, max=1)
+
   set_to_active: bpy.props.BoolProperty(name='Set To Active', default = False)
+
   reset_index: bpy.props.BoolProperty(name='Reset Index', default = False)
 
   @classmethod
@@ -84,7 +89,9 @@ class SetVertexColorOperator(bpy.types.Operator):
 
 class SelectByVertexColorOperator(bpy.types.Operator):
   """Select By Vertex Color"""
-  bl_idname, bl_label, bl_options = 'qm.select_by_vertex_color', 'Select By Vertex Color', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.select_by_vertex_color'
+  bl_label = 'Select By Vertex Color'
+  bl_options = {'REGISTER', 'UNDO'}
 
   @classmethod
   def poll(cls, context):

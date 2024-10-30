@@ -3,7 +3,10 @@ from .. common.common import *
 
 class TransformOrientationOperator(bpy.types.Operator):
   """Transform Orientation"""
-  bl_idname, bl_label, bl_options = 'qm.transform_orientation', 'Transform Orientation', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.transform_orientation'
+  bl_label = 'Transform Orientation'
+  bl_options = {'REGISTER', 'UNDO'}
+
   type: bpy.props.StringProperty(name='Type')
 
   def execute(self, context):
@@ -18,7 +21,10 @@ class TransformOrientationOperator(bpy.types.Operator):
 
 class TransformPivotOperator(bpy.types.Operator):
   """Transform Pivot"""
-  bl_idname, bl_label, bl_options = 'qm.transform_pivot', 'Transform Pivot', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.transform_pivot'
+  bl_label = 'Transform Pivot'
+  bl_options = {'REGISTER', 'UNDO'}
+
   type: bpy.props.StringProperty(name='Type')
 
   def execute(self, context):
@@ -27,7 +33,9 @@ class TransformPivotOperator(bpy.types.Operator):
 
 class SetSnapOperator(bpy.types.Operator):
   """Set Snap"""
-  bl_idname, bl_label = 'qm.set_snap', 'Set Snap'
+  bl_idname = 'qm.set_snap'
+  bl_label = 'Set Snap'
+
   mode: bpy.props.StringProperty(name='Mode')
   type: bpy.props.StringProperty(name='Type')
 

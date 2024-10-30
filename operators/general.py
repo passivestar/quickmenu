@@ -4,7 +4,9 @@ from .. common.common import *
 
 class ViewOperator(bpy.types.Operator):
   """View Selected if in edit mode or anything is selected in object mode. View Camera otherwise"""
-  bl_idname, bl_label = 'qm.view', 'View'
+  bl_idname = 'qm.view'
+  bl_label = 'View'
+
   camera: bpy.props.BoolProperty(name='Camera', default=False)
 
   def execute(self, context):
@@ -16,8 +18,12 @@ class ViewOperator(bpy.types.Operator):
 
 class JoinSeparateOperator(bpy.types.Operator):
   """Join or Separate"""
-  bl_idname, bl_label, bl_options = 'qm.join_separate', 'Separate / Join', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.join_separate'
+  bl_label = 'Separate / Join'
+  bl_options = {'REGISTER', 'UNDO'}
+
   reset_origin: bpy.props.BoolProperty(name='Reset Origin on Separate', default=True)
+
   reset_drivers: bpy.props.BoolProperty(name='Reset Drivers on Separate', default=True)
 
   @classmethod
@@ -44,7 +50,9 @@ class JoinSeparateOperator(bpy.types.Operator):
 
 class LocalViewOperator(bpy.types.Operator):
   """Local View"""
-  bl_idname, bl_label, bl_options = 'qm.local_view', 'Local View', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.local_view'
+  bl_label = 'Local View'
+  bl_options = {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     if is_in_editmode():
@@ -55,9 +63,14 @@ class LocalViewOperator(bpy.types.Operator):
 
 class SetSmoothOperator(bpy.types.Operator):
   """Set Smooth Shading. Hold shift to use modifier"""
-  bl_idname, bl_label, bl_options = 'qm.smooth', 'Set Smooth', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.smooth'
+  bl_label = 'Set Smooth'
+  bl_options = {'REGISTER', 'UNDO'}
+
   smooth: bpy.props.BoolProperty(name='Smooth', default=True)
+
   auto: bpy.props.BoolProperty(name='Auto', default=True)
+
   auto_angle: bpy.props.FloatProperty(name='Angle', subtype='ANGLE', default=0.872665, step=2, min=0, max=1.5708)
 
   def invoke(self, context, event):
@@ -76,7 +89,11 @@ class SetSmoothOperator(bpy.types.Operator):
 
 class SetOriginOperator(bpy.types.Operator):
   """Set origin to geometry center or selection. Hold shift to set origin to bottom"""
-  bl_idname, bl_label, bl_options = 'qm.set_origin', 'Set Origin', {'REGISTER', 'UNDO'}
+
+  bl_idname = 'qm.set_origin'
+  bl_label = 'Set Origin'
+  bl_options = {'REGISTER', 'UNDO'}
+
   type: bpy.props.EnumProperty(name='Type', items=(
     ('GEOMETRY', 'Geometry', 'Origin To Geometry'),
     ('BOTTOM', 'Bottom', 'Origin To Bottom')
@@ -109,7 +126,10 @@ class SetOriginOperator(bpy.types.Operator):
 
 class ProportionalEditingOperator(bpy.types.Operator):
   """Toggle Proportional Editing"""
-  bl_idname, bl_label, bl_options = 'qm.proportional_editing', 'Proportional Editing', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.proportional_editing'
+  bl_label = 'Proportional Editing'
+  bl_options = {'REGISTER', 'UNDO'}
+
   falloff: bpy.props.EnumProperty(name='Type', default='SMOOTH', items=(
     ('SMOOTH', 'Smooth', 'Smooth falloff'),
     ('SPHERE', 'Sphere', 'Sphere falloff'),
@@ -120,6 +140,7 @@ class ProportionalEditingOperator(bpy.types.Operator):
     ('CONSTANT', 'Constant', 'Constant falloff'),
     ('RANDOM', 'Random', 'Random falloff'),
   ))
+
   connected: bpy.props.BoolProperty(name='Connected', default = True)
 
   def execute(self, context):
@@ -144,7 +165,10 @@ class ProportionalEditingOperator(bpy.types.Operator):
 
 class WireframeOperator(bpy.types.Operator):
   """Toggle Wireframe"""
-  bl_idname, bl_label, bl_options = 'qm.wireframe', 'Wireframe', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.wireframe'
+  bl_label = 'Wireframe'
+  bl_options = {'REGISTER', 'UNDO'}
+
   opacity: bpy.props.FloatProperty(name='Opacity', default=0.75, min=0, max=1)
 
   def execute(self, context):
@@ -157,7 +181,9 @@ class WireframeOperator(bpy.types.Operator):
 
 class CorrectAttributesOperator(bpy.types.Operator):
   """Toggle Correct Face Attributes"""
-  bl_idname, bl_label, bl_options = 'qm.correct_attributes', 'Toggle Correct Face Attributes', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.correct_attributes'
+  bl_label = 'Toggle Correct Face Attributes'
+  bl_options = {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     ts = bpy.context.scene.tool_settings
@@ -167,7 +193,9 @@ class CorrectAttributesOperator(bpy.types.Operator):
 
 class ClearModifiersOperator(bpy.types.Operator):
   """Clear Modifiers"""
-  bl_idname, bl_label, bl_options = 'qm.clear_modifiers', 'Clear Modifiers', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.clear_modifiers'
+  bl_label = 'Clear Modifiers'
+  bl_options = {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     for obj in context.selected_objects:

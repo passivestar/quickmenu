@@ -3,7 +3,10 @@ from .. common.common import *
 
 class SelectRingOperator(bpy.types.Operator):
   """Select ring. Hold shift to select loop"""
-  bl_idname, bl_label, bl_options = 'qm.select_ring', 'Select Ring Or Loop', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.select_ring'
+  bl_label = 'Select Ring Or Loop'
+  bl_options = {'REGISTER', 'UNDO'}
+
   select_loop: bpy.props.BoolProperty(name='Select Loop', default=False)
 
   @classmethod
@@ -20,7 +23,10 @@ class SelectRingOperator(bpy.types.Operator):
 
 class SelectMoreOperator(bpy.types.Operator):
   """Select more. Hold shift to select less"""
-  bl_idname, bl_label, bl_options = 'qm.select_more', 'Select More Or Less', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.select_more'
+  bl_label = 'Select More Or Less'
+  bl_options = {'REGISTER', 'UNDO'}
+
   select_less: bpy.props.BoolProperty(name='Select Less', default=False)
 
   @classmethod
@@ -38,7 +44,10 @@ class SelectMoreOperator(bpy.types.Operator):
 
 class RegionToLoopOperator(bpy.types.Operator):
   """Convert Region To Loop Or Loop To Region"""
-  bl_idname, bl_label, bl_options = 'qm.region_to_loop', 'Region To Loop', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.region_to_loop'
+  bl_label = 'Region To Loop'
+  bl_options = {'REGISTER', 'UNDO'}
+
   select_bigger: bpy.props.BoolProperty(name='Loop To Region Bigger', default = False)
 
   @classmethod

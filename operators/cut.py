@@ -3,19 +3,27 @@ from .. common.common import *
 
 class BooleanOperator(bpy.types.Operator):
   """Boolean"""
-  bl_idname, bl_label, bl_options = 'qm.boolean', 'Boolean', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.boolean'
+  bl_label = 'Boolean'
+  bl_options = {'REGISTER', 'UNDO'}
+
   operation: bpy.props.EnumProperty(name='Operation', items=(
     ('DIFFERENCE', 'Difference', 'Difference'),
     ('UNION', 'Union', 'Union'),
     ('INTERSECT', 'Intersect', 'Intersect')
   ))
+
   solver: bpy.props.EnumProperty(name='Solver', default='EXACT', items=(
     ('FAST', 'Fast', 'Fast'),
     ('EXACT', 'Exact', 'Exact'),
   ))
+
   boundary_extend: bpy.props.FloatProperty(name='Boundary Extend', default=0.0001, min=0)
+
   use_self: bpy.props.BoolProperty(name='Self', default=False)
+
   recalculate_normals: bpy.props.BoolProperty(name='Recalculate Normals', default=True)
+
   move_on_top: bpy.props.BoolProperty(name='Move Modifier On Top', default=True)
 
   def execute(self, context):
@@ -48,15 +56,22 @@ class BooleanOperator(bpy.types.Operator):
 
 class PlaneIntersectOperator(bpy.types.Operator):
   """Plane Intersect"""
-  bl_idname, bl_label, bl_options = 'qm.plane_intersect', 'Plane Intersect', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.plane_intersect'
+  bl_label = 'Plane Intersect'
+  bl_options = {'REGISTER', 'UNDO'}
+
   mode: bpy.props.EnumProperty(name='Mode', default='ISLAND', items=(
     ('SELECTION', 'Selection', 'Selection'),
     ('ISLAND', 'Island', 'Island'),
     ('MESH', 'Whole Mesh', 'Whole Mesh')
   ))
+
   snap_view_axis: bpy.props.BoolProperty(name='Snap View Axis', default = True)
+
   active: bpy.props.BoolProperty(name='Active', default = True)
+
   clear_outer: bpy.props.BoolProperty(name='Clear Outer', default = False)
+
   clear_inner: bpy.props.BoolProperty(name='Clear Inner', default = False)
 
   @classmethod

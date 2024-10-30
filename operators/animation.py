@@ -3,7 +3,9 @@ from .. common.common import *
 
 class ParentToNewEmptyOperator(bpy.types.Operator):
   """Parent To New Empty"""
-  bl_idname, bl_label, bl_options = 'qm.parent_to_new_empty', 'Parent To New Empty', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.parent_to_new_empty'
+  bl_label = 'Parent To New Empty'
+  bl_options = {'REGISTER', 'UNDO'}
   reset_transforms: bpy.props.BoolProperty(name='Reset Transforms', default=True)
 
   def execute(self, context):
@@ -28,7 +30,9 @@ class ParentToNewEmptyOperator(bpy.types.Operator):
 
 class AddBoneOperator(bpy.types.Operator):
   """Add Bone"""
-  bl_idname, bl_label, bl_options = 'qm.add_bone', 'Add Bone', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.add_bone'
+  bl_label = 'Add Bone'
+  bl_options = {'REGISTER', 'UNDO'}
 
   @classmethod
   def poll(cls, context):
@@ -76,7 +80,9 @@ class AddBoneOperator(bpy.types.Operator):
 
 class AddBodyOperator(bpy.types.Operator):
   """Add Physics Body"""
-  bl_idname, bl_label, bl_options = 'qm.add_body', 'Add Body', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.add_body'
+  bl_label = 'Add Body'
+  bl_options = {'REGISTER', 'UNDO'}
 
   type: bpy.props.EnumProperty(
     name = 'Type',
@@ -115,7 +121,9 @@ class AddBodyOperator(bpy.types.Operator):
 
 class RemoveBodyOperator(bpy.types.Operator):
   """Remove Physics Body"""
-  bl_idname, bl_label, bl_options = 'qm.remove_body', 'Remove Body', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.remove_body'
+  bl_label = 'Remove Body'
+  bl_options = {'REGISTER', 'UNDO'}
 
   apply_transforms: bpy.props.BoolProperty(name='Apply Transforms', default=True)
 
@@ -141,7 +149,9 @@ class RemoveBodyOperator(bpy.types.Operator):
 
 class AddCollisionOperator(bpy.types.Operator):
   """Add Collision"""
-  bl_idname, bl_label, bl_options = 'qm.add_collision', 'Add Collision', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.add_collision'
+  bl_label = 'Add Collision'
+  bl_options = {'REGISTER', 'UNDO'}
 
   thickness_outer: bpy.props.FloatProperty(name='Thickness Outer', default=0.01, min=0, max=1)
   cloth_friction: bpy.props.FloatProperty(name='Cloth Friction', default=5, min=0, max=80)
@@ -161,7 +171,9 @@ class AddCollisionOperator(bpy.types.Operator):
 
 class AddClothOperator(bpy.types.Operator):
   """Add Cloth"""
-  bl_idname, bl_label, bl_options = 'qm.add_cloth', 'Add Cloth', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.add_cloth'
+  bl_label = 'Add Cloth'
+  bl_options = {'REGISTER', 'UNDO'}
 
   pressure: bpy.props.FloatProperty(name='Pressure', default=0, min=-20, max=20)
   tension: bpy.props.FloatProperty(name='Tension', default=5, min=0, max=30)
@@ -192,7 +204,9 @@ class AddClothOperator(bpy.types.Operator):
 
 class AnimateRotationOperator(bpy.types.Operator):
   """Animate Rotation"""
-  bl_idname, bl_label, bl_options = 'qm.animate_rotation', 'Animate Rotation', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.animate_rotation'
+  bl_label = 'Animate Rotation'
+  bl_options = {'REGISTER', 'UNDO'}
 
   cycles_x: bpy.props.IntProperty(name='Cycles X', default=0)
   cycles_y: bpy.props.IntProperty(name='Cycles Y', default=0)
@@ -211,7 +225,9 @@ class AnimateRotationOperator(bpy.types.Operator):
 
 class RewindOperator(bpy.types.Operator):
   """Rewind"""
-  bl_idname, bl_label, bl_options = 'qm.rewind', 'Rewind', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.rewind'
+  bl_label = 'Rewind'
+  bl_options = {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     context.scene.frame_set(0)
@@ -219,7 +235,9 @@ class RewindOperator(bpy.types.Operator):
 
 class ToggleAutoKeyingOperator(bpy.types.Operator):
   """Toggle Auto Keying"""
-  bl_idname, bl_label, bl_options = 'qm.toggle_auto_keying', 'Toggle Auto Keying', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.toggle_auto_keying'
+  bl_label = 'Toggle Auto Keying'
+  bl_options = {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     context.scene.tool_settings.use_keyframe_insert_auto = not context.scene.tool_settings.use_keyframe_insert_auto
@@ -228,7 +246,9 @@ class ToggleAutoKeyingOperator(bpy.types.Operator):
 
 class ClearDriversOperator(bpy.types.Operator):
   """Clear Drivers"""
-  bl_idname, bl_label, bl_options = 'qm.clear_drivers', 'Clear Drivers', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.clear_drivers'
+  bl_label = 'Clear Drivers'
+  bl_options = {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     for obj in context.selected_objects:
@@ -240,7 +260,9 @@ class ClearDriversOperator(bpy.types.Operator):
 
 class SetUseSelfDriversOperator(bpy.types.Operator):
   """Set Use Self Drivers"""
-  bl_idname, bl_label, bl_options = 'qm.set_use_self_drivers', 'Set Use Self Drivers', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.set_use_self_drivers'
+  bl_label = 'Set Use Self Drivers'
+  bl_options = {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     for obj in context.selected_objects:

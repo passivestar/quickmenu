@@ -52,7 +52,7 @@ def draw_menu(self, items):
         operator.name = item['nodetool']
         operator.asset_library_type = 'CUSTOM'
         operator.asset_library_identifier = 'QuickMenuLibrary'
-        operator.relative_asset_identifier = 'blend/nodetools.blend/NodeTree/' + item['nodetool']
+        operator.relative_asset_identifier = 'nodetools.blend/NodeTree/' + item['nodetool']
       else:
         layout.operator('qm.void_edit_mode_only', text=title, icon='NODETREE')
     elif 'operator' in item:
@@ -167,7 +167,8 @@ def unregister_hotkey():
 
 class VoidEditModeOnlyOperator(bpy.types.Operator):
   """Edit Mode Only"""
-  bl_idname, bl_label = 'qm.void_edit_mode_only', 'Edit Mode Only'
+  bl_idname = 'qm.void_edit_mode_only'
+  bl_label = 'Edit Mode Only'
 
   @classmethod
   def poll(cls, context):
@@ -178,7 +179,8 @@ class VoidEditModeOnlyOperator(bpy.types.Operator):
 
 class QuickMenuAddConfigOperator(bpy.types.Operator, ImportHelper):
   """Add Config"""
-  bl_idname, bl_label = 'qm.add_config', 'Add Config'
+  bl_idname = 'qm.add_config'
+  bl_label = 'Add Config'
   bl_description = 'Add a new config file'
 
   def execute(self, context):
@@ -205,7 +207,8 @@ class QuickMenuAddConfigOperator(bpy.types.Operator, ImportHelper):
 
 class QuickMenuRemoveConfigOperator(bpy.types.Operator):
   """Remove Config"""
-  bl_idname, bl_label = 'qm.remove_config', 'Remove Config'
+  bl_idname = 'qm.remove_config'
+  bl_label = 'Remove Config'
   bl_description = 'Remove the active config file'
 
   def execute(self, context):
@@ -217,7 +220,8 @@ class QuickMenuRemoveConfigOperator(bpy.types.Operator):
 
 class QuickMenuEditConfigOperator(bpy.types.Operator):
   """Edit Config"""
-  bl_idname, bl_label = 'qm.edit_config', 'Edit Config'
+  bl_idname = 'qm.edit_config'
+  bl_label = 'Edit Config'
   bl_description = 'Open the active config file in the default text editor'
 
   def execute(self, context):
@@ -233,7 +237,8 @@ class QuickMenuEditConfigOperator(bpy.types.Operator):
 
 class QuickMenuReloadMenuItemsOperator(bpy.types.Operator):
   """Reload Menu Items"""
-  bl_idname, bl_label = 'qm.reload_menu_items', 'Reload Menu Items'
+  bl_idname = 'qm.reload_menu_items'
+  bl_label = 'Reload Menu Items'
   bl_description = 'Reload the menu items from the config files'
 
   def execute(self, context):
@@ -242,7 +247,8 @@ class QuickMenuReloadMenuItemsOperator(bpy.types.Operator):
 
 class QuickMenuResetConfigsOperator(bpy.types.Operator):
   """Reset Configs"""
-  bl_idname, bl_label = 'qm.reset_configs', 'Reset Configs'
+  bl_idname = 'qm.reset_configs'
+  bl_label = 'Reset Configs'
   bl_description = 'Reset the config files to the default'
 
   def execute(self, context):
@@ -254,7 +260,8 @@ class QuickMenuResetConfigsOperator(bpy.types.Operator):
     return {'FINISHED'}
 
 class QuickMenu(bpy.types.Menu):
-  bl_idname, bl_label = 'OBJECT_MT_quick_menu', 'Quick Menu'
+  bl_idname = 'OBJECT_MT_quick_menu'
+  bl_label = 'Quick Menu'
 
   def draw(self, context):
     layout = self.layout

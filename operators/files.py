@@ -3,7 +3,9 @@ from .. common.common import *
 
 class ReimportTexturesOperator(bpy.types.Operator):
   """Reimport Textures"""
-  bl_idname, bl_label, bl_options = 'qm.reimport_textures', 'Reimport Textures', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.reimport_textures'
+  bl_label = 'Reimport Textures'
+  bl_options = {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     for item in bpy.data.images: item.reload()
@@ -11,7 +13,9 @@ class ReimportTexturesOperator(bpy.types.Operator):
 
 class UnpackAllDataToFilesOperator(bpy.types.Operator):
   """Unpack All Data To Files"""
-  bl_idname, bl_label, bl_options = 'qm.unpack_all_data_to_files', 'Unpack All Data To Files', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.unpack_all_data_to_files'
+  bl_label = 'Unpack All Data To Files'
+  bl_options = {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     bpy.ops.outliner.orphans_purge(do_local_ids=True, do_linked_ids=True, do_recursive=True)

@@ -3,8 +3,12 @@ from .. common.common import *
 
 class MirrorOperator(bpy.types.Operator):
   """Mirror"""
-  bl_idname, bl_label, bl_options = 'qm.mirror', 'Mirror', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.mirror'
+  bl_label = 'Mirror'
+  bl_options = {'REGISTER', 'UNDO'}
+
   axis: bpy.props.BoolVectorProperty(name='Axis', subtype='XYZ')
+
   bisect_flip: bpy.props.BoolVectorProperty(name='Bisect Flip', subtype='XYZ')
 
   @classmethod
@@ -37,8 +41,12 @@ class MirrorOperator(bpy.types.Operator):
 
 class ArrayOperator(bpy.types.Operator):
   """Array"""
-  bl_idname, bl_label, bl_options = 'qm.array', 'Array', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.array'
+  bl_label = 'Array'
+  bl_options = {'REGISTER', 'UNDO'}
+
   count: bpy.props.IntProperty(name='Count', default=3, step=1, min=0)
+
   offset: bpy.props.FloatProperty(name='Offset', default=1.1)
 
   @classmethod

@@ -3,9 +3,14 @@ from .. common.common import *
 
 class ConvertToMeshOperator(bpy.types.Operator):
   """Convert To Mesh"""
-  bl_idname, bl_label, bl_options = 'qm.convert_to_mesh', 'Convert To Mesh', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.convert_to_mesh'
+  bl_label = 'Convert To Mesh'
+  bl_options = {'REGISTER', 'UNDO'}
+
   close_strokes: bpy.props.BoolProperty(name='GPencil Close Strokes', default=True)
+
   dissolve_angle: bpy.props.FloatProperty(name='GPencil Dissolve Angle', subtype='ANGLE', step=5, default=0.261799, min=0, max=1.5708)
+
   doubles_threshold: bpy.props.FloatProperty(name='GPencil Doubles Threshold', default=0.02, min=0)
 
   @classmethod
@@ -48,7 +53,10 @@ class ConvertToMeshOperator(bpy.types.Operator):
 
 class SubsurfOperator(bpy.types.Operator):
   """Subsurf"""
-  bl_idname, bl_label, bl_options = 'qm.subsurf', 'Subsurf', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.subsurf'
+  bl_label = 'Subsurf'
+  bl_options = {'REGISTER', 'UNDO'}
+
   level: bpy.props.IntProperty(name='Level', default=2, min=0, soft_max=5)
 
   def execute(self, context):
@@ -63,13 +71,22 @@ class SubsurfOperator(bpy.types.Operator):
 
 class BevelOperator(bpy.types.Operator):
   """Bevel"""
-  bl_idname, bl_label, bl_options = 'qm.bevel', 'Bevel', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.bevel'
+  bl_label = 'Bevel'
+  bl_options = {'REGISTER', 'UNDO'}
+
   amount: bpy.props.FloatProperty(name='Amount', default=0.1, step=0.1, min=0)
+
   segments: bpy.props.IntProperty(name='Segments', default=4, min=0, soft_max=12)
+
   angle: bpy.props.FloatProperty(name='Angle', subtype='ANGLE', default=0.785398, min=0, max=3.141593)
+
   use_weight: bpy.props.BoolProperty(name='Use Weight', default=False)
+
   harden_normals: bpy.props.BoolProperty(name='Harden Normals', default=True)
+
   loop_slide: bpy.props.BoolProperty(name='Loop Slide', default=False)
+
   use_clamp_overlap: bpy.props.BoolProperty(name='Clamp Overlap', default=True)
 
   def execute(self, context):
@@ -82,7 +99,10 @@ class BevelOperator(bpy.types.Operator):
 
 class TriangulateOperator(bpy.types.Operator):
   """Triangulate"""
-  bl_idname, bl_label, bl_options = 'qm.triangulate', 'Triangulate', {'REGISTER', 'UNDO'}
+  bl_idname = 'qm.triangulate'
+  bl_label = 'Triangulate'
+  bl_options = {'REGISTER', 'UNDO'}
+
   keep_normals: bpy.props.BoolProperty(name='Keep Normals', default=True)
 
   def execute(self, context):
