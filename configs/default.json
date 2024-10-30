@@ -87,10 +87,10 @@
 
 
     { "path": "Modify/Convert To Mesh", "operator": "qm.convert_to_mesh" },
-    { "path": "Modify/Subdivision Surface", "operator": "qm.subsurf" },
-    { "path": "Modify/Bevel", "operator": "qm.bevel" },
+    { "path": "Modify/Subdivision Surface", "operator": "qm.subsurf", "icon": "MODIFIER" },
+    { "path": "Modify/Bevel", "operator": "qm.bevel", "icon": "MODIFIER" },
     { "path": "Modify/Voxel Remesh", "nodetool": "QM Voxel Remesh" },
-    { "path": "Modify/Triangulate", "operator": "qm.triangulate" },
+    { "path": "Modify/Triangulate", "operator": "qm.triangulate", "icon": "MODIFIER" },
     { "path": "Modify/Topology Expand Offset", "nodetool": "QM Topology Expand Offset" },
 
     { "path": "Modify/[Separator]"},
