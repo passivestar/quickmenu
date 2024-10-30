@@ -168,10 +168,13 @@ class ToggleBackfaceCullingOperator(bpy.types.Operator):
     return len(bpy.context.selected_objects) > 0
 
   def execute(self, context):
+    first_object_culled = bpy.context.selected_objects[0].material_slots[0].material.use_backface_culling
+    new_value = not first_object_culled
+
     for obj in bpy.context.selected_objects:
       for slot in obj.material_slots:
         if slot.material:
-          slot.material.use_backface_culling = not slot.material.use_backface_culling
+          slot.material.use_backface_culling = new_value
 
     return {'FINISHED'}
 
