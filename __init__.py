@@ -62,7 +62,9 @@ def draw_menu(self, items):
       operator = layout.operator(item['operator'], text=title, icon=icon)
       if 'params' in item:
         for key, val in item['params'].items():
-          operator[key] = tuple(val) if isinstance(val, list) else val
+          if isinstance(val, list):
+            val = tuple(val)
+          setattr(operator, key, val)
 
     elif 'menu' in item:
       layout.menu(item['menu'], text=title) 

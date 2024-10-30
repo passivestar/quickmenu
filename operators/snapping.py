@@ -7,7 +7,14 @@ class TransformOrientationOperator(bpy.types.Operator):
   bl_label = 'Transform Orientation'
   bl_options = {'REGISTER', 'UNDO'}
 
-  type: bpy.props.StringProperty(name='Type')
+  type: bpy.props.EnumProperty(
+    name='Type',
+    items=[
+      ('CREATE', 'Create', ''),
+      ('NORMAL', 'Normal', ''),
+      ('GLOBAL', 'Global', ''),
+    ]
+  )
 
   def execute(self, context):
     if self.type == 'CREATE': bpy.ops.transform.create_orientation(use=True, name = 'Custom', overwrite = True)
@@ -25,7 +32,14 @@ class TransformPivotOperator(bpy.types.Operator):
   bl_label = 'Transform Pivot'
   bl_options = {'REGISTER', 'UNDO'}
 
-  type: bpy.props.StringProperty(name='Type')
+  type: bpy.props.EnumProperty(
+    name='Type',
+    items=[
+      ('INDIVIDUAL_ORIGINS', 'Individual Origins', ''),
+      ('BOUNDING_BOX_CENTER', 'Bounding Box Center', ''),
+      ('CURSOR', 'Cursor', ''),
+    ]
+  )
 
   def execute(self, context):
     context.scene.tool_settings.transform_pivot_point = self.type
@@ -36,12 +50,28 @@ class SetSnapOperator(bpy.types.Operator):
   bl_idname = 'qm.set_snap'
   bl_label = 'Set Snap'
 
-  mode: bpy.props.StringProperty(name='Mode')
-  type: bpy.props.StringProperty(name='Type')
+  mode: bpy.props.EnumProperty(
+    name='Mode',
+    items=[
+      ('DOMAIN', 'Domain', ''),
+      ('TARGET', 'Target', ''),
+    ]
+  )
+
+  type: bpy.props.EnumProperty(
+    name='Type',
+    items=[
+      ('VERTEX', 'Vertex', ''),
+      ('FACE', 'Face', ''),
+      ('INCREMENT', 'Increment', ''),
+      ('CLOSEST', 'Closest', ''),
+      ('CENTER', 'Center', ''),
+    ]
+  )
 
   def execute(self, context):
     ts = context.scene.tool_settings
-    if self.mode == 'GENERAL':
+    if self.mode == 'DOMAIN':
       ts.use_snap_backface_culling = ts.use_snap_self = True
       if self.type == 'VERTEX': ts.snap_elements, ts.use_snap_align_rotation = {'VERTEX', 'EDGE_MIDPOINT'}, False
       elif self.type == 'FACE': ts.snap_elements, ts.use_snap_align_rotation = {'VERTEX', 'EDGE', 'FACE'}, True

@@ -6,9 +6,9 @@
 
     { "path": "General/[Separator]" },
 
-    { "path": "General/Origin To Geometry", "operator": "qm.set_origin", "params": { "type": 0 } },
-    { "path": "General/Origin To Bottom", "operator": "qm.set_origin", "params": { "type": 1 } },
-    { "path": "General/Origin To Cursor", "operator": "object.origin_set", "params": { "type": 2, "center": 1 } },
+    { "path": "General/Origin To Geometry", "operator": "qm.set_origin", "params": { "type": "GEOMETRY" } },
+    { "path": "General/Origin To Bottom", "operator": "qm.set_origin", "params": { "type": "BOTTOM" } },
+    { "path": "General/Origin To Cursor", "operator": "object.origin_set", "params": { "type": "ORIGIN_CURSOR", "center": "BOUNDS" } },
 
     { "path": "General/[Separator]" },
 
@@ -18,7 +18,7 @@
     { "path": "General/[Separator]" },
 
     { "path": "General/(A) Mirror Transform", "operator": "transform.mirror" },
-    { "path": "General/(D) Make Single User", "operator": "object.make_single_user", "params": { "type": 0, "object": true, "obdata": true } },
+    { "path": "General/(D) Make Single User", "operator": "object.make_single_user", "params": { "type": "SELECTED_OBJECTS", "object": true, "obdata": true } },
     { "path": "General/(F) Make Links", "operator": "object.make_links_data" },
 
     { "path": "General/[Separator]" },
@@ -116,7 +116,7 @@
 
     { "path": "[Separator]"},
 
-    { "path": "(Q) Delete and Split/Merge", "operator": "mesh.merge", "params": { "type": 1 } },
+    { "path": "(Q) Delete and Split/Merge", "operator": "mesh.merge", "params": { "type": "CENTER" } },
     { "path": "(Q) Delete and Split/Merge By Distance", "operator": "mesh.remove_doubles" },
     { "path": "(Q) Delete and Split/Limited Dissolve", "operator": "mesh.dissolve_limited" },
     { "path": "(Q) Delete and Split/Decimate", "operator": "mesh.decimate" },
@@ -167,9 +167,9 @@
 
     { "path": "(W) UV and Textures/(D) Set Vertex Color", "operator": "qm.set_vertex_color" },
     { "path": "(W) UV and Textures/(F) Select By Vertex Color", "operator": "qm.select_by_vertex_color" },
-    { "path": "(E) Cut/Union", "operator": "qm.boolean", "params": { "operation": 1 } },
-    { "path": "(E) Cut/Difference", "operator": "qm.boolean", "params": { "operation": 0 } },
-    { "path": "(E) Cut/Intersect", "operator": "qm.boolean", "params": { "operation": 2 } },
+    { "path": "(E) Cut/Union", "operator": "qm.boolean", "params": { "operation": "UNION" } },
+    { "path": "(E) Cut/Difference", "operator": "qm.boolean", "params": { "operation": "DIFFERENCE" } },
+    { "path": "(E) Cut/Intersect", "operator": "qm.boolean", "params": { "operation": "INTERSECT" } },
     { "path": "(E) Cut/Cut", "nodetool": "QM Cut" },
     { "path": "(E) Cut/Inset Cut", "nodetool": "QM Inset Cut" },
     { "path": "(E) Cut/Panel Cut", "nodetool": "QM Panel Cut" },
@@ -190,8 +190,8 @@
     { "path": "(R) Animation/Parent To New Empty", "operator": "qm.parent_to_new_empty" },
     { "path": "(R) Animation/Add Constraint", "operator": "object.constraint_add_with_targets" },
     { "path": "(R) Animation/Add Bone To Selection", "operator": "qm.add_bone" },
-    { "path": "(R) Animation/Add Active Body", "operator": "qm.add_body", "params": { "type": 0 } },
-    { "path": "(R) Animation/Add Passive Body", "operator": "qm.add_body", "params": { "type": 1 } },
+    { "path": "(R) Animation/Add Active Body", "operator": "qm.add_body", "params": { "type": "ACTIVE" } },
+    { "path": "(R) Animation/Add Passive Body", "operator": "qm.add_body", "params": { "type": "PASSIVE" } },
     { "path": "(R) Animation/Remove Body", "operator": "qm.remove_body" },
     { "path": "(R) Animation/Add Collision", "operator": "qm.add_collision" },
     { "path": "(R) Animation/Add Cloth", "operator": "qm.add_cloth" },
@@ -219,9 +219,9 @@
 
     { "path": "(A) Snapping/[Separator]" },
 
-    { "path": "(A) Snapping/(V) Vertices", "operator": "qm.set_snap", "params": { "mode": "GENERAL", "type": "VERTEX" } },
-    { "path": "(A) Snapping/(F) Faces", "operator": "qm.set_snap", "params": { "mode": "GENERAL", "type": "FACE" } },
-    { "path": "(A) Snapping/(R) Grid", "operator": "qm.set_snap", "params": { "mode": "GENERAL", "type": "INCREMENT" } },
+    { "path": "(A) Snapping/(V) Vertices", "operator": "qm.set_snap", "params": { "mode": "DOMAIN", "type": "VERTEX" } },
+    { "path": "(A) Snapping/(F) Faces", "operator": "qm.set_snap", "params": { "mode": "DOMAIN", "type": "FACE" } },
+    { "path": "(A) Snapping/(R) Grid", "operator": "qm.set_snap", "params": { "mode": "DOMAIN", "type": "INCREMENT" } },
 
     { "path": "(A) Snapping/[Separator]" },
 
