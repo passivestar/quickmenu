@@ -171,6 +171,7 @@
     { "path": "(W) UV and Materials/[Separator]" },
 
     { "path": "(W) UV and Materials/(Z) Toggle Backface Culling", "operator": "qm.toggle_backface_culling" },
+    { "path": "(W) UV and Materials/(X) Disable Displacement", "operator": "qm.disable_displacement" },
 
     { "path": "(E) Cut/Union", "operator": "qm.boolean", "params": { "operation": "UNION" } },
     { "path": "(E) Cut/Difference", "operator": "qm.boolean", "params": { "operation": "DIFFERENCE" } },

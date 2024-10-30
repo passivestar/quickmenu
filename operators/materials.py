@@ -184,12 +184,33 @@ class ToggleBackfaceCullingOperator(bpy.types.Operator):
 
     return {'FINISHED'}
 
+class DisableDisplacementOperator(bpy.types.Operator):
+  """Disable Displacement"""
+  bl_idname = 'qm.disable_displacement'
+  bl_label = 'Disable Displacement'
+  bl_options = {'REGISTER', 'UNDO'}
+
+  @classmethod
+  def poll(cls, context):
+    return len(bpy.context.selected_objects) > 0
+
+  def execute(self, context):
+    for obj in bpy.context.selected_objects:
+      for slot in obj.material_slots:
+        if slot.material and slot.material.node_tree:
+          tree = slot.material.node_tree
+          if 'Displacement' in tree.nodes:
+            tree.nodes['Displacement'].inputs['Scale'].default_value = 0
+
+    return {'FINISHED'}
+
 def register():
   bpy.utils.register_class(StraightenUVsOperator)
   bpy.utils.register_class(MarkSeamOperator)
   bpy.utils.register_class(SmartUVProject)
   bpy.utils.register_class(TransformUVsOperator)
   bpy.utils.register_class(ToggleBackfaceCullingOperator)
+  bpy.utils.register_class(DisableDisplacementOperator)
 
 def unregister():
   bpy.utils.unregister_class(StraightenUVsOperator)
@@ -197,3 +218,4 @@ def unregister():
   bpy.utils.unregister_class(SmartUVProject)
   bpy.utils.unregister_class(TransformUVsOperator)
   bpy.utils.unregister_class(ToggleBackfaceCullingOperator)
+  bpy.utils.unregister_class(DisableDisplacementOperator)
