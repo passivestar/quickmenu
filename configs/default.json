@@ -19,7 +19,7 @@
 
     { "path": "General/(A) Mirror Transform", "operator": "transform.mirror" },
     { "path": "General/(D) Make Single User", "operator": "object.make_single_user", "params": { "type": "SELECTED_OBJECTS", "object": true, "obdata": true } },
-    { "path": "General/(F) Make Links", "operator": "object.make_links_data" },
+    { "path": "General/(F) Make Links", "operator": "wm.call_menu", "params": { "name": "VIEW3D_MT_make_links" } },
 
     { "path": "General/[Separator]" },
 
