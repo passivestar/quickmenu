@@ -9,7 +9,7 @@ if "bpy" in locals():
 import bpy, re, json, os, platform, subprocess, sys, importlib
 from bpy.props import *
 from bpy_extras.io_utils import ImportHelper
-from . operators import general, selection, generate, modify, texturing, vertex_colors, cut, animation, snapping, files
+from . operators import general, selection, generate, modify, materials, vertex_colors, cut, animation, snapping, files
 from . operators import export_hints
 from . common.common import *
 
@@ -370,7 +370,7 @@ def register():
   selection.register()
   generate.register()
   modify.register()
-  texturing.register()
+  materials.register()
   vertex_colors.register()
   cut.register()
   animation.register()
@@ -406,7 +406,7 @@ def unregister():
   selection.unregister()
   generate.unregister()
   modify.unregister()
-  texturing.unregister()
+  materials.unregister()
   vertex_colors.unregister()
   cut.unregister()
   animation.unregister()

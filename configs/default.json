@@ -130,18 +130,18 @@
     { "path": "(Q) Delete and Split/[Separator]" },
 
     { "path": "(Q) Delete and Split/(S) Split", "operator": "mesh.split" },
-    { "path": "(W) UV and Textures/Mark Seam", "operator": "qm.mark_seam", "params": { "clear": false } },
-    { "path": "(W) UV and Textures/Clear Seam", "operator": "qm.mark_seam", "params": { "clear": true } },
-    { "path": "(W) UV and Textures/Unwrap", "operator": "uv.unwrap" },
-    { "path": "(W) UV and Textures/Straighten UVs", "operator": "qm.straighten_uvs" },
-    { "path": "(W) UV and Textures/Cube Project", "operator": "uv.cube_project", "params": { "cube_size": 2.0 } },
-    { "path": "(W) UV and Textures/View Project", "operator": "uv.project_from_view" },
+    { "path": "(W) UV and Materials/Mark Seam", "operator": "qm.mark_seam", "params": { "clear": false } },
+    { "path": "(W) UV and Materials/Clear Seam", "operator": "qm.mark_seam", "params": { "clear": true } },
+    { "path": "(W) UV and Materials/Unwrap", "operator": "uv.unwrap" },
+    { "path": "(W) UV and Materials/Straighten UVs", "operator": "qm.straighten_uvs" },
+    { "path": "(W) UV and Materials/Cube Project", "operator": "uv.cube_project", "params": { "cube_size": 2.0 } },
+    { "path": "(W) UV and Materials/View Project", "operator": "uv.project_from_view" },
 
-    { "path": "(W) UV and Textures/[Separator]" },
+    { "path": "(W) UV and Materials/[Separator]" },
 
-    { "path": "(W) UV and Textures/(Q) Smart UV Project", "operator": "qm.smart_uv_project" },
+    { "path": "(W) UV and Materials/(Q) Smart UV Project", "operator": "qm.smart_uv_project" },
     {
-      "path": "(W) UV and Textures/(W) Transform UVs", "operator": "qm.transform_uvs",
+      "path": "(W) UV and Materials/(W) Transform UVs", "operator": "qm.transform_uvs",
       "params": {
         "offset_x": 0,
         "offset_y": 0,
@@ -151,7 +151,7 @@
       }
     },
     {
-      "path": "(W) UV and Textures/(E) Rotate UVs 90",
+      "path": "(W) UV and Materials/(E) Rotate UVs 90",
       "operator": "qm.transform_uvs",
       "params": {
         "offset_x": 0,
@@ -161,12 +161,17 @@
         "scale_y": 1
       }
     },
-    { "path": "(W) UV and Textures/(R) Pack Islands", "operator": "uv.pack_islands", "params": {"rotate": false, "margin": 0.02} },
+    { "path": "(W) UV and Materials/(R) Pack Islands", "operator": "uv.pack_islands", "params": {"rotate": false, "margin": 0.02} },
 
-    { "path": "(W) UV and Textures/[Separator]" },
+    { "path": "(W) UV and Materials/[Separator]" },
 
-    { "path": "(W) UV and Textures/(D) Set Vertex Color", "operator": "qm.set_vertex_color" },
-    { "path": "(W) UV and Textures/(F) Select By Vertex Color", "operator": "qm.select_by_vertex_color" },
+    { "path": "(W) UV and Materials/(D) Set Vertex Color", "operator": "qm.set_vertex_color" },
+    { "path": "(W) UV and Materials/(F) Select By Vertex Color", "operator": "qm.select_by_vertex_color" },
+
+    { "path": "(W) UV and Materials/[Separator]" },
+
+    { "path": "(W) UV and Materials/(Z) Toggle Backface Culling", "operator": "qm.toggle_backface_culling" },
+
     { "path": "(E) Cut/Union", "operator": "qm.boolean", "params": { "operation": "UNION" } },
     { "path": "(E) Cut/Difference", "operator": "qm.boolean", "params": { "operation": "DIFFERENCE" } },
     { "path": "(E) Cut/Intersect", "operator": "qm.boolean", "params": { "operation": "INTERSECT" } },

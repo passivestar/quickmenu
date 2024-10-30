@@ -157,14 +157,34 @@ class TransformUVsOperator(bpy.types.Operator):
     bmesh.update_edit_mesh(me)
     return {'FINISHED'}
 
+class ToggleBackfaceCullingOperator(bpy.types.Operator):
+  """Toggle Backface Culling"""
+  bl_idname = 'qm.toggle_backface_culling'
+  bl_label = 'Toggle Backface Culling'
+  bl_options = {'REGISTER', 'UNDO'}
+
+  @classmethod
+  def poll(cls, context):
+    return len(bpy.context.selected_objects) > 0
+
+  def execute(self, context):
+    for obj in bpy.context.selected_objects:
+      for slot in obj.material_slots:
+        if slot.material:
+          slot.material.use_backface_culling = not slot.material.use_backface_culling
+
+    return {'FINISHED'}
+
 def register():
-    bpy.utils.register_class(StraightenUVsOperator)
-    bpy.utils.register_class(MarkSeamOperator)
-    bpy.utils.register_class(SmartUVProject)
-    bpy.utils.register_class(TransformUVsOperator)
+  bpy.utils.register_class(StraightenUVsOperator)
+  bpy.utils.register_class(MarkSeamOperator)
+  bpy.utils.register_class(SmartUVProject)
+  bpy.utils.register_class(TransformUVsOperator)
+  bpy.utils.register_class(ToggleBackfaceCullingOperator)
 
 def unregister():
-    bpy.utils.unregister_class(StraightenUVsOperator)
-    bpy.utils.unregister_class(MarkSeamOperator)
-    bpy.utils.unregister_class(SmartUVProject)
-    bpy.utils.unregister_class(TransformUVsOperator)
+  bpy.utils.unregister_class(StraightenUVsOperator)
+  bpy.utils.unregister_class(MarkSeamOperator)
+  bpy.utils.unregister_class(SmartUVProject)
+  bpy.utils.unregister_class(TransformUVsOperator)
+  bpy.utils.unregister_class(ToggleBackfaceCullingOperator)
