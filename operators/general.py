@@ -41,7 +41,8 @@ class JoinSeparateOperator(bpy.types.Operator):
           bpy.ops.mesh.separate(type='SELECTED')
         bpy.ops.object.editmode_toggle()
         select(context.selected_objects[-1])
-        if self.reset_origin: bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
+        if self.reset_origin:
+          bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
         if self.reset_drivers:
           bpy.ops.qm.clear_drivers()
     elif len(context.selected_objects) > 0:
@@ -56,8 +57,10 @@ class LocalViewOperator(bpy.types.Operator):
 
   def execute(self, context):
     if is_in_editmode():
-      if anything_is_hidden_in_editmode(): bpy.ops.mesh.reveal(select=False)
-      elif anything_is_selected_in_editmode(): bpy.ops.mesh.hide(unselected=True)
+      if anything_is_hidden_in_editmode():
+        bpy.ops.mesh.reveal(select=False)
+      elif anything_is_selected_in_editmode():
+        bpy.ops.mesh.hide(unselected=True)
     else: bpy.ops.view3d.localview()
     return {'FINISHED'}
 

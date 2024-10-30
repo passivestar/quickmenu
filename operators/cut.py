@@ -43,7 +43,6 @@ class BooleanOperator(bpy.types.Operator):
         select(active)
         bpy.ops.object.modifier_add(type='BOOLEAN')
         boolean = context.object.modifiers[-1]
-        boolean.object = obj
         boolean.object, boolean.operation, boolean.solver = obj, self.operation, self.solver
         if self.move_on_top:
           move_modifier_on_top(boolean.name)
@@ -81,8 +80,10 @@ class PlaneIntersectOperator(bpy.types.Operator):
   def execute(self, context):
     vector = view_snapped_vector(False, False) if self.snap_view_axis else view_vector(False, False)
     cursor_to_selected(self.active)
-    if self.mode == 'ISLAND': bpy.ops.mesh.select_linked(delimit=set())
-    elif self.mode == 'MESH': bpy.ops.mesh.select_all(action='SELECT')
+    if self.mode == 'ISLAND':
+      bpy.ops.mesh.select_linked(delimit=set())
+    elif self.mode == 'MESH':
+      bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.bisect(plane_co=context.scene.cursor.location, plane_no=vector, clear_outer=self.clear_outer, clear_inner=self.clear_inner)
     return {'FINISHED'}
 

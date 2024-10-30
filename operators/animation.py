@@ -176,10 +176,15 @@ class AddClothOperator(bpy.types.Operator):
   bl_options = {'REGISTER', 'UNDO'}
 
   pressure: bpy.props.FloatProperty(name='Pressure', default=0, min=-20, max=20)
+
   tension: bpy.props.FloatProperty(name='Tension', default=5, min=0, max=30)
+
   compression: bpy.props.FloatProperty(name='Compression', default=5, min=0, max=30)
+
   shear: bpy.props.FloatProperty(name='Shear', default=5, min=0, max=30)
+
   bending: bpy.props.FloatProperty(name='Bending', default=0.1, min=0, max=30)
+
   self_collisions: bpy.props.BoolProperty(name='Self Collisions', default=False)
 
   def execute(self, context):
@@ -209,7 +214,9 @@ class AnimateRotationOperator(bpy.types.Operator):
   bl_options = {'REGISTER', 'UNDO'}
 
   cycles_x: bpy.props.IntProperty(name='Cycles X', default=0)
+
   cycles_y: bpy.props.IntProperty(name='Cycles Y', default=0)
+
   cycles_z: bpy.props.IntProperty(name='Cycles Z', default=1)
 
   def execute(self, context):
