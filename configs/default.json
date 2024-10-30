@@ -25,7 +25,7 @@
 
     { "path": "General/(Z) Make Parent", "operator": "object.parent_set" },
     { "path": "General/(X) Toggle Correct Face Attributes", "operator": "qm.correct_attributes" },
-    { "path": "General/(V) Clear Modifiers", "operator": "qm.clear_modifiers" },
+    { "path": "General/(V) Clear Modifiers", "operator": "object.modifiers_clear" },
 
     { "path": "Select/Select Ring Or Loop", "operator": "qm.select_ring" },
     { "path": "Select/Select More Or Less", "operator": "qm.select_more" },

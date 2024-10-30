@@ -191,17 +191,6 @@ class CorrectAttributesOperator(bpy.types.Operator):
     self.report({'INFO'}, 'Correct Face Attributes: ' + ('On' if ts.use_transform_correct_face_attributes else 'Off'))
     return {'FINISHED'}
 
-class ClearModifiersOperator(bpy.types.Operator):
-  """Clear Modifiers"""
-  bl_idname = 'qm.clear_modifiers'
-  bl_label = 'Clear Modifiers'
-  bl_options = {'REGISTER', 'UNDO'}
-
-  def execute(self, context):
-    for obj in context.selected_objects:
-      obj.modifiers.clear()
-    return {'FINISHED'}
-
 def register():
     bpy.utils.register_class(ViewOperator)
     bpy.utils.register_class(JoinSeparateOperator)
@@ -211,7 +200,6 @@ def register():
     bpy.utils.register_class(ProportionalEditingOperator)
     bpy.utils.register_class(WireframeOperator)
     bpy.utils.register_class(CorrectAttributesOperator)
-    bpy.utils.register_class(ClearModifiersOperator)
 
 def unregister():
     bpy.utils.unregister_class(ViewOperator)
@@ -222,4 +210,3 @@ def unregister():
     bpy.utils.unregister_class(ProportionalEditingOperator)
     bpy.utils.unregister_class(WireframeOperator)
     bpy.utils.unregister_class(CorrectAttributesOperator)
-    bpy.utils.unregister_class(ClearModifiersOperator)
