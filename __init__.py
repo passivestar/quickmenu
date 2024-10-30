@@ -10,12 +10,12 @@ import bpy, re, json, os, platform, subprocess, sys, importlib
 from bpy.props import *
 from bpy_extras.io_utils import ImportHelper
 from . operators import general, selection, generate, modify, texturing, vertex_colors, cut, animation, snapping, files
+from . operators import export_hints
 from . common.common import *
 
 addon_directory = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 library_directory = os.path.join(addon_directory, 'blend')
 nodes_path = os.path.join(addon_directory, 'blend', 'nodetools.blend')
-default_config_path = os.path.join(addon_directory, 'configs', 'default.json')
 
 app = {
   "items": [],
@@ -24,6 +24,12 @@ app = {
 
 def get_user_preferences():
   return bpy.context.preferences.addons[__package__].preferences
+
+def get_builtin_config_paths():
+  return [
+    (os.path.join(addon_directory, 'configs', 'default.json'), True),
+    (os.path.join(addon_directory, 'configs', 'export_hints.json'), False)
+  ]
 
 def draw_menu(self, items):
   layout = self.layout
@@ -60,6 +66,11 @@ def draw_menu(self, items):
       icon = 'NODETREE' if item['operator'] == 'geometry.execute_node_group' else 'NONE'
       if 'icon' in item: icon = item['icon']
       operator = layout.operator(item['operator'], text=title, icon=icon)
+
+      if not operator:
+        layout.label(text='Operator not found: ' + item['operator'], icon='ERROR')
+        continue
+
       if 'params' in item:
         for key, val in item['params'].items():
           if isinstance(val, list):
@@ -100,6 +111,9 @@ def get_or_create_menu_definition_at_path(path, items):
   items.append(menu_definition)
 
   return menu_definition
+
+def config_path_is_builtin(path):
+  return path in [path[0] for path in get_builtin_config_paths()]
 
 def check_json_syntax(path):
   if not os.path.exists(path):
@@ -257,7 +271,11 @@ class QuickMenuResetConfigsOperator(bpy.types.Operator):
   def execute(self, context):
     configs = get_user_preferences().configs
     configs.clear()
-    configs.add().path = default_config_path
+
+    for path in get_builtin_config_paths():
+      config = configs.add()
+      config.path = path[0]
+      config.enabled = path[1]
 
     load_items()
     return {'FINISHED'}
@@ -293,7 +311,8 @@ class UI_UL_QuickMenuConfigList(bpy.types.UIList):
     basename = os.path.basename(item.path)
     row.label(text=basename)
     row.label(text='(Not found)') if not os.path.exists(item.path) else None
-    row.label(text='(Default)') if item.path == default_config_path else None
+    if config_path_is_builtin(item.path):
+      row.label(text='(Builtin)')
 
 class QuickMenuPreferences(bpy.types.AddonPreferences):
   bl_idname = __package__
@@ -320,9 +339,7 @@ class QuickMenuPreferences(bpy.types.AddonPreferences):
     column.operator('qm.remove_config', icon='REMOVE', text='')
     column.operator('qm.edit_config', icon='GREASEPENCIL', text='')
     column.operator('qm.reload_menu_items', icon='FILE_REFRESH', text='')
-
-    if len(self.configs) != 1 or len(self.configs) == 1 and self.configs[0].path != default_config_path:
-        column.operator('qm.reset_configs', icon='LOOP_BACK', text='')
+    column.operator('qm.reset_configs', icon='LOOP_BACK', text='')
 
     # Display the path of the current config
     if len(self.configs) > 0:
@@ -359,6 +376,7 @@ def register():
   animation.register()
   snapping.register()
   files.register()
+  export_hints.register()
 
   bpy.types.Scene.quick_menu = bpy.props.PointerProperty(type=QuickMenuProperties)
   register_hotkey()
@@ -367,9 +385,9 @@ def register():
   # Add the default config if the list is empty
   configs = get_user_preferences().configs
   if len(configs) == 0:
-    configs.add().path = default_config_path
-
-  load_items()
+    bpy.ops.qm.reset_configs()
+  else:
+    load_items()
 
 def unregister():
   bpy.utils.unregister_class(QuickMenu)
@@ -394,6 +412,7 @@ def unregister():
   animation.unregister()
   snapping.unregister()
   files.unregister()
+  export_hints.unregister()
 
   del bpy.types.Scene.quick_menu
   unregister_hotkey()
