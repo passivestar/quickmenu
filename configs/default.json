@@ -14,7 +14,7 @@
 
     { "path": "General/(Q) Toggle Proportional Editing", "operator": "qm.proportional_editing" },
     { "path": "General/(W) Toggle Wireframe", "operator": "qm.wireframe" },
-    { "path": "General/(R) Rename", "operator": "qm.rename" },
+    { "path": "General/(R) Rename", "operator": "qm.rename", "params": { "name": "" } },
 
     { "path": "General/[Separator]" },
 
