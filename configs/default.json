@@ -246,6 +246,7 @@
     { "path": "(D) Tool/(W) Annotate", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.annotate" } },
     { "path": "(D) Tool/(E) Measure", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.measure" } },
     { "path": "(D) Tool/(R) Knife", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.knife" } },
+    { "path": "(D) Tool/(T) Draw", "operator": "wm.tool_set_by_id", "params": { "name": "builtin.draw" } },
     { "path": "(F) Mode", "operator": "view3d.object_mode_pie_or_toggle" },
 
     { "path": "[Separator]" },
