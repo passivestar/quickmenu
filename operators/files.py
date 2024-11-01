@@ -5,7 +5,6 @@ class SaveAndReloadOperator(bpy.types.Operator):
   """Save and Reload"""
   bl_idname = 'qm.save_and_reload'
   bl_label = 'Save and Reload'
-  bl_options = {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     bpy.ops.wm.save_mainfile()
