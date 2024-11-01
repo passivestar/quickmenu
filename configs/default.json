@@ -251,6 +251,8 @@
 
     { "path": "[Separator]" },
 
+    { "path": "(Z) Files/(Q) Save And Reload", "operator": "qm.save_and_reload" },
+    { "path": "(Z) Files/[Separator]" },
     { "path": "(Z) Files/(Z) Reimport All Textures", "operator": "qm.reimport_textures" },
     { "path": "(Z) Files/(X) Unpack All Data To Files", "operator": "qm.unpack_all_data_to_files" },
     { "path": "(C) Select Linked All", "operator": "mesh.select_linked" },

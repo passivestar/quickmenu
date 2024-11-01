@@ -1,6 +1,17 @@
 import bpy
 from .. common.common import *
 
+class SaveAndReloadOperator(bpy.types.Operator):
+  """Save and Reload"""
+  bl_idname = 'qm.save_and_reload'
+  bl_label = 'Save and Reload'
+  bl_options = {'REGISTER', 'UNDO'}
+
+  def execute(self, context):
+    bpy.ops.wm.save_mainfile()
+    bpy.ops.wm.revert_mainfile()
+    return {'FINISHED'}
+
 class ReimportTexturesOperator(bpy.types.Operator):
   """Reimport Textures"""
   bl_idname = 'qm.reimport_textures'
@@ -24,9 +35,11 @@ class UnpackAllDataToFilesOperator(bpy.types.Operator):
     return {'FINISHED'}
 
 def register():
+  bpy.utils.register_class(SaveAndReloadOperator)
   bpy.utils.register_class(ReimportTexturesOperator)
   bpy.utils.register_class(UnpackAllDataToFilesOperator)
 
 def unregister():
+  bpy.utils.unregister_class(SaveAndReloadOperator)
   bpy.utils.unregister_class(ReimportTexturesOperator)
   bpy.utils.unregister_class(UnpackAllDataToFilesOperator)
