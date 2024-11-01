@@ -24,9 +24,9 @@ class UnpackAllDataToFilesOperator(bpy.types.Operator):
     return {'FINISHED'}
 
 def register():
-    bpy.utils.register_class(ReimportTexturesOperator)
-    bpy.utils.register_class(UnpackAllDataToFilesOperator)
+  bpy.utils.register_class(ReimportTexturesOperator)
+  bpy.utils.register_class(UnpackAllDataToFilesOperator)
 
 def unregister():
-    bpy.utils.unregister_class(ReimportTexturesOperator)
-    bpy.utils.unregister_class(UnpackAllDataToFilesOperator)
+  bpy.utils.unregister_class(ReimportTexturesOperator)
+  bpy.utils.unregister_class(UnpackAllDataToFilesOperator)

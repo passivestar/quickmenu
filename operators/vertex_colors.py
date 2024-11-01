@@ -126,9 +126,9 @@ class SelectByVertexColorOperator(bpy.types.Operator):
     return {'FINISHED'}
 
 def register():
-    bpy.utils.register_class(SetVertexColorOperator)
-    bpy.utils.register_class(SelectByVertexColorOperator)
+  bpy.utils.register_class(SetVertexColorOperator)
+  bpy.utils.register_class(SelectByVertexColorOperator)
 
 def unregister():
-    bpy.utils.unregister_class(SetVertexColorOperator)
-    bpy.utils.unregister_class(SelectByVertexColorOperator)
+  bpy.utils.unregister_class(SetVertexColorOperator)
+  bpy.utils.unregister_class(SelectByVertexColorOperator)

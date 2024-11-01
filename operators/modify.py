@@ -114,13 +114,13 @@ class TriangulateOperator(bpy.types.Operator):
     return {'FINISHED'}
 
 def register():
-    bpy.utils.register_class(ConvertToMeshOperator)
-    bpy.utils.register_class(SubsurfOperator)
-    bpy.utils.register_class(BevelOperator)
-    bpy.utils.register_class(TriangulateOperator)
+  bpy.utils.register_class(ConvertToMeshOperator)
+  bpy.utils.register_class(SubsurfOperator)
+  bpy.utils.register_class(BevelOperator)
+  bpy.utils.register_class(TriangulateOperator)
 
 def unregister():
-    bpy.utils.unregister_class(ConvertToMeshOperator)
-    bpy.utils.unregister_class(SubsurfOperator)
-    bpy.utils.unregister_class(BevelOperator)
-    bpy.utils.unregister_class(TriangulateOperator)
+  bpy.utils.unregister_class(ConvertToMeshOperator)
+  bpy.utils.unregister_class(SubsurfOperator)
+  bpy.utils.unregister_class(BevelOperator)
+  bpy.utils.unregister_class(TriangulateOperator)

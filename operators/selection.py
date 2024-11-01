@@ -64,11 +64,11 @@ class RegionToLoopOperator(bpy.types.Operator):
     return {'FINISHED'}
 
 def register():
-    bpy.utils.register_class(SelectRingOperator)
-    bpy.utils.register_class(SelectMoreOperator)
-    bpy.utils.register_class(RegionToLoopOperator)
+  bpy.utils.register_class(SelectRingOperator)
+  bpy.utils.register_class(SelectMoreOperator)
+  bpy.utils.register_class(RegionToLoopOperator)
 
 def unregister():
-    bpy.utils.unregister_class(SelectRingOperator)
-    bpy.utils.unregister_class(SelectMoreOperator)
-    bpy.utils.unregister_class(RegionToLoopOperator)
+  bpy.utils.unregister_class(SelectRingOperator)
+  bpy.utils.unregister_class(SelectMoreOperator)
+  bpy.utils.unregister_class(RegionToLoopOperator)

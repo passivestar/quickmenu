@@ -88,9 +88,9 @@ class PlaneIntersectOperator(bpy.types.Operator):
     return {'FINISHED'}
 
 def register():
-    bpy.utils.register_class(BooleanOperator)
-    bpy.utils.register_class(PlaneIntersectOperator)
+  bpy.utils.register_class(BooleanOperator)
+  bpy.utils.register_class(PlaneIntersectOperator)
 
 def unregister():
-    bpy.utils.unregister_class(BooleanOperator)
-    bpy.utils.unregister_class(PlaneIntersectOperator)
+  bpy.utils.unregister_class(BooleanOperator)
+  bpy.utils.unregister_class(PlaneIntersectOperator)

@@ -62,9 +62,9 @@ class ArrayOperator(bpy.types.Operator):
     return {'FINISHED'}
 
 def register():
-    bpy.utils.register_class(MirrorOperator)
-    bpy.utils.register_class(ArrayOperator)
+  bpy.utils.register_class(MirrorOperator)
+  bpy.utils.register_class(ArrayOperator)
 
 def unregister():
-    bpy.utils.unregister_class(MirrorOperator)
-    bpy.utils.unregister_class(ArrayOperator)
+  bpy.utils.unregister_class(MirrorOperator)
+  bpy.utils.unregister_class(ArrayOperator)

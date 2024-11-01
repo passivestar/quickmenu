@@ -83,11 +83,11 @@ class SetSnapOperator(bpy.types.Operator):
     return {'FINISHED'}
 
 def register():
-    bpy.utils.register_class(TransformOrientationOperator)
-    bpy.utils.register_class(TransformPivotOperator)
-    bpy.utils.register_class(SetSnapOperator)
+  bpy.utils.register_class(TransformOrientationOperator)
+  bpy.utils.register_class(TransformPivotOperator)
+  bpy.utils.register_class(SetSnapOperator)
 
 def unregister():
-    bpy.utils.unregister_class(TransformOrientationOperator)
-    bpy.utils.unregister_class(TransformPivotOperator)
-    bpy.utils.unregister_class(SetSnapOperator)
+  bpy.utils.unregister_class(TransformOrientationOperator)
+  bpy.utils.unregister_class(TransformPivotOperator)
+  bpy.utils.unregister_class(SetSnapOperator)
