@@ -339,6 +339,10 @@ class QuickMenuPreferences(bpy.types.AddonPreferences):
     column.operator('qm.reload_menu_items', icon='FILE_REFRESH', text='')
     column.operator('qm.reset_configs', icon='LOOP_BACK', text='')
 
+    # Make sure active config index is in range
+    if self.active_config_index >= len(self.configs):
+      self.active_config_index = 0
+
     # Display the path of the current config
     if len(self.configs) > 0:
       layout.label(text=self.configs[self.active_config_index].path)
