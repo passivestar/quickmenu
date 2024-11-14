@@ -10,7 +10,6 @@ import bpy, re, json, os, platform, subprocess, sys, importlib
 from bpy.props import *
 from bpy_extras.io_utils import ImportHelper
 from . operators import general, selection, generate, modify, materials, vertex_colors, cut, animation, snapping, files
-from . operators import export_hints
 from . common.common import *
 
 addon_directory = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -28,7 +27,6 @@ def get_user_preferences():
 def get_builtin_config_paths():
   return [
     (os.path.join(addon_directory, 'configs', 'default.json'), True),
-    (os.path.join(addon_directory, 'configs', 'export_hints.json'), False)
   ]
 
 def draw_menu(self, items):
@@ -376,7 +374,6 @@ def register():
   animation.register()
   snapping.register()
   files.register()
-  export_hints.register()
 
   bpy.types.Scene.quick_menu = bpy.props.PointerProperty(type=QuickMenuProperties)
   register_hotkey()
@@ -412,7 +409,6 @@ def unregister():
   animation.unregister()
   snapping.unregister()
   files.unregister()
-  export_hints.unregister()
 
   del bpy.types.Scene.quick_menu
   unregister_hotkey()
