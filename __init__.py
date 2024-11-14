@@ -260,6 +260,17 @@ class QuickMenuReloadMenuItemsOperator(bpy.types.Operator):
     load_items()
     return {'FINISHED'}
 
+def reset_configs():
+  configs = get_user_preferences().configs
+  configs.clear()
+
+  for path in get_builtin_config_paths():
+    config = configs.add()
+    config.path = path[0]
+    config.enabled = path[1]
+
+  load_items()
+
 class QuickMenuResetConfigsOperator(bpy.types.Operator):
   """Reset Configs"""
   bl_idname = 'qm.reset_configs'
@@ -267,15 +278,7 @@ class QuickMenuResetConfigsOperator(bpy.types.Operator):
   bl_description = 'Reset the config files to the default'
 
   def execute(self, context):
-    configs = get_user_preferences().configs
-    configs.clear()
-
-    for path in get_builtin_config_paths():
-      config = configs.add()
-      config.path = path[0]
-      config.enabled = path[1]
-
-    load_items()
+    reset_configs()
     return {'FINISHED'}
 
 class QuickMenu(bpy.types.Menu):
@@ -386,7 +389,7 @@ def register():
   # Add the default config if the list is empty
   configs = get_user_preferences().configs
   if len(configs) == 0:
-    bpy.ops.qm.reset_configs()
+    reset_configs()
   else:
     load_items()
 
