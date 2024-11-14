@@ -104,15 +104,16 @@
     { "path": "Modify/[Separator]"},
 
     { "path": "Modify/(A) Snap Rotation By Normal", "nodetool": "QM Snap Rotation By Face Normal" },
-    { "path": "Modify/(D) Shrinkwrap", "nodetool": "QM Shrinkwrap" },
+    { "path": "Modify/(D) Align Island To Active Face", "nodetool": "QM Align Island By Active Face" },
     { "path": "Modify/(F) Flatten", "nodetool": "QM Flatten" },
     { "path": "Modify/(G) Noise", "nodetool": "QM Noise" },
 
     { "path": "Modify/[Separator]" },
 
+    { "path": "Modify/(Z) Shrinkwrap", "nodetool": "QM Shrinkwrap" },
+
     { "path": "Modify/(X) Damage/Holes", "nodetool": "QM Holes" },
     { "path": "Modify/(X) Damage/Chunks", "nodetool": "QM Chunks" },
-    { "path": "Modify/(Z) Align Island To Active Face", "nodetool": "QM Align Island By Active Face" },
     { "path": "Modify/(X) Damage/Cracks", "nodetool": "QM Cracks" },
 
     { "path": "[Separator]"},
@@ -200,17 +201,18 @@
     { "path": "(R) Animation/Add Active Body", "operator": "qm.add_body", "params": { "type": "ACTIVE" } },
     { "path": "(R) Animation/Add Passive Body", "operator": "qm.add_body", "params": { "type": "PASSIVE" } },
     { "path": "(R) Animation/Remove Body", "operator": "qm.remove_body" },
-    { "path": "(R) Animation/Add Collision", "operator": "qm.add_collision" },
-    { "path": "(R) Animation/Add Cloth", "operator": "qm.add_cloth" },
-    { "path": "(R) Animation/Animate Rotation", "operator": "qm.animate_rotation" },
 
     { "path": "(R) Animation/[Separator]" },
 
     { "path": "(R) Animation/(Q) Rewind", "operator": "qm.rewind" },
-    { "path": "(R) Animation/(W) Toggle Auto Keying", "operator": "qm.toggle_auto_keying" },
+    { "path": "(R) Animation/(W) Add Collision", "operator": "qm.add_collision" },
+    { "path": "(R) Animation/(E) Add Cloth", "operator": "qm.add_cloth" },
+    { "path": "(R) Animation/(T) Toggle Auto Keying", "operator": "qm.toggle_auto_keying" },
+    { "path": "(R) Animation/[Separator]" },
     { "path": "(R) Animation/[Separator]" },
     { "path": "(R) Animation/(Z) Clear Drivers", "operator": "qm.clear_drivers" },
     { "path": "(R) Animation/(X) Drivers Set Use Self", "operator": "qm.set_use_self_drivers" },
+    { "path": "(R) Animation/(V) Animate Rotation", "operator": "qm.animate_rotation" },
 
     { "path": "[Separator]" },
 
