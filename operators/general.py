@@ -199,6 +199,7 @@ class RenameOperator(bpy.types.Operator):
   bl_idname = 'qm.rename'
   bl_label = 'Rename'
   bl_options = {'REGISTER', 'UNDO'}
+  bl_property = 'name'
 
   name: bpy.props.StringProperty(name='Name')
 
