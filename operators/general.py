@@ -203,7 +203,12 @@ class RenameOperator(bpy.types.Operator):
 
   name: bpy.props.StringProperty(name='Name')
 
+  @classmethod
+  def poll(cls, context):
+    return len(context.selected_objects) > 0
+
   def invoke(self, context, event):
+    self.name = context.selected_objects[0].name
     return context.window_manager.invoke_props_dialog(self)
 
   def execute(self, context):
