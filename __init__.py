@@ -6,9 +6,9 @@ from functools import reduce
 
 bl_info = {
   'name': 'QuickMenu',
-  'version': (2, 4, 10),
+  'version': (2, 4, 4),
   'author': 'passivestar',
-  'blender': (3, 5, 0),
+  'blender': (3, 3, 0),
   'location': 'Press the bound hotkey in 3D View',
   'description': 'Simplifies access to useful operators and adds new functionality',
   'category': 'Interface'
@@ -107,10 +107,9 @@ def execute_in_mode(mode, callback):
   except: pass
   return result
 
-def make_vertex_group(name, assign=True):
+def make_vertex_group(name):
   bpy.context.object.vertex_groups.new(name=name)
   bpy.ops.object.vertex_group_set_active(group=name)
-  if assign: bpy.ops.object.vertex_group_assign()
 
 def calculate_number_of_vertices_by_radius(radius, subsurf=False):
   if subsurf or modifier_exists('SUBSURF') or modifier_exists('MULTIRES'):
@@ -121,6 +120,7 @@ def calculate_number_of_vertices_by_radius(radius, subsurf=False):
 def iterate_islands(operator, callback, restore_selection=False):
   if restore_selection:
     make_vertex_group('qm_iterate_islands_selection')
+    bpy.ops.object.vertex_group_assign()
   bpy.ops.mesh.hide(unselected=True)
   bpy.ops.mesh.select_all(action='DESELECT')
   mode = tuple(bpy.context.scene.tool_settings.mesh_select_mode).index(True)
@@ -140,6 +140,7 @@ def iterate_islands(operator, callback, restore_selection=False):
     entities[0].select_set(True)
     bpy.ops.mesh.select_linked()
     make_vertex_group('qm_iterate_islands_island_selection')
+    bpy.ops.object.vertex_group_assign()
     callback(operator)
     bpy.ops.object.vertex_group_set_active(group='qm_iterate_islands_island_selection')
     bpy.ops.object.vertex_group_select()
@@ -172,7 +173,7 @@ def add_or_get_modifier(modifier_type, move_on_top=False):
   return modifier
 
 def is_in_editmode():
-  return bpy.context.mode == 'EDIT_MESH' or bpy.context.mode == 'EDIT_CURVE' or bpy.context.mode == 'EDIT_SURFACE' or bpy.context.mode == 'EDIT_METABALL' or bpy.context.mode == 'EDIT_TEXT' or bpy.context.mode == 'EDIT_ARMATURE'
+  return bpy.context.mode == 'EDIT_MESH'
 
 def anything_is_selected_in_editmode(obj = None):
   if obj != None:
@@ -219,9 +220,6 @@ def modal_run(operator, context, event, delete=True):
     return {'CANCELLED'}
   return {'RUNNING_MODAL'}
 
-def snake_to_title_case(string):
-  return ''.join([s.title() for s in string.split('_')])
-
 # @MenuOperators
 
 class QuickMenuOperator(bpy.types.Operator):
@@ -265,10 +263,7 @@ class JoinSeparateOperator(bpy.types.Operator):
   def execute(self, context):
     if is_in_editmode():
       if anything_is_selected_in_editmode():
-        if bpy.context.object.type == 'CURVE':
-          bpy.ops.curve.separate()
-        elif bpy.context.object.type == 'MESH':
-          bpy.ops.mesh.separate(type='SELECTED')
+        bpy.ops.mesh.separate(type='SELECTED')
         bpy.ops.object.editmode_toggle()
         select(bpy.context.selected_objects[-1])
         if self.reset_origin: bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
@@ -442,15 +437,6 @@ class ConvertToInstancesOperator(bpy.types.Operator):
       obj.modifiers.clear()
     # Hide the original:
     original_object.modifiers["GeometryNodes"].show_viewport = False
-    return {'FINISHED'}
-
-class MoveIntoNewCollection(bpy.types.Operator):
-  """Move Into New Collection"""
-  bl_idname, bl_label, bl_options = 'qm.move_into_new_collection', 'Move Into New Collection', {'REGISTER', 'UNDO'}
-
-  def execute(self, context):
-    name = snake_to_title_case(context.object.name)
-    bpy.ops.object.move_to_collection(collection_index=0, is_new=True, new_collection_name=name)
     return {'FINISHED'}
 
 class CorrectAttributesOperator(bpy.types.Operator):
@@ -1148,6 +1134,38 @@ class DeleteBackFacingOperator(bpy.types.Operator):
     bmesh.update_edit_mesh(me)
     return {'FINISHED'}
 
+class SeparateByLoosePartsOperator(bpy.types.Operator):
+  """Separate By Loose Parts"""
+  bl_idname, bl_label, bl_options = 'qm.separate_by_loose_parts', 'Separate By Loose Parts', {'REGISTER', 'UNDO'}
+  calculate_rotation: BoolProperty(name='Calculate Rotation', default=False)
+
+  @classmethod
+  def poll(cls, context):
+    return is_in_editmode()
+
+  def execute(self, context):
+    bpy.ops.mesh.separate()
+    bpy.ops.object.editmode_toggle()
+    new_object = context.selected_objects[-1]
+    select(new_object)
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.mesh.separate(type='LOOSE')
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
+    bpy.ops.object.make_links_data(type='OBDATA')
+    if self.calculate_rotation:
+      active = context.object
+      objects = [o for o in context.selected_objects if o != active]
+      locations = [o.location for o in context.selected_objects]
+      center = reduce((lambda x, y: x + y), locations) / len(locations)
+      for o in objects:
+        active_direction = center - active.location
+        current_direction = center - o.location
+        angle = active_direction.angle(current_direction)
+        cross = active_direction.cross(current_direction)
+        o.rotation_euler = Quaternion(cross, angle).to_euler()
+    return {'FINISHED'}
+
 class StraightenUVsOperator(bpy.types.Operator):
   """Straighten UVs"""
   bl_idname, bl_label, bl_options = 'qm.straighten_uvs', 'Straighten UVs', {'REGISTER', 'UNDO'}
@@ -1175,6 +1193,45 @@ class StraightenUVsOperator(bpy.types.Operator):
         prev_uv_coords = uv_coords
     execute_in_mode('OBJECT', process_uvs)
     bpy.ops.uv.follow_active_quads()
+    return {'FINISHED'}
+
+class UVProjectModifierOperator(bpy.types.Operator):
+  """UV Project Modifier"""
+  bl_idname, bl_label, bl_options = 'qm.uv_project_modifier', 'UV Project Modifier', {'REGISTER', 'UNDO'}
+
+  @classmethod
+  def poll(cls, context):
+    return context.object != None
+
+  def execute(self, context):
+    obj_name = context.object.name
+    bpy.ops.object.modifier_add(type='UV_PROJECT')
+    uv_project = context.object.modifiers[-1]
+    uv_project.uv_layer = "UVMap"
+    uv_project.projector_count = 10
+
+    deg45 = math.pi / 4
+    deg90 = math.pi / 2
+
+    rotations = [
+      Vector((0, 0, 0)), Vector((math.pi, 0, 0)),
+      Vector((deg90, 0, 0)), Vector((deg90, 0, deg45)), Vector((deg90, 0, deg45 * 2)),
+      Vector((deg90, 0, deg45 * 3)), Vector((deg90, 0, deg45 * 4)), Vector((deg90, 0, deg45 * 5)),
+      Vector((deg90, 0, deg45 * 6)), Vector((deg90, 0, deg45 * 7))
+    ]
+
+    bpy.ops.object.empty_add(type='CUBE', location=context.object.location)
+    container = context.object
+    container.name = f'ProjectorContainer_{obj_name}';
+
+    for i, rot in enumerate(rotations):
+      bpy.ops.object.empty_add(type='SINGLE_ARROW', location=(0, 0, 0), rotation=rot)
+      context.object.name = "Projector";
+      context.object.parent = container
+      uv_project.projectors[i].object = context.object
+
+    select(container)
+
     return {'FINISHED'}
 
 class MarkSeamOperator(bpy.types.Operator):
@@ -1435,12 +1492,12 @@ class EditAlbedoMapOperator(bpy.types.Operator):
   bl_idname, bl_label = 'qm.edit_albedo_map', 'Edit Albdeo Map'
 
   def execute(self, context):
-    # Unpack images first to make sure we're not editing the original
+    # Repack images first to make sure we're not editing the original
     # from material library
     if bpy.data.filepath == '':
       self.report({'ERROR'}, 'File is not saved')
       return {'FINISHED'}
-    bpy.ops.qm.unpack_all_data_to_files()
+    bpy.ops.qm.repack_all_data()
 
     # Make sure something is selected
     if len(context.selected_objects) == 0:
@@ -1532,11 +1589,15 @@ class KnifeIntersectOperator(bpy.types.Operator):
       bpy.ops.transform.resize(value=(val, val, val))
       context.scene.tool_settings.transform_pivot_point = transform_pivot
     make_vertex_group('qm_knife_intersect_original')
+    bpy.ops.object.vertex_group_assign()
     bpy.ops.mesh.intersect(mode='SELECT_UNSELECT', separate_mode='CUT', solver=self.solver)
+    current_mode = context.tool_settings.mesh_select_mode[:]
     bpy.ops.mesh.select_all(action='DESELECT')
+    context.tool_settings.mesh_select_mode = (True, False, False)
     bpy.ops.object.vertex_group_select()
     bpy.ops.mesh.select_linked(delimit=set())
     bpy.ops.mesh.delete(type='VERT')
+    context.tool_settings.mesh_select_mode = current_mode
     bpy.ops.object.vertex_group_remove()
     return {'FINISHED'}
 
@@ -1579,6 +1640,7 @@ class WeldEdgesIntoFacesOperator(bpy.types.Operator):
     bpy.ops.mesh.select_all(action='DESELECT')
     return {'FINISHED'}
     
+
 class TargetWeldToggle(bpy.types.Operator):
     bl_idname = "qm.target_weld_toggle"
     bl_label = "Target Weld Toggle"
@@ -1602,15 +1664,7 @@ class TargetWeldToggle(bpy.types.Operator):
     def execute(self, context):
         self.toggle_target_weld(context)
         return{'FINISHED'}
-    
-class ToggleAutoKeyingOperator(bpy.types.Operator):
-  """Toggle Auto Keying"""
-  bl_idname, bl_label, bl_options = 'qm.toggle_auto_keying', 'Toggle Auto Keying', {'REGISTER', 'UNDO'}
-
-  def execute(self, context):
-    context.scene.tool_settings.use_keyframe_insert_auto = not context.scene.tool_settings.use_keyframe_insert_auto
-    self.report({'INFO'}, f'Auto Keying: {context.scene.tool_settings.use_keyframe_insert_auto}')
-    return {'FINISHED'}
+  
 
 class ParentToNewEmptyOperator(bpy.types.Operator):
   """Parent To New Empty"""
@@ -1662,55 +1716,6 @@ class SetUseSelfDriversOperator(bpy.types.Operator):
           dr.driver.use_self = True
           # Reevaluate expression with use self enabled:
           dr.driver.expression = dr.driver.expression
-    return {'FINISHED'}
-
-class AddBoneOperator(bpy.types.Operator):
-  """Add Bone"""
-  bl_idname, bl_label, bl_options = 'qm.add_bone', 'Add Bone', {'REGISTER', 'UNDO'}
-
-  @classmethod
-  def poll(cls, context):
-    return is_in_editmode()
-
-  def execute(self, context):
-    cursor_to_selected()
-    bpy.ops.object.mode_set(mode='OBJECT')
-
-    active = context.object
-    active_bone_name = None
-
-    # If armature exists, add bone to it:
-    parent = context.object.parent
-    if parent and parent.type == 'ARMATURE':
-      select(parent)
-      bpy.ops.object.mode_set(mode='EDIT')
-      bpy.ops.armature.bone_primitive_add()
-      bpy.ops.armature.select_linked()
-      bpy.ops.view3d.snap_selected_to_cursor(use_offset=False)
-      active_bone_name = context.selected_bones[0].name
-      bpy.ops.object.mode_set(mode='OBJECT')
-      select(active)
-      bpy.ops.object.mode_set(mode='EDIT')
-      # Remove selected geometry from all existing vertex groups:
-      for group in active.vertex_groups:
-        bpy.ops.object.vertex_group_set_active(group=group.name)
-        bpy.ops.object.vertex_group_remove_from()
-      # Add to vertex group:
-      make_vertex_group(active_bone_name)
-
-    # Else if armature doesnt exist, create it:
-    else:
-      bpy.ops.object.armature_add()
-      armature = context.object
-      active.select_set(True)
-      bpy.ops.object.parent_set(type='ARMATURE_AUTO')
-      armature.data.display_type = 'STICK'
-      context.object.show_in_front = True
-      bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
-      active_bone_name = armature.data.bones[0].name
-      select(active)
-      bpy.ops.object.mode_set(mode='EDIT')
-
     return {'FINISHED'}
 
 class IntersectOperator(bpy.types.Operator):
@@ -1834,9 +1839,9 @@ class ReimportTexturesOperator(bpy.types.Operator):
     for item in bpy.data.images: item.reload()
     return {'FINISHED'}
 
-class UnpackAllDataToFilesOperator(bpy.types.Operator):
-  """Unpack All Data To Files"""
-  bl_idname, bl_label, bl_options = 'qm.unpack_all_data_to_files', 'Unpack All Data To Files', {'REGISTER', 'UNDO'}
+class RepackAllDataOperator(bpy.types.Operator):
+  """Repack All Data"""
+  bl_idname, bl_label, bl_options = 'qm.repack_all_data', 'Repack All Data', {'REGISTER', 'UNDO'}
 
   def execute(self, context):
     bpy.ops.outliner.orphans_purge(do_local_ids=True, do_linked_ids=True, do_recursive=True)
@@ -1848,7 +1853,6 @@ class ExportOperator(bpy.types.Operator):
   """Export"""
   bl_idname, bl_label = 'qm.export', 'Export'
   mode: StringProperty(name='Mode', default='fbx')
-  unpack_data: BoolProperty(name='Unpack Data', default=False)
   apply_modifiers: BoolProperty(name='Apply Modifiers', default=True)
   apply_transform: BoolProperty(name='Apply Transform', default=True)
   batch_mode: StringProperty(name='Batch Mode', default='OFF')
@@ -1861,14 +1865,7 @@ class ExportOperator(bpy.types.Operator):
 
     directory, file = get_paths()
 
-    # Save the blend file
-    bpy.ops.wm.save_mainfile()
-
-    # Unpack all data to files if needed
-    if self.unpack_data:
-      bpy.ops.qm.unpack_all_data_to_files()
-
-    # Remove _a, _b, _c, etc suffix if present
+    # remove _a, _b, _c, etc suffix if present
     if self.remove_suffix:
       file = re.sub('_[a-cA-C]$', '', file)
 
@@ -1942,19 +1939,18 @@ classes = (
   ReloadMenuItemsOperator,
 
   JoinSeparateOperator, SetSmoothOperator, LocalViewOperator, SetOriginOperator, ProportionalEditingOperator,
-  WireframeOperator, RotateOperator, DrawOperator, ApplyToMultiuserOperator, ConvertToInstancesOperator, MoveIntoNewCollection, CorrectAttributesOperator,
+  WireframeOperator, RotateOperator, DrawOperator, ApplyToMultiuserOperator, ConvertToInstancesOperator, CorrectAttributesOperator,
   SelectRingOperator, SelectMoreOperator, RegionToLoopOperator, InvertSelectionConnectedOperator,
   SelectSharpEdgesOperator, SelectViewGeometryOperator, AddSingleVertexOperator, SpinOperator,
   BboxOperator, ConnectOperator, AddGeometryOperator, ExtrudeBothWaysOperator, ClearSharpOperator, FlattenOperator,
   RandomizeOperator, ConvertOperator, ConvertToMeshOperator, MirrorOperator, SubsurfOperator,
   BevelOperator, SolidifyOperator, TriangulateOperator, ArrayOperator,
   SimpleDeformOperator, ClearModifiersOperator, DeleteBackFacingOperator,
-  StraightenUVsOperator, MarkSeamOperator, 
+  SeparateByLoosePartsOperator, StraightenUVsOperator, UVProjectModifierOperator, MarkSeamOperator, 
   MarkSeamsSharpOperator, MarkSeamsFromIslandsOperator, TransformUVsOperator, SetVertexColorOperator, SelectByVertexColorOperator, BakeIDMapOperator, EditAlbedoMapOperator,
-  BooleanOperator, WeldEdgesIntoFacesOperator, ToggleAutoKeyingOperator, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
-  AddBoneOperator,
+  BooleanOperator, WeldEdgesIntoFacesOperator, TargetWeldToggle, ParentToNewEmptyOperator, ClearDriversOperator, SetUseSelfDriversOperator,
   PlaneIntersectOperator, KnifeIntersectOperator, IntersectOperator, TransformOrientationOperator, TransformPivotOperator,
-  SetSnapOperator, ModeOperator, ToolOperator, SaveAndReloadOperator, ReimportTexturesOperator, UnpackAllDataToFilesOperator, ExportOperator, ViewOperator,
+  SetSnapOperator, ModeOperator, ToolOperator, SaveAndReloadOperator, ReimportTexturesOperator, RepackAllDataOperator, ExportOperator, ViewOperator,
 
   QuickMenu, QuickMenuPreferences, QuickMenuProperties
 )
@@ -1974,14 +1970,14 @@ def draw_menu(self, items):
     elif item['title'] == '[Separator]':
       layout.separator()
       i -= 1
-    elif 'operator' in item:
+    else:
+      if 'operator' not in item:
+        raise Exception(f'Item {title} doesn\'t have an "operator" field')
       operator = layout.operator(item['operator'], text=title)
       if 'params' in item:
         for key, val in item['params'].items():
           if isinstance(val, list): val = tuple(val)
           operator[key] = val
-    elif 'menu' in item:
-      layout.menu(item['menu'], text=title) 
 
 def register_menu_type(menu_definition):
   title = menu_definition['title']
@@ -2047,7 +2043,7 @@ def load_items(config_path):
 def get_config_path():
   if __name__ == '__main__':
     # For testing purposes:
-    return '/Users/passivestar/Files/blender/addons/quickmenu/config.json'
+    return 'C:/Files/blender/addons/quickmenu/config.json'
   else:
     print(__location__)
     return os.path.join(__location__, 'config.json')
