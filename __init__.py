@@ -1654,7 +1654,7 @@ class TargetWeldToggle(bpy.types.Operator):
             context.scene.tool_settings.use_mesh_automerge = False
             bpy.context.scene.tool_settings.use_snap = False
         else:
-            context.scene.tool_settings.snap_elements |= {'VERTEX'}
+            bpy.context.scene.tool_settings.snap_elements = {'VERTEX'}
             context.scene.tool_settings.use_mesh_automerge = True
             bpy.context.scene.tool_settings.use_snap = True
 
