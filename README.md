@@ -6,8 +6,8 @@
 ## Installation
 
 - Go to [Releases](https://github.com/passivestar/quickmenu/releases) and download `quickmenu.zip`
-- In Blender go to `Edit -> Preferences -> Addons`
-- Press `Install...`
+- In Blender go to `Edit -> Preferences -> Add-ons`
+- Click `Install From Disk` in the dropdown menu on the top right
 - Select the archive (don't unpack it)
 
 Press `D` in 3D view to open the menu.
