@@ -14,7 +14,7 @@ class BooleanOperator(bpy.types.Operator):
   ))
 
   solver: bpy.props.EnumProperty(name='Solver', default='EXACT', items=(
-    ('FAST', 'Fast', 'Fast'),
+    ('FLOAT', 'Float', 'Float'),
     ('EXACT', 'Exact', 'Exact'),
   ))
 
