@@ -31,9 +31,9 @@
     { "path": "Select/Select Ring Or Loop", "operator": "qm.select_ring" },
     { "path": "Select/Select More Or Less", "operator": "qm.select_more" },
     { "path": "Select/Select Region or Loop", "operator": "qm.region_to_loop" },
-    { "path": "Select/Select View Parallel Edges", "nodetool": "QM Select View Parallel Edges" },
-    { "path": "Select/Select View Perpendicular Faces", "nodetool": "QM Select View Perpendicular Faces" },
-    { "path": "Select/Expand Selection", "nodetool": "QM Expand Selection" },
+    { "path": "Select/Select View Parallel Edges", "operator": "geometry.qm_select_view_parallel_edges" },
+    { "path": "Select/Select View Perpendicular Faces", "operator": "geometry.qm_select_view_perpendicular_faces" },
+    { "path": "Select/Expand Selection", "operator": "geometry.qm_expand_selection" },
 
     { "path": "Select/[Separator]" },
 
@@ -42,37 +42,37 @@
 
     { "path": "Select/[Separator]" },
 
-    { "path": "Select/(A) Invert Selection Connected", "nodetool": "QM Invert Selection Connected" },
-    { "path": "Select/(D) Select Sharp Edges", "nodetool": "QM Select Sharp Edges" },
+    { "path": "Select/(A) Invert Selection Connected", "operator": "geometry.qm_invert_selection_connected" },
+    { "path": "Select/(D) Select Sharp Edges", "operator": "geometry.qm_select_sharp_edges" },
 
     { "path": "Select/[Separator]" },
 
-    { "path": "Select/(X) Noise Deselect", "nodetool": "QM Noise Deselect", "mode": "EDIT_MESH" },
+    { "path": "Select/(X) Noise Deselect", "operator": "geometry.qm_noise_deselect", "mode": "EDIT_MESH" },
     { "path": "Select/(X) Random", "operator": "object.select_random", "mode": "OBJECT" },
     { "path": "Select/(C) Checker Deselect", "operator": "mesh.select_nth" },
 
-    { "path": "Generate/Solidify Edges", "nodetool": "QM Solidify Edges" },
-    { "path": "Generate/Spin", "nodetool": "QM Spin" },
-    { "path": "Generate/Selection To Box", "nodetool": "QM Selection To Box" },
-    { "path": "Generate/Selection To Cylinder", "nodetool": "QM Selection To Cylinder" },
-    { "path": "Generate/Circles On Faces", "nodetool": "QM Circles on Faces" },
-    { "path": "Generate/Circular Array", "nodetool": "QM Circular Array" },
+    { "path": "Generate/Solidify Edges", "operator": "geometry.qm_solidify_edges" },
+    { "path": "Generate/Spin", "operator": "geometry.qm_spin" },
+    { "path": "Generate/Selection To Box", "operator": "geometry.qm_selection_to_box" },
+    { "path": "Generate/Selection To Cylinder", "operator": "geometry.qm_selection_to_cylinder" },
+    { "path": "Generate/Circles On Faces", "operator": "geometry.qm_circles_on_faces" },
+    { "path": "Generate/Circular Array", "operator": "geometry.qm_circular_array" },
 
     { "path": "Generate/[Separator]" },
 
-    { "path": "Generate/(Q) Instantiate/Cluster", "nodetool": "QM Cluster" },
-    { "path": "Generate/(Q) Instantiate/Distribute On Edges", "nodetool": "QM Distribute On Edges" },
-    { "path": "Generate/(Q) Instantiate/Distribute On Surface", "nodetool": "QM Distribute On Surface" },
-    { "path": "Generate/(Q) Instantiate/Distribute In Volume", "nodetool": "QM Distribute In Volume" },
-    { "path": "Generate/(W) Connect Islands", "nodetool": "QM Connect Islands" },
-    { "path": "Generate/(E) Extrude Both Ways", "nodetool": "QM Extrude Both Ways" },
-    { "path": "Generate/(R) Panel", "nodetool": "QM Panel" },
-    { "path": "Generate/(Y) Cables", "nodetool": "QM Cables" },
-    { "path": "Generate/(U) Convex Hull", "nodetool": "QM Convex Hull" },
+    { "path": "Generate/(Q) Instantiate/Cluster", "operator": "geometry.qm_cluster" },
+    { "path": "Generate/(Q) Instantiate/Distribute On Edges", "operator": "geometry.qm_distribute_on_edges" },
+    { "path": "Generate/(Q) Instantiate/Distribute On Surface", "operator": "geometry.qm_distribute_on_surface" },
+    { "path": "Generate/(Q) Instantiate/Distribute In Volume", "operator": "geometry.qm_distribute_in_volume" },
+    { "path": "Generate/(W) Connect Islands", "operator": "geometry.qm_connect_islands" },
+    { "path": "Generate/(E) Extrude Both Ways", "operator": "geometry.qm_extrude_both_ways" },
+    { "path": "Generate/(R) Panel", "operator": "geometry.qm_panel" },
+    { "path": "Generate/(Y) Cables", "operator": "geometry.qm_cables" },
+    { "path": "Generate/(U) Convex Hull", "operator": "geometry.qm_convex_hull" },
 
     { "path": "Generate/[Separator]" },
 
-    { "path": "Generate/(G) Edges To Ropes", "nodetool": "QM Edges To Ropes" },
+    { "path": "Generate/(G) Edges To Ropes", "operator": "geometry.qm_edges_to_ropes" },
 
     { "path": "Generate/[Separator]"},
 
@@ -90,31 +90,31 @@
     { "path": "Modify/Convert To Mesh", "operator": "qm.convert_to_mesh" },
     { "path": "Modify/Subdivision Surface", "operator": "qm.subsurf", "icon": "MODIFIER" },
     { "path": "Modify/Bevel", "operator": "qm.bevel", "icon": "MODIFIER" },
-    { "path": "Modify/Voxel Remesh", "nodetool": "QM Voxel Remesh" },
+    { "path": "Modify/Voxel Remesh", "operator": "geometry.qm_voxel_remesh" },
     { "path": "Modify/Triangulate", "operator": "qm.triangulate", "icon": "MODIFIER" },
-    { "path": "Modify/Topology Expand Offset", "nodetool": "QM Topology Expand Offset" },
+    { "path": "Modify/Topology Expand Offset", "operator": "geometry.qm_topology_expand_offset" },
 
     { "path": "Modify/[Separator]"},
 
     { "path": "Modify/(Q) Flip Normals", "operator": "mesh.flip_normals" },
     { "path": "Modify/(W) Vertices Smooth", "operator": "mesh.vertices_smooth", "params": { "factor": 1 }},
-    { "path": "Modify/(R) Randomize", "nodetool": "QM Randomize", "mode": "EDIT_MESH" },
+    { "path": "Modify/(R) Randomize", "operator": "geometry.qm_randomize", "mode": "EDIT_MESH" },
     { "path": "Modify/(R) Randomize", "operator": "object.randomize_transform", "mode": "OBJECT" },
 
     { "path": "Modify/[Separator]"},
 
-    { "path": "Modify/(A) Snap Rotation By Normal", "nodetool": "QM Snap Rotation By Face Normal" },
-    { "path": "Modify/(D) Align Island To Active Face", "nodetool": "QM Align Island By Active Face" },
-    { "path": "Modify/(F) Flatten", "nodetool": "QM Flatten" },
-    { "path": "Modify/(G) Noise", "nodetool": "QM Noise" },
+    { "path": "Modify/(A) Snap Rotation By Normal", "operator": "geometry.qm_snap_rotation_by_face_normal" },
+    { "path": "Modify/(D) Align Island To Active Face", "operator": "geometry.qm_align_island_by_active_face" },
+    { "path": "Modify/(F) Flatten", "operator": "geometry.qm_flatten" },
+    { "path": "Modify/(G) Noise", "operator": "geometry.qm_noise" },
 
     { "path": "Modify/[Separator]" },
 
-    { "path": "Modify/(Z) Shrinkwrap", "nodetool": "QM Shrinkwrap" },
+    { "path": "Modify/(Z) Shrinkwrap", "operator": "geometry.qm_shrinkwrap" },
 
-    { "path": "Modify/(X) Damage/Holes", "nodetool": "QM Holes" },
-    { "path": "Modify/(X) Damage/Chunks", "nodetool": "QM Chunks" },
-    { "path": "Modify/(X) Damage/Cracks", "nodetool": "QM Cracks" },
+    { "path": "Modify/(X) Damage/Holes", "operator": "geometry.qm_holes" },
+    { "path": "Modify/(X) Damage/Chunks", "operator": "geometry.qm_chunks" },
+    { "path": "Modify/(X) Damage/Cracks", "operator": "geometry.qm_cracks" },
 
     { "path": "[Separator]"},
 
@@ -125,9 +125,9 @@
 
     { "path": "(Q) Delete and Split/[Separator]" },
 
-    { "path": "(Q) Delete and Split/(Q) Delete View Perpendicular", "nodetool": "QM Delete View Perpendicular" },
+    { "path": "(Q) Delete and Split/(Q) Delete View Perpendicular", "operator": "geometry.qm_delete_view_perpendicular" },
     { "path": "(Q) Delete and Split/(E) Edge Split", "operator": "mesh.edge_split", "params": { "type": "EDGE" } },
-    { "path": "(Q) Delete and Split/(R) Delete Unselected", "nodetool": "QM Delete Unselected" },
+    { "path": "(Q) Delete and Split/(R) Delete Unselected", "operator": "geometry.qm_delete_unselected" },
 
     { "path": "(Q) Delete and Split/[Separator]" },
 
@@ -178,22 +178,22 @@
     { "path": "(E) Cut/Union", "operator": "qm.boolean", "params": { "operation": "UNION" } },
     { "path": "(E) Cut/Difference", "operator": "qm.boolean", "params": { "operation": "DIFFERENCE" } },
     { "path": "(E) Cut/Intersect", "operator": "qm.boolean", "params": { "operation": "INTERSECT" } },
-    { "path": "(E) Cut/Cut", "nodetool": "QM Cut" },
-    { "path": "(E) Cut/Inset Cut", "nodetool": "QM Inset Cut" },
-    { "path": "(E) Cut/Panel Cut", "nodetool": "QM Panel Cut" },
-    { "path": "(E) Cut/Groove Cut", "nodetool": "QM Groove Cut" },
-    { "path": "(E) Cut/Pipe Cut", "nodetool": "QM Pipe Cut" },
+    { "path": "(E) Cut/Cut", "operator": "geometry.qm_cut" },
+    { "path": "(E) Cut/Inset Cut", "operator": "geometry.qm_inset_cut" },
+    { "path": "(E) Cut/Panel Cut", "operator": "geometry.qm_panel_cut" },
+    { "path": "(E) Cut/Groove Cut", "operator": "geometry.qm_groove_cut" },
+    { "path": "(E) Cut/Pipe Cut", "operator": "geometry.qm_pipe_cut" },
 
     { "path": "(E) Cut/[Separator]" },
 
-    { "path": "(E) Cut/(Q) Grid Slice", "nodetool": "QM Grid Slice" },
-    { "path": "(E) Cut/(E) Knife Intersect", "nodetool": "QM Knife Intersect" },
-    { "path": "(E) Cut/(R) Grid Cut", "nodetool": "QM Grid Cut" },
+    { "path": "(E) Cut/(Q) Grid Slice", "operator": "geometry.qm_grid_slice" },
+    { "path": "(E) Cut/(E) Knife Intersect", "operator": "geometry.qm_knife_intersect" },
+    { "path": "(E) Cut/(R) Grid Cut", "operator": "geometry.qm_grid_cut" },
     { "path": "(E) Cut/(T) Plane Intersect", "operator": "qm.plane_intersect"},
 
     { "path": "(E) Cut/[Separator]" },
 
-    { "path": "(E) Cut/(A) Hull Cut", "nodetool": "QM Hull Cut" },
+    { "path": "(E) Cut/(A) Hull Cut", "operator": "geometry.qm_hull_cut" },
 
     { "path": "(R) Animation/Parent To New Empty", "operator": "qm.parent_to_new_empty" },
     { "path": "(R) Animation/Add Constraint", "operator": "object.constraint_add_with_targets" },

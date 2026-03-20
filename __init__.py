@@ -14,7 +14,6 @@ from . common.common import *
 
 addon_directory = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 library_directory = os.path.join(addon_directory, 'blend')
-nodes_path = os.path.join(addon_directory, 'blend', 'nodetools.blend')
 
 app = {
   "items": [],
@@ -50,18 +49,8 @@ def draw_menu(self, items):
     elif item['title'] == '[Separator]':
       layout.separator()
       i -= 1
-    elif 'nodetool' in item:
-      icon = item['icon'] if 'icon' in item else 'NODETREE'
-      if is_in_editmode():
-        operator = layout.operator('geometry.execute_node_group', text=title, icon=icon)
-        operator.name = item['nodetool']
-        operator.asset_library_type = item['nodetool_library_type'] if 'nodetool_library_type' in item else 'CUSTOM'
-        operator.asset_library_identifier = item['nodetool_library_identifier'] if 'nodetool_library_identifier' in item else 'QuickMenuLibrary'
-        operator.relative_asset_identifier = 'nodetools.blend/NodeTree/' + item['nodetool']
-      else:
-        layout.operator('qm.void_edit_mode_only', text=title, icon=icon)
     elif 'operator' in item:
-      icon = 'NODETREE' if item['operator'] == 'geometry.execute_node_group' else 'NONE'
+      icon = 'NODETREE' if item['operator'].startswith('geometry.qm_') else 'NONE'
       if 'icon' in item: icon = item['icon']
       operator = layout.operator(item['operator'], text=title, icon=icon)
 
