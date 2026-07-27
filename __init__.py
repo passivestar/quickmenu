@@ -6,11 +6,11 @@ if "bpy" in locals():
           print("Reloading: ", name)
           importlib.reload(module)
 
-import bpy, re, json, os, platform, subprocess, sys, importlib
+import bpy, re, json, os, shutil, sys, importlib
 from bpy.props import *
-from bpy_extras.io_utils import ImportHelper
 from . operators import general, selection, generate, modify, materials, vertex_colors, cut, animation, snapping, files
 from . common.common import *
+from . import editor
 
 addon_directory = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 library_directory = os.path.join(addon_directory, 'blend')
@@ -33,7 +33,6 @@ def draw_menu(self, items):
 
   if len(items) == 0:
     layout.label(text='No menu items loaded', icon='ERROR')
-    layout.label(text='Add a config file in the addon preferences')
     return
 
   i = 0
@@ -50,9 +49,7 @@ def draw_menu(self, items):
       layout.separator()
       i -= 1
     elif 'operator' in item:
-      icon = 'NODETREE' if item['operator'].startswith('geometry.qm_') else 'NONE'
-      if 'icon' in item: icon = item['icon']
-      operator = layout.operator(item['operator'], text=title, icon=icon)
+      operator = layout.operator(item['operator'], text=title)
 
       if not operator:
         layout.label(text='Operator not found: ' + item['operator'], icon='ERROR')
@@ -65,7 +62,7 @@ def draw_menu(self, items):
           setattr(operator, key, val)
 
     elif 'menu' in item:
-      layout.menu(item['menu'], text=title) 
+      layout.menu(item['menu'], text=title)
 
 def register_menu_type(menu_definition):
   title = menu_definition['title']
@@ -83,40 +80,40 @@ def register_menu_type(menu_definition):
 
   bpy.utils.register_class(menu_type)
 
-def get_or_create_menu_definition_at_path(path, items):
-  for item in items:
-    if item['title'] == path[0]:
-      return item if len(path) == 1 else get_or_create_menu_definition_at_path(path[1:], item['children'])
-
-  menu_definition = {
-    'title': path[0],
-    'children': [],
-    'idname': 'OBJECT_MT_Menu' + re.sub('[^A-Za-z0-9]+', '', path[0])
-  }
-
-  register_menu_type(menu_definition)
-  items.append(menu_definition)
-
-  return menu_definition
+def build_menu_items(config_items):
+  """Convert hierarchical config items to runtime menu items."""
+  result = []
+  for item in config_items:
+    item_type = item.get('type', 'operator')
+    if item_type == 'separator':
+      result.append({'title': '[Separator]'})
+    elif item_type == 'group':
+      name = item.get('name', '')
+      children = build_menu_items(item.get('children', []))
+      idname = 'OBJECT_MT_Menu' + re.sub('[^A-Za-z0-9]+', '', name)
+      menu_def = {
+        'title': name,
+        'children': children,
+        'idname': idname,
+      }
+      register_menu_type(menu_def)
+      result.append(menu_def)
+    elif item_type == 'menu':
+      entry = {'title': item.get('name', ''), 'menu': item.get('menu', '')}
+      if item.get('mode') and item['mode'] != 'ANY':
+        entry['mode'] = item['mode']
+      result.append(entry)
+    else:  # operator
+      entry = {'title': item.get('name', ''), 'operator': item.get('operator', '')}
+      if 'params' in item:
+        entry['params'] = item['params']
+      if item.get('mode') and item['mode'] != 'ANY':
+        entry['mode'] = item['mode']
+      result.append(entry)
+  return result
 
 def config_path_is_builtin(path):
   return path in [path[0] for path in get_builtin_config_paths()]
-
-def check_json_syntax(path):
-  if not os.path.exists(path):
-    return False
-
-  with open(path, 'r') as file:
-    data = file.read()
-    try:
-      obj = json.loads(data)
-    except ValueError as e:
-      return False
-    
-    if not 'items' in obj:
-      return False
-  
-  return True
 
 # Load the items from the config and add them to the menu
 def load_items():
@@ -124,6 +121,9 @@ def load_items():
 
   for config in get_user_preferences().configs:
     if not config.enabled:
+      continue
+
+    if config_path_is_builtin(config.path):
       continue
 
     if not os.path.exists(config.path):
@@ -141,15 +141,9 @@ def load_items():
     if not 'items' in obj:
       raise Exception('No items in config')
   
-    for item in obj['items']:
-      # Split by "/" and remove whitespace
-      path = re.split('\s*\/\s*', item['path'])
-      item['title'] = path[-1]
-      if len(path) == 1:
-        app['items'].append(item)
-      else:
-        menu = get_or_create_menu_definition_at_path(path[:-1], app['items'])
-        menu['children'].append(item)
+    app['items'].extend(build_menu_items(obj['items']))
+
+  editor.refresh_cached_items()
 
 def register_asset_library():
   asset_libraries = bpy.context.preferences.filepaths.asset_libraries
@@ -169,6 +163,10 @@ def unregister_hotkey():
     keymap.keymap_items.remove(keymap_item)
   app['keymaps'].clear()
 
+@bpy.app.handlers.persistent
+def _on_load_post(dummy):
+  editor.refresh_cached_items()
+
 class VoidEditModeOnlyOperator(bpy.types.Operator):
   """Edit Mode Only"""
   bl_idname = 'qm.void_edit_mode_only'
@@ -181,94 +179,21 @@ class VoidEditModeOnlyOperator(bpy.types.Operator):
   def execute(self, context):
     return {'FINISHED'}
 
-class QuickMenuAddConfigOperator(bpy.types.Operator, ImportHelper):
-  """Add Config"""
-  bl_idname = 'qm.add_config'
-  bl_label = 'Add Config'
-  bl_description = 'Add a new config file'
-
-  def execute(self, context):
-    path = self.properties.filepath
-
-    if path == '':
-      return {'CANCELLED'}
-    
-    if not os.path.exists(path):
-      return {'CANCELLED'}
-    
-    if not path.endswith('.json') or not check_json_syntax(path):
-      self.report({'ERROR'}, 'The file must be a valid JSON file!')
-      return {'CANCELLED'}
-
-    for config in get_user_preferences().configs:
-      if config.path == path:
-        self.report({'ERROR'}, 'The file already exists!')
-        return {'CANCELLED'}
-
-    get_user_preferences().configs.add().path = path
-    load_items()
-    return {'FINISHED'}
-
-class QuickMenuRemoveConfigOperator(bpy.types.Operator):
-  """Remove Config"""
-  bl_idname = 'qm.remove_config'
-  bl_label = 'Remove Config'
-  bl_description = 'Remove the active config file'
-
-  def execute(self, context):
-    user_preferences = get_user_preferences()
-    user_preferences.configs.remove(user_preferences.active_config_index)
-
-    load_items()
-    return {'FINISHED'}
-
-class QuickMenuEditConfigOperator(bpy.types.Operator):
-  """Edit Config"""
-  bl_idname = 'qm.edit_config'
-  bl_label = 'Edit Config'
-  bl_description = 'Open the active config file in the default text editor'
-
-  def execute(self, context):
-    path = get_user_preferences().configs[get_user_preferences().active_config_index].path
-
-    if platform.system() == 'Darwin': # macOS
-      subprocess.call(('open', path))
-    elif platform.system() == 'Windows': # Windows
-      os.startfile(path)
-    else: # Linux variants
-      subprocess.call(('xdg-open', path))
-    return {'FINISHED'}
-
-class QuickMenuReloadMenuItemsOperator(bpy.types.Operator):
-  """Reload Menu Items"""
-  bl_idname = 'qm.reload_menu_items'
-  bl_label = 'Reload Menu Items'
-  bl_description = 'Reload the menu items from the config files'
-
-  def execute(self, context):
-    load_items()
-    return {'FINISHED'}
-
 def reset_configs():
   configs = get_user_preferences().configs
   configs.clear()
 
-  for path in get_builtin_config_paths():
-    config = configs.add()
-    config.path = path[0]
-    config.enabled = path[1]
+  default_path = get_builtin_config_paths()[0][0]
+  user_path = os.path.join(os.path.dirname(default_path), 'user.json')
+  if not os.path.exists(user_path):
+    shutil.copy2(default_path, user_path)
+
+  config = configs.add()
+  config.path = user_path
+  config.enabled = True
+  get_user_preferences().active_config_index = 0
 
   load_items()
-
-class QuickMenuResetConfigsOperator(bpy.types.Operator):
-  """Reset Configs"""
-  bl_idname = 'qm.reset_configs'
-  bl_label = 'Reset Configs'
-  bl_description = 'Reset the config files to the default'
-
-  def execute(self, context):
-    reset_configs()
-    return {'FINISHED'}
 
 class QuickMenu(bpy.types.Menu):
   bl_idname = 'OBJECT_MT_quick_menu'
@@ -288,22 +213,6 @@ class QuickMenuConfig(bpy.types.PropertyGroup):
   enabled: BoolProperty(default=True, update=lambda self, context: load_items())
   path: StringProperty(default='')
 
-class UI_UL_QuickMenuConfigList(bpy.types.UIList):
-  def draw_item(self, context, layout, data, item, icon, active_data, active_propname):
-    row = layout.row()
-    row.alignment = 'LEFT'
-
-    if not os.path.exists(item.path):
-      row.label(text='', icon='ERROR')
-    else:
-      row.prop(item, 'enabled', text='')
-
-    basename = os.path.basename(item.path)
-    row.label(text=basename)
-    row.label(text='(Not found)') if not os.path.exists(item.path) else None
-    if config_path_is_builtin(item.path):
-      row.label(text='(Builtin)')
-
 class QuickMenuPreferences(bpy.types.AddonPreferences):
   bl_idname = __package__
 
@@ -318,27 +227,7 @@ class QuickMenuPreferences(bpy.types.AddonPreferences):
 
   def draw(self, context):
     layout = self.layout
-
-    layout.label(text="Menu Configs:")
-
-    row = layout.row(align=True)
-    row.template_list("UI_UL_QuickMenuConfigList", "", self, "configs", self, "active_config_index")
-
-    column = row.column(align=True)
-    column.operator('qm.add_config', icon='ADD', text='')
-    column.operator('qm.remove_config', icon='REMOVE', text='')
-    column.operator('qm.edit_config', icon='GREASEPENCIL', text='')
-    column.operator('qm.reload_menu_items', icon='FILE_REFRESH', text='')
-    column.operator('qm.reset_configs', icon='LOOP_BACK', text='')
-
-    # Make sure active config index is in range
-    if self.active_config_index >= len(self.configs):
-      self.active_config_index = 0
-
-    # Display the path of the current config
-    if len(self.configs) > 0:
-      layout.label(text=self.configs[self.active_config_index].path)
-
+    layout.label(text='Configs are managed in the Quick Menu N-panel (3D Viewport sidebar)', icon='INFO')
     box = layout.box()
     box.label(text='To change the menu hotkey, go to "Keymap" and search for "Quick Menu"', icon='INFO')
 
@@ -351,14 +240,10 @@ def register():
   bpy.utils.register_class(QuickMenu)
   bpy.utils.register_class(VoidEditModeOnlyOperator)
   bpy.utils.register_class(QuickMenuConfig)
-  bpy.utils.register_class(UI_UL_QuickMenuConfigList)
-  bpy.utils.register_class(QuickMenuAddConfigOperator)
-  bpy.utils.register_class(QuickMenuRemoveConfigOperator)
-  bpy.utils.register_class(QuickMenuEditConfigOperator)
-  bpy.utils.register_class(QuickMenuReloadMenuItemsOperator)
-  bpy.utils.register_class(QuickMenuResetConfigsOperator)
   bpy.utils.register_class(QuickMenuPreferences)
   bpy.utils.register_class(QuickMenuProperties)
+
+  editor.register()
 
   general.register()
   selection.register()
@@ -373,11 +258,17 @@ def register():
 
   bpy.types.Scene.quick_menu = bpy.props.PointerProperty(type=QuickMenuProperties)
   register_hotkey()
-  register_asset_library() 
+  register_asset_library()
+  bpy.app.handlers.load_post.append(_on_load_post)
 
-  # Add the default config if the list is empty
+  editor.build_operator_list()
+
+  # Create a user-editable copy of the default when no custom config exists.
   configs = get_user_preferences().configs
-  if len(configs) == 0:
+  if not any(
+    not config_path_is_builtin(config.path) and os.path.exists(config.path)
+    for config in configs
+  ):
     reset_configs()
   else:
     load_items()
@@ -386,14 +277,10 @@ def unregister():
   bpy.utils.unregister_class(QuickMenu)
   bpy.utils.unregister_class(VoidEditModeOnlyOperator)
   bpy.utils.unregister_class(QuickMenuConfig)
-  bpy.utils.unregister_class(UI_UL_QuickMenuConfigList)
-  bpy.utils.unregister_class(QuickMenuAddConfigOperator)
-  bpy.utils.unregister_class(QuickMenuRemoveConfigOperator)
-  bpy.utils.unregister_class(QuickMenuEditConfigOperator)
-  bpy.utils.unregister_class(QuickMenuReloadMenuItemsOperator)
-  bpy.utils.unregister_class(QuickMenuResetConfigsOperator)
   bpy.utils.unregister_class(QuickMenuPreferences)
   bpy.utils.unregister_class(QuickMenuProperties)
+
+  editor.unregister()
 
   general.unregister()
   selection.unregister()
@@ -408,3 +295,5 @@ def unregister():
 
   del bpy.types.Scene.quick_menu
   unregister_hotkey()
+  if _on_load_post in bpy.app.handlers.load_post:
+    bpy.app.handlers.load_post.remove(_on_load_post)

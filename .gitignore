@@ -12,3 +12,4 @@ Thumbs.db
 textures
 blender_assets.cats.txt~
 __pycache__
+/configs/user.json
