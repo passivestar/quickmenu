@@ -1,14 +1,28 @@
 schema_version = "1.0.0"
 
 id = "quickmenu"
-version = "3.4.0"
+version = "3.4.1"
 name = "Quick Menu"
 tagline = "Simplifies access to useful operators and adds new functionality"
 maintainer = "passivestar"
 type = "add-on"
 
-blender_version_min = "5.1.0"
+blender_version_min = "5.2.0"
 
 license = [
   "SPDX:GPL-3.0-or-later",
+]
+
+[build]
+paths_exclude_pattern = [
+  "__pycache__/",
+  "/.git/",
+  "/.gitattributes",
+  "/.gitignore",
+  "/.ruff_cache/",
+  "/*.zip",
+  "**/.DS_Store",
+  "/blend/*.blend1",
+  "/blend/*~",
+  "/configs/user.json",
 ]

@@ -202,9 +202,9 @@ class QuickMenu(bpy.types.Menu):
   def draw(self, context):
     layout = self.layout
 
-    # Draw a label that shows a warning if the current version is less than blender 4.3.0
-    if bpy.app.version < (4, 3, 0):
-      layout.label(text=f'You need Blender 4.3 or newer for the addon to work properly', icon='ERROR')
+    # Draw a label that shows a warning if the current version is less than Blender 5.2.
+    if bpy.app.version < (5, 2, 0):
+      layout.label(text='You need Blender 5.2 or newer for the addon to work properly', icon='ERROR')
       layout.label(text=f'Current version: {bpy.app.version_string}')
 
     draw_menu(self, app['items'])
