@@ -221,14 +221,20 @@ _PARAM_FIELD = {
     "ENUM": "enum_value",
 }
 
+_FORM_SPACING = 0.5
+
 
 def _draw_params(collection, layout):
     if not collection:
         return
     box = layout.box()
-    box.label(text="Parameters:")
-    for param in collection:
-        row = box.row(align=True)
+    column = box.column(align=True)
+    column.label(text="Parameters:")
+    column.separator(factor=_FORM_SPACING)
+    for index, param in enumerate(collection):
+        if index:
+            column.separator(factor=_FORM_SPACING)
+        row = column.row(align=True)
         row.prop(param, "is_set", text="")
         sub = row.row(align=True)
         sub.active = param.is_set
@@ -310,9 +316,24 @@ def get_active_user_config_path():
     idx = prefs.active_config_index
     if 0 <= idx < len(prefs.configs):
         path = prefs.configs[idx].path
-        if not is_builtin_config(path):
+        if not is_builtin_config(path) and os.path.exists(path):
             return path
     return None
+
+
+def activate_config(index):
+    """Select and load one user config."""
+    prefs = get_user_preferences()
+    if not 0 <= index < len(prefs.configs):
+        return False
+
+    active_config = prefs.configs[index]
+    if is_builtin_config(active_config.path) or not os.path.exists(active_config.path):
+        return False
+
+    prefs.active_config_index = index
+    load_items()
+    return True
 
 
 # --- Inline editing ---
@@ -471,7 +492,7 @@ def _on_edit_operator_field(self, context):
 
 
 def refresh_cached_items():
-    """Rebuild the scene display list from nested config hierarchy."""
+    """Rebuild the scene display list from the active config."""
     global _suppress_edit_save
     was_suppressed = _suppress_edit_save
     _suppress_edit_save = True
@@ -480,18 +501,14 @@ def refresh_cached_items():
         _suppress_edit_save = was_suppressed
         return
     scene.qm_item_list.clear()
-    for config in get_user_preferences().configs:
-        if (
-            not config.enabled
-            or not os.path.exists(config.path)
-            or is_builtin_config(config.path)
-        ):
-            continue
+    config_path = get_active_user_config_path()
+    if config_path:
         try:
-            data = _load_config(config.path)
+            data = _load_config(config_path)
         except:
-            continue
-        _walk_items(scene, config.path, data.get("items", []), 0, "", [])
+            data = None
+        if data is not None:
+            _walk_items(scene, config_path, data.get("items", []), 0, "", [])
     _load_selection_into_edit(bpy.context)
     _suppress_edit_save = was_suppressed
 
@@ -577,13 +594,19 @@ def load_items():
 
 def _draw_item_fields(self, layout, context, group_label):
     layout.use_property_split = True
-    layout.label(text=f"Group: {group_label or '(root)'}", icon="FILE_FOLDER")
-    layout.prop_search(
+    column = layout.column(align=True)
+    column.label(text=f"Group: {group_label or '(root)'}", icon="FILE_FOLDER")
+    column.separator(factor=_FORM_SPACING)
+    column.prop_search(
         self, "operator_id", context.window_manager, "qm_operator_list", text="Operator"
     )
-    layout.prop(self, "name")
-    layout.prop(self, "mode")
-    _draw_params(self.params_list, layout)
+    column.separator(factor=_FORM_SPACING)
+    column.prop(self, "name")
+    column.separator(factor=_FORM_SPACING)
+    column.prop(self, "mode")
+    if self.params_list:
+        column.separator(factor=_FORM_SPACING)
+        _draw_params(self.params_list, column)
 
 
 def _build_operator_item(self):
@@ -604,7 +627,7 @@ def _build_operator_item(self):
 
 
 class QuickMenuReloadMenuItemsOperator(bpy.types.Operator):
-    """Reload menu items from all config files"""
+    """Reload menu items from the active config"""
 
     bl_idname = "qm.reload_menu_items"
     bl_label = "Reload Menu Items"
@@ -629,8 +652,7 @@ class QuickMenuCreateConfigOperator(bpy.types.Operator):
 
     def draw(self, context):
         self.layout.prop(self, "name")
-        if not self.from_default:
-            self.layout.prop(self, "from_default")
+        self.layout.prop(self, "from_default")
 
     def execute(self, context):
         if not self.name.strip():
@@ -654,9 +676,7 @@ class QuickMenuCreateConfigOperator(bpy.types.Operator):
         prefs = get_user_preferences()
         cfg = prefs.configs.add()
         cfg.path = new_path
-        cfg.enabled = True
-        prefs.active_config_index = len(prefs.configs) - 1
-        load_items()
+        activate_config(len(prefs.configs) - 1)
         return {"FINISHED"}
 
 
@@ -666,12 +686,20 @@ class QuickMenuDeleteConfigOperator(bpy.types.Operator):
     bl_idname = "qm.delete_config"
     bl_label = "Delete Config"
 
+    @classmethod
+    def poll(cls, context):
+        prefs = get_user_preferences()
+        return 0 <= prefs.active_config_index < len(prefs.configs)
+
     def invoke(self, context, event):
         return context.window_manager.invoke_confirm(self, event)
 
     def execute(self, context):
         prefs = get_user_preferences()
         idx = prefs.active_config_index
+        if not 0 <= idx < len(prefs.configs):
+            self.report({"ERROR"}, "No config selected")
+            return {"CANCELLED"}
         config = prefs.configs[idx]
         if is_builtin_config(config.path):
             self.report({"ERROR"}, "Cannot delete the built-in default config")
@@ -679,8 +707,20 @@ class QuickMenuDeleteConfigOperator(bpy.types.Operator):
         if os.path.exists(config.path):
             os.remove(config.path)
         prefs.configs.remove(idx)
-        prefs.active_config_index = min(idx, len(prefs.configs) - 1)
-        load_items()
+
+        valid_indices = [
+            i
+            for i, config in enumerate(prefs.configs)
+            if not is_builtin_config(config.path) and os.path.exists(config.path)
+        ]
+        if not valid_indices:
+            import importlib
+
+            importlib.import_module(__package__).reset_configs()
+            return {"FINISHED"}
+
+        next_index = next((i for i in valid_indices if i >= idx), valid_indices[-1])
+        activate_config(next_index)
         return {"FINISHED"}
 
 
@@ -711,8 +751,35 @@ class QuickMenuSwitchConfigOperator(bpy.types.Operator):
     index: IntProperty(options={"HIDDEN", "SKIP_SAVE"})
 
     def execute(self, context):
-        get_user_preferences().active_config_index = self.index
+        if not activate_config(self.index):
+            self.report({"ERROR"}, "Config file not found")
+            return {"CANCELLED"}
         return {"FINISHED"}
+
+
+class QM_MT_ConfigSelector(bpy.types.Menu):
+    bl_idname = "QM_MT_config_selector"
+    bl_label = "Configs"
+
+    def draw(self, context):
+        layout = self.layout
+        prefs = get_user_preferences()
+        has_configs = False
+
+        for i, config in enumerate(prefs.configs):
+            if is_builtin_config(config.path):
+                continue
+            name = os.path.splitext(os.path.basename(config.path))[0]
+            op = layout.operator(
+                "qm.switch_config",
+                text=name,
+                icon="CHECKMARK" if i == prefs.active_config_index else "NONE",
+            )
+            op.index = i
+            has_configs = True
+
+        if not has_configs:
+            layout.label(text="No configs available", icon="INFO")
 
 
 class QuickMenuAddItemOperator(bpy.types.Operator):
@@ -748,7 +815,7 @@ class QuickMenuAddItemOperator(bpy.types.Operator):
             return {"CANCELLED"}
         config_path, data, parent_list, insert_idx = get_insert_position(context)
         if data is None:
-            self.report({"ERROR"}, "No config files loaded")
+            self.report({"ERROR"}, "No active config loaded")
             return {"CANCELLED"}
         parent_list.insert(insert_idx, _build_operator_item(self))
         _save_config(config_path, data)
@@ -777,9 +844,9 @@ class QuickMenuRemoveItemOperator(bpy.types.Operator):
         parent_list.pop(local_idx)
         if self.group_path:
             _expanded_groups.discard(self.group_path)
-            _expanded_groups -= {
+            _expanded_groups.difference_update({
                 gp for gp in _expanded_groups if gp.startswith(self.group_path + "/")
-            }
+            })
         _save_config(self.config_path_prop, data)
         load_items()
         return {"FINISHED"}
@@ -823,7 +890,7 @@ class QuickMenuAddSeparatorOperator(bpy.types.Operator):
     def execute(self, context):
         config_path, data, parent_list, insert_idx = get_insert_position(context)
         if data is None:
-            self.report({"ERROR"}, "No config files loaded")
+            self.report({"ERROR"}, "No active config loaded")
             return {"CANCELLED"}
         parent_list.insert(insert_idx, {"type": "separator"})
         _save_config(config_path, data)
@@ -857,7 +924,7 @@ class QuickMenuAddGroupOperator(bpy.types.Operator):
         name = self.name.strip()
         config_path, data, parent_list, insert_idx = get_insert_position(context)
         if data is None:
-            self.report({"ERROR"}, "No config files loaded")
+            self.report({"ERROR"}, "No active config loaded")
             return {"CANCELLED"}
         parent_list.insert(insert_idx, {"type": "group", "name": name, "children": []})
         _save_config(config_path, data)
@@ -941,14 +1008,17 @@ class VIEW3D_PT_QuickMenuEditor(bpy.types.Panel):
 
         row = config_box.row(align=True)
         row.label(text="Config:", icon="DOCUMENTS")
-        sub = row.row(align=True)
-        for i, config in enumerate(prefs.configs):
-            if is_builtin_config(config.path):
-                continue
-            name = os.path.splitext(os.path.basename(config.path))[0]
-            sub.operator(
-                "qm.switch_config", text=name, depress=(i == prefs.active_config_index)
-            ).index = i
+        active_name = "Select Config"
+        idx = prefs.active_config_index
+        if 0 <= idx < len(prefs.configs):
+            active_config = prefs.configs[idx]
+            if not is_builtin_config(active_config.path):
+                active_name = os.path.splitext(
+                    os.path.basename(active_config.path)
+                )[0]
+        row.menu(
+            "QM_MT_config_selector", text=active_name, icon="DOWNARROW_HLT"
+        )
 
         row2 = config_box.row(align=True)
         row2.operator("qm.create_config", text="New", icon="ADD")
@@ -985,16 +1055,17 @@ class VIEW3D_PT_QuickMenuEditor(bpy.types.Panel):
             "qm.add_group", icon="FILE_FOLDER", text=""
         ).group_path = group_path
         col.operator("qm.add_item", icon="ADD", text="").group_path = group_path
-        col.operator("qm.add_separator", icon="GRIP", text="").group_path = group_path
 
         if se and se.address:
-            col.separator()
-            remove_op = col.operator("qm.remove_item", icon="X", text="")
+            remove_op = col.operator("qm.remove_item", icon="TRASH", text="")
             remove_op.address = se.address
             remove_op.config_path_prop = se.config_path
             if se.is_group:
                 remove_op.group_path = se.group_path
 
+        col.operator("qm.add_separator", icon="GRIP", text="").group_path = group_path
+
+        if se and se.address:
             col.separator()
             for icon, direction in [("TRIA_UP", "UP"), ("TRIA_DOWN", "DOWN")]:
                 op = col.operator("qm.move_item", icon=icon, text="")
@@ -1005,23 +1076,27 @@ class VIEW3D_PT_QuickMenuEditor(bpy.types.Panel):
         # Inline edit
         if se and not se.is_separator:
             box = layout.box()
+            column = box.column(align=True)
             if se.is_group:
-                box.prop(scene, "qm_edit_name", text="Group Name")
+                column.prop(scene, "qm_edit_name", text="Group Name")
             else:
-                box.prop(scene, "qm_edit_name", text="Name")
+                column.prop(scene, "qm_edit_name", text="Name")
+                column.separator(factor=_FORM_SPACING)
                 if se.is_menu:
-                    box.prop(scene, "qm_edit_menu", text="Menu")
+                    column.prop(scene, "qm_edit_menu", text="Menu")
                 else:
-                    box.prop_search(
+                    column.prop_search(
                         scene,
                         "qm_edit_operator",
                         context.window_manager,
                         "qm_operator_list",
                         text="Operator",
                     )
-                box.prop(scene, "qm_edit_mode", text="Mode")
-                if not se.is_menu:
-                    _draw_params(scene.qm_edit_params, box)
+                column.separator(factor=_FORM_SPACING)
+                column.prop(scene, "qm_edit_mode", text="Mode")
+                if not se.is_menu and scene.qm_edit_params:
+                    column.separator(factor=_FORM_SPACING)
+                    _draw_params(scene.qm_edit_params, column)
 
 
 classes = (
@@ -1040,6 +1115,7 @@ classes = (
     QuickMenuDeleteConfigOperator,
     QuickMenuOpenConfigsFolderOperator,
     QuickMenuSwitchConfigOperator,
+    QM_MT_ConfigSelector,
     QuickMenuReloadMenuItemsOperator,
 )
 

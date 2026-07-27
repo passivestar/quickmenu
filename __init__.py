@@ -23,10 +23,8 @@ app = {
 def get_user_preferences():
   return bpy.context.preferences.addons[__package__].preferences
 
-def get_builtin_config_paths():
-  return [
-    (os.path.join(addon_directory, 'configs', 'default.json'), True),
-  ]
+def get_builtin_config_path():
+  return os.path.join(addon_directory, 'configs', 'default.json')
 
 def draw_menu(self, items):
   layout = self.layout
@@ -113,35 +111,31 @@ def build_menu_items(config_items):
   return result
 
 def config_path_is_builtin(path):
-  return path in [path[0] for path in get_builtin_config_paths()]
+  return path == get_builtin_config_path()
 
-# Load the items from the config and add them to the menu
+# Load the items from the active config and add them to the menu
 def load_items():
   app['items'] = []
 
-  for config in get_user_preferences().configs:
-    if not config.enabled:
-      continue
+  prefs = get_user_preferences()
+  idx = prefs.active_config_index
+  if 0 <= idx < len(prefs.configs):
+    config_path = prefs.configs[idx].path
+    if not config_path_is_builtin(config_path) and os.path.exists(config_path):
+      with open(config_path, 'r') as config:
+        data = config.read()
 
-    if config_path_is_builtin(config.path):
-      continue
+      try:
+        obj = json.loads(data)
+      except:
+        raise Exception('Decoding JSON has failed')
 
-    if not os.path.exists(config.path):
-      print(f'[QuickMenu] Config file not found: {config.path}')
-      continue
+      if not 'items' in obj:
+        raise Exception('No items in config')
 
-    with open(config.path, 'r') as config:
-      data = config.read()
-    
-    try:
-      obj = json.loads(data)
-    except:
-      raise Exception('Decoding JSON has failed')
-
-    if not 'items' in obj:
-      raise Exception('No items in config')
-  
-    app['items'].extend(build_menu_items(obj['items']))
+      app['items'].extend(build_menu_items(obj['items']))
+    elif not os.path.exists(config_path):
+      print(f'[QuickMenu] Config file not found: {config_path}')
 
   editor.refresh_cached_items()
 
@@ -183,14 +177,13 @@ def reset_configs():
   configs = get_user_preferences().configs
   configs.clear()
 
-  default_path = get_builtin_config_paths()[0][0]
+  default_path = get_builtin_config_path()
   user_path = os.path.join(os.path.dirname(default_path), 'user.json')
   if not os.path.exists(user_path):
     shutil.copy2(default_path, user_path)
 
   config = configs.add()
   config.path = user_path
-  config.enabled = True
   get_user_preferences().active_config_index = 0
 
   load_items()
@@ -210,7 +203,6 @@ class QuickMenu(bpy.types.Menu):
     draw_menu(self, app['items'])
 
 class QuickMenuConfig(bpy.types.PropertyGroup):
-  enabled: BoolProperty(default=True, update=lambda self, context: load_items())
   path: StringProperty(default='')
 
 class QuickMenuPreferences(bpy.types.AddonPreferences):
@@ -265,13 +257,18 @@ def register():
 
   # Create a user-editable copy of the default when no custom config exists.
   configs = get_user_preferences().configs
-  if not any(
-    not config_path_is_builtin(config.path) and os.path.exists(config.path)
-    for config in configs
-  ):
+  valid_indices = [
+    i
+    for i, config in enumerate(configs)
+    if not config_path_is_builtin(config.path) and os.path.exists(config.path)
+  ]
+  if not valid_indices:
     reset_configs()
   else:
-    load_items()
+    active_index = get_user_preferences().active_config_index
+    editor.activate_config(
+      active_index if active_index in valid_indices else valid_indices[0]
+    )
 
 def unregister():
   bpy.utils.unregister_class(QuickMenu)
