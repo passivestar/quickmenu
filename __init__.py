@@ -26,6 +26,15 @@ def get_user_preferences():
 def get_builtin_config_path():
   return os.path.join(addon_directory, 'configs', 'default.json')
 
+def is_node_tool_operator(operator_id):
+  try:
+    module_name, operator_name = operator_id.split('.', 1)
+    operator = getattr(getattr(bpy.ops, module_name), operator_name)
+    properties = operator.get_rna_type().properties
+    return properties.get('inputs') is not None and properties.get('panels') is not None
+  except (AttributeError, KeyError, RuntimeError, ValueError):
+    return False
+
 def draw_menu(self, items):
   layout = self.layout
 
@@ -47,10 +56,17 @@ def draw_menu(self, items):
       layout.separator()
       i -= 1
     elif 'operator' in item:
-      operator = layout.operator(item['operator'], text=title)
+      operator_id = item['operator']
+      if is_node_tool_operator(operator_id):
+        operator = layout.operator('qm.execute_node_tool', text=title)
+        operator.operator_id = operator_id
+        operator.params = json.dumps(item.get('params', {}))
+        continue
+
+      operator = layout.operator(operator_id, text=title)
 
       if not operator:
-        layout.label(text='Operator not found: ' + item['operator'], icon='ERROR')
+        layout.label(text='Operator not found: ' + operator_id, icon='ERROR')
         continue
 
       if 'params' in item:
@@ -173,6 +189,48 @@ class VoidEditModeOnlyOperator(bpy.types.Operator):
   def execute(self, context):
     return {'FINISHED'}
 
+class QuickMenuExecuteNodeToolOperator(bpy.types.Operator):
+  """Execute a geometry node tool without triggering Blender's active-attribute crash"""
+  bl_idname = 'qm.execute_node_tool'
+  bl_label = 'Execute Node Tool'
+  bl_options = {'INTERNAL'}
+
+  operator_id: StringProperty(options={'HIDDEN', 'SKIP_SAVE'})
+  params: StringProperty(default='{}', options={'HIDDEN', 'SKIP_SAVE'})
+
+  def _run(self, context, call_context):
+    active_attributes = []
+    objects = getattr(context, 'objects_in_mode_unique_data', ())
+
+    for obj in objects:
+      mesh = getattr(obj, 'data', None)
+      attributes = getattr(mesh, 'attributes', None)
+      active = attributes.active if attributes else None
+      if active:
+        # Blender 5.2 crashes while rebuilding the edit mesh after a node tool
+        # if the source mesh has an active attribute.
+        active_attributes.append((mesh, active.name))
+        attributes.active_index = -1
+
+    try:
+      module_name, operator_name = self.operator_id.split('.', 1)
+      operator = getattr(getattr(bpy.ops, module_name), operator_name)
+      params = json.loads(self.params) if self.params else {}
+      return operator(call_context, **params)
+    except (AttributeError, KeyError, RuntimeError, TypeError, ValueError) as error:
+      self.report({'ERROR'}, f'Could not execute node tool: {error}')
+      return {'CANCELLED'}
+    finally:
+      for mesh, attribute_name in active_attributes:
+        if attribute_name in mesh.attributes:
+          mesh.attributes.active = mesh.attributes[attribute_name]
+
+  def invoke(self, context, event):
+    return self._run(context, 'INVOKE_DEFAULT')
+
+  def execute(self, context):
+    return self._run(context, 'EXEC_DEFAULT')
+
 def reset_configs():
   configs = get_user_preferences().configs
   configs.clear()
@@ -229,6 +287,7 @@ class QuickMenuProperties(bpy.types.PropertyGroup):
   vertex_color_index: bpy.props.IntProperty(name='Vertex Color Index', default=3)
  
 def register():
+  bpy.utils.register_class(QuickMenuExecuteNodeToolOperator)
   bpy.utils.register_class(QuickMenu)
   bpy.utils.register_class(VoidEditModeOnlyOperator)
   bpy.utils.register_class(QuickMenuConfig)
@@ -272,6 +331,7 @@ def register():
 
 def unregister():
   bpy.utils.unregister_class(QuickMenu)
+  bpy.utils.unregister_class(QuickMenuExecuteNodeToolOperator)
   bpy.utils.unregister_class(VoidEditModeOnlyOperator)
   bpy.utils.unregister_class(QuickMenuConfig)
   bpy.utils.unregister_class(QuickMenuPreferences)
