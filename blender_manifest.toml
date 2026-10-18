@@ -7,7 +7,7 @@ tagline = "Simplifies access to useful operators and adds new functionality"
 maintainer = "passivestar"
 type = "add-on"
 
-blender_version_min = "5.2.0"
+blender_version_min = "5.1.0"
 
 license = [
   "SPDX:GPL-3.0-or-later",
